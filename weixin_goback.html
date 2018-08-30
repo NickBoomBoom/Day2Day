@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    微信端 监听 返回按钮测试
+
+    <script>
+        window.onunload = function () {
+            alert('The onunload event was triggered')
+            localStorage.setItem('key', '我被保存了');
+        }
+    </script>
+</body>
+
+</html>
