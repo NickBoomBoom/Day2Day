@@ -1,40 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
 </head>
+
 <body>
   <script>
-    var a = new Promise ((resolve, reject) => {
-      // reject('1')
-      resolve('555555')
-    })
-    
-    var b = new Promise ((resolve, reject) => {
-      reject('2')
-    })
+    var a = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('555555')
 
-    var c = new Promise ((resolve, reject) => {
-      reject('3')
-    })
-
-    a.then(res => {
-      return setTimeout(() => {
-        console.log('获取', res)
       }, 1000);
-    }).then(() => {
-      console.log('66666666')
     })
-    
-    // .catch(err => {
-    //   console.log(err)
-    // })
-    
-    
-    
+
+    function init(onSucces, onFail) {
+      a.then(res => {
+        onSucces && onSucces(res)
+      }).cath(err=> onFail&&onFail(err))
+    }
+
+    async function test() {
+      let r = await init()
+      console.log(r)
+      // dosomething
+
+    }
+
   </script>
 </body>
+
 </html>
