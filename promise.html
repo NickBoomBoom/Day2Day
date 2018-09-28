@@ -12,16 +12,27 @@
   <script>
     var a = new Promise((resolve, reject) => {
       setTimeout(() => {
-        resolve('555555')
-
+        resolve('1')
       }, 1000);
     })
 
-    function init(onSucces, onFail) {
-      a.then(res => {
-        onSucces && onSucces(res)
-      }).cath(err=> onFail&&onFail(err))
-    }
+    var b = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('2')
+      }, 2000);
+    })
+
+    var c = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        reject('3')
+      }, 4000);
+    })
+
+
+    Promise.all([a, b, c])
+      .then((res) => console.log(...res))
+      .catch(err => console.error(err))
+      .finally(() => console.warn("finally "))
 
 
 

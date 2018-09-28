@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>实现三栏水平布局之圣杯布局</title>
+    <style type="text/css">
+    .container {
+        padding: 0 300px 0 200px;
+    }
+    .left, .main, .right {
+        position: relative;
+        min-height: 130px;
+        float: left;
+    }
+    .left {
+        left: -200px;
+        margin-left: -100%;
+        background: green;
+        width: 200px;
+    }
+    .right {
+        right: -300px;
+        margin-left: -300px;
+        background-color: red;
+        width: 300px;
+    }
+    .main {
+        background-color: blue;
+        width: 100%;
+    }
+    </style>
+</head>
+<body>
+<div class="container"> 
+　　<div class="main">main</div> 
+　　<div class="left">left</div> 
+　　<div class="right">right</div> 
+</div>
+</body>
+</html>
