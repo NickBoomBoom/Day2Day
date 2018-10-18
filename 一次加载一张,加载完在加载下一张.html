@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+ 
+      <div id="mypic">onloading……</div>
+      <script type="text/javascript">
+        var obj=new Image();
+        obj.src="https://image-dev.best-nihon.com/shopadv/home/d92bc189-0fff-4b75-b7cf-a3f27404d7db.jpg?x-oss-process=style/shop_home3_1";
+        obj.onload=function(){
+        alert('图片的宽度为：'+obj.width+'；图片的高度为：'+obj.height);
+        document.getElementById("mypic").innerHTML="<img src='"+this.src+"' />";
+        }
+        </script>
+</body>
+</html>
