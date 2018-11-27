@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    button {
+      width: 100px;
+      height: 50px;
+      position: relative;
+      z-index: 1;
+    }
+
+    ul {
+      position: absolute;
+      list-style: none;
+    
+      /* transform: translateY(-200%); */
+      transition: all .5s;
+      top: -100%
+    }
+
+    li {
+      width: 100px;
+      height: 50px;
+      background-color: black;
+      color: skyblue;
+    }
+
+    .move {
+      /* ani: all 1s ease-in; */
+      /* transform: translateY(0) */
+      top: 50px
+}
+
+    @keyframes m {
+      from {
+        transform: translateY(0);
+        display: block;
+      }
+
+      to {
+        transform: translateY(50px)
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <button onclick="javascript: transform()">点击出下拉</button>
+  <ul>
+    <li>nav item</li>
+    <li>nav item</li>
+    <li>nav item</li>
+    <li>nav item</li>
+  </ul>
+  <script>
+    function transform() {
+      let el = document.getElementsByTagName('ul')[0]
+      console.log('===>', el)
+      el.classList.add('move')
+
+    }
+  </script>
+</body>
+
+</html>
