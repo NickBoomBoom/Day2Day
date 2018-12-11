@@ -18,7 +18,7 @@
 </head>
 
 <body>
-  <label>输入：</label><input type="text" id="demo1"><br/>
+  <label>输入：</label><input type="text" id="demo1" q-bind="first"><br/>
   <label>输出：</label> <input type="textarea" id="demo2"></input>
    
   <script>
@@ -36,18 +36,19 @@
       })
       var demo1=document.querySelector('#demo1');
       var demo2=document.querySelector('#demo2');
-      demo1.onkeyup=function(){
-          a.b=demo1.value;//给a对象添加b属性时候，触发了a的set方法，此时#demo1的value值赋值给output['b']。
-          demo2.value=output['b'];
-      }
+      console.log(demo1.attributes)
+      // demo1.onkeyup=function(){
+      //     a.b=demo1.value;//给a对象添加b属性时候，触发了a的set方法，此时#demo1的value值赋值给output['b']。
+      //     demo2.value=output['b'];
+      // }
    
-      function a(){
-        if (isloading) return 
-        isloading = true
-        succes:function (){
-          isloading =  false
-        }
-      }
+      // function a(){
+      //   if (isloading) return 
+      //   isloading = true
+      //   succes:function (){
+      //     isloading =  false
+      //   }
+      // }
       // 上拉加载
       // pomise pending  
   </script>
