@@ -1,68 +1,61 @@
+<!--
+ * @Author: NickChen
+ * @Date: 2018-06-30 14:35:43
+ * @LastEditors: NickChen
+ * @LastEditTime: 2019-08-25 18:35:50
+ * @Email: q7but@qq.com
+ * @Description: 
+ -->
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-  <style>
-  
-  .a {
-    width: 100px;
-    height: 100px;
-    background: red;
-    overflow: hidden;
-
-  }
-  .b {
-    margin-top: 10px;
-    width: 50px;
-    height:10px;
-    background-color: yellow;
-  }
-  </style>
-</head>
-
-
-<body>
-  <div class="a">
-    ie的盒子模型   不标准的
-    base.css
-
-    
-    <div class="b"></div>
-  </div>
-  <script>
-    // async 异步 await
-    async function test() {
-      console.time('begin')
-      let aa = await a()
-      let bb = await a()
-      let cc = await a()
-
-      if (aa && bb && cc) {
-        console.log('succes')
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      .a {
+        width: 100px;
+        height: 100px;
+        background: red;
+        overflow: hidden;
       }
-      console.timeEnd()
-    }
+      .b {
+        margin-top: 10px;
+        width: 50px;
+        height: 10px;
+        background-color: yellow;
+      }
+    </style>
+  </head>
 
-    function a() {
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve('我成功了')
-        }, 2000);
-      })
-    }
+  <body>
+    <div class="a">
+      ie的盒子模型 不标准的 base.css
 
-    test()
+      <div class="b"></div>
+    </div>
+    <script>
+      // async 异步 await
+      async function test() {
+        console.time("begin");
 
-    let obj ={
-      1:function(){}
-    }
+          let { aa, d, dc } = await a();
+          console.log(aa, d, dc);
+    
 
-obj[status]()
-  </script>
-</body>
+        console.timeEnd();
+      }
 
+      function a() {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            reject("我报错");
+          }, 2000);
+        });
+      }
+
+      test();
+    </script>
+  </body>
 </html>

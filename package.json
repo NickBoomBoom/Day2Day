@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "gulp-babel": "^8.0.0"
+  }
+}

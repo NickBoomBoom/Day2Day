@@ -1,0 +1,10 @@
+{
+  "name": "gulp-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "gulp": "^4.0.2"
+  }
+}
