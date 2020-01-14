@@ -1,0 +1,7 @@
+* {
+  margin: 0;
+  background-color: skyblue;
+  -webkit-transform: scale(0.5);
+          transform: scale(0.5);
+}
+
