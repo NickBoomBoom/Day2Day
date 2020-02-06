@@ -4,7 +4,7 @@
     "main": "index.js",
     "license": "MIT",
     "scripts": {
-        "dev": "webpack-dev-server --config build/webpack.config.js --open",
+        "dev": "webpack-dev-server --config build/webpack.dev.js --open",
         "build": "webpack --config build/webpack.config.js"
     },
     "devDependencies": {
@@ -13,15 +13,19 @@
         "autoprefixer": "^9.7.3",
         "babel-loader": "^8.0.6",
         "clean-webpack-plugin": "^3.0.0",
+        "copy-webpack-plugin": "^5.1.1",
         "extract-text-webpack-plugin": "^3.0.2",
         "html-webpack-plugin": "^3.2.0",
         "mini-css-extract-plugin": "^0.9.0",
+        "optimize-css-assets-webpack-plugin": "^5.0.3",
+        "uglifyjs-webpack-plugin": "^2.2.0",
         "vue-loader": "^15.8.3",
         "vue-style-loader": "^4.1.2",
         "vue-template-compiler": "^2.6.11",
         "webpack": "^4.41.5",
         "webpack-cli": "^3.3.10",
-        "webpack-dev-server": "^3.10.1"
+        "webpack-dev-server": "^3.10.1",
+        "webpack-merge": "^4.2.2"
     },
     "dependencies": {
         "vue": "^2.6.11"

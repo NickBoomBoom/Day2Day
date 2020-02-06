@@ -31,15 +31,15 @@ const counterReducer = (state, action) => {
   console.log("state ==>", state);
   switch (action.type) {
     case "INCREMENT":
-      return state + 1;
+      return state.count + 1;
     case "DECREMENT":
-      return state - 1;
+      return state.count - 1;
     default:
       return state;
   }
 };
 
-const store = createStore(counterReducer, 0);
+const store = createStore(counterReducer, { count: 0 });
 // 订阅一个打印当前 state 的函数
 store.subscribe(() => console.log("==>", store.getState()));
 
