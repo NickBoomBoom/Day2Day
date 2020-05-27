@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,6 +9,7 @@
     <script src="//unpkg.com/@reactivex/rxjs@6.0.0/dist/global/rxjs.umd.js"></script>
     <!-- <script crossorigin="anonymous" integrity="sha384-E0GEyyLVOKRVCrgJfaZugs/f0tDFpMoY4ocORTyvVyClpWt7faLaotMlIJNNjNRs" src="//lib.baomitu.com/rxjs/6.5.2/rxjs.umd.js"></script> -->
   </head>
+
   <body>
     <button>
       测试
@@ -21,8 +23,14 @@
       console.log(rxjs);
       var Rx = rxjs;
 
-const t = Rx.interval(1000).subscribe(res => console.log(res)); // 渔人每天捕鱼也很无聊，想和岸上的饥民搞个游戏，每过1秒钟向岸上的饥民扔一条鱼(而且还在鱼身上表上0，1，2，3....)，并且让饥民拿到鱼之后，只要鱼上的数字
-      // Rx.timer(1000, 5000).subscribe(res => console.log(res));; // 游戏规则改了一点，渔人告诉饥民，他会在1000毫秒之后才会向岸边扔出第一条鱼，以后每隔5000毫秒扔出一条。
+      // const t = Rx.interval(1000).subscribe(res => console.log(res), (err) => { console.log(err) }, () => console.log('complate')); // 渔人每天捕鱼也很无聊，想和岸上的饥民搞个游戏，每过1秒钟向岸上的饥民扔一条鱼(而且还在鱼身上表上0，1，2，3....)，并且让饥民拿到鱼之后，只要鱼上的数字
+
+      // setTimeout(() => {
+      //   console.log('关闭')
+      //   t.unsubscribe()
+      // }, 4000);
+
+      // Rx.timer(1000, 2000).subscribe(res => console.log('timer use 初始1000ms调用, 之后2000ms调用一次',res));// 游戏规则改了一点，渔人告诉饥民，他会在1000毫秒之后才会向岸边扔出第一条鱼，以后每隔5000毫秒扔出一条。
 
       // const subscriber = ob => {
       //   // 监听行为
@@ -44,7 +52,9 @@ const t = Rx.interval(1000).subscribe(res => console.log(res)); // 渔人每天�
 
       // const subscription = sourse.subscribe(ob1); // ob1 设置监听
 
-      // // rxjs.fromEvent(button, "click").subscribe(() => console.log("kkkkkkk"));
+      // Rx.fromEvent(button, "click").subscribe(() => console.log("kkkkkkk"));
+      // Rx.fromEvent(document, 'touchmove').subscribe(res => console.log('touchmove', res))
+      // Rx.fromEvent(document, 'touchend').subscribe(res => console.log('touchend', res))
 
       // const p = () =>
       //   new Promise((resolve, reject) => {
@@ -55,7 +65,7 @@ const t = Rx.interval(1000).subscribe(res => console.log(res)); // 渔人每天�
 
       // const obj = {
       //   next: res => console.log("success ===>", res),
-      //   complete: res => console.warn("complete ===>", res)
+      //   complete: res => console.warn("complete ===>", res, arguments)
       // };
       // const s = rxjs.Observable.create(async ob => {
       //   const res = await p();
@@ -80,6 +90,21 @@ const t = Rx.interval(1000).subscribe(res => console.log(res)); // 渔人每天�
       // setTimeout(() => {
       //   b_click.unsubscribe();
       // }, 5000);
+      
+      let  arr3 = [0,1,2,4]
+      const arr = Rx.of(arr3).pipe(
+        Rx.operators.filter(n => n > 3),
+        Rx.operators.map(n => n + 'm')
+      )
+
+
+      arr.subscribe({
+        next: res => console.log(res),
+        complete: res => console.log('complete', res)
+      })
+
+
     </script>
   </body>
+
 </html>
