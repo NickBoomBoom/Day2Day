@@ -13,9 +13,11 @@ function sort(arr, type) {
   for (let i = 0, len = arr.length - 1; i < len; i++) {
     for (let n = 0, nlen = arr.length - 1 - i; n < nlen; n++) {
       let check = type ? arr[n] < arr[n + 1] : arr[n] > arr[n + 1]
-      check && [arr[n], arr[n + 1]] =[arr[n + 1], arr[n]]
+      console.log(i, n, type?'降序':'升序', check)
+      check && ([arr[n], arr[n + 1]] =[arr[n + 1], arr[n]])
     }
   }
+  return arr
 }
 
 

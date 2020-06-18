@@ -23,8 +23,8 @@
     width: 100%;
     /*防止矩形被里面的内容撑出多余的高度*/
     height: 0px;
-    /* 16:9padding-bottom:65.25%，4:3padding-bottom:75% */
-    padding-bottom: 65.25%;
+    /* 16:9padding-bottom:56.25%，4:3padding-bottom:75% */
+    padding-bottom: 56.25%;
     position: relative;
     background: pink;
   }
@@ -41,7 +41,10 @@
 <body>
   <div class="wrap">
     <div class="box">
-      <p>&nbsp;&nbsp;这是一个16：9的矩形</p>
+      <p>&nbsp;&nbsp;这是一个16：9的矩形
+
+        padding-top/bottom和margin-top/bottom都是相对于父元素的宽度来计算的
+      </p>
     </div>
   </div>
 </body>

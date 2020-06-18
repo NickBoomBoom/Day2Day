@@ -1,74 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-    }
-    button {
-      width: 100px;
-      height: 50px;
-      position: relative;
-      z-index: 1;
-    }
-
-    ul {
-      position: absolute;
-      list-style: none;
-    
-      /* transform: translateY(-200%); */
-      transition: all .5s;
-      top: -100%
-    }
-
-    li {
-      width: 100px;
-      height: 50px;
-      background-color: black;
-      color: skyblue;
-    }
-
-    .move {
-      /* ani: all 1s ease-in; */
-      /* transform: translateY(0) */
-      top: 50px
-}
-
-    @keyframes m {
-      from {
-        transform: translateY(0);
-        display: block;
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
       }
 
-      to {
-        transform: translateY(50px)
+      button {
+        width: 100px;
+        height: 50px;
+        position: relative;
+        z-index: 1;
       }
-    }
-  </style>
-</head>
 
-<body>
-  <button onclick="javascript: transform()">点击出下拉</button>
-  <ul>
-    <li>nav item</li>
-    <li>nav item</li>
-    <li>nav item</li>
-    <li>nav item</li>
-  </ul>
-  <script>
-    function transform() {
-      let el = document.getElementsByTagName('ul')[0]
-      console.log('===>', el)
-      el.classList.add('move')
+      ul {
+        position: absolute;
+        list-style: none;
+        transition: all .5s;
+        top: -100%
+      }
 
-    }
-  </script>
-</body>
+      li {
+        width: 100px;
+        height: 50px;
+        background-color: black;
+        color: skyblue;
+      }
+
+      button:hover+ul {
+        top: 50px
+      }
+
+      ul:hover {
+        top:50px
+      }
+
+      ul>li:hover {
+        background-color: khaki;
+      }
+
+
+
+      .ball {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: skyblue;
+        animation: move 3s 1s;
+        animation-fill-mode: forwards;
+      }
+
+      @keyframes move {
+        form {
+          transform: scale(.4);
+        }
+        20% {
+          transform: scale(1.4);
+        }
+        
+        50% {
+          transform: translateX(200px);
+          background-color: red;
+        }
+
+        to {
+          transform: translate(200px, 100px);
+          background-color: yellowgreen;
+        }
+
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <div class="hover">
+
+      <button onclick="javascript:;">点击出下拉</button>
+
+      <ul>
+        <li>nav item</li>
+        <li>nav item</li>
+        <li>nav item</li>
+        <li>nav item</li>
+      </ul>
+    </div>
+
+
+
+    <div class="ball"></div>
+
+  </body>
 
 </html>
