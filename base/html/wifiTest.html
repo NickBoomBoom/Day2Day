@@ -7,12 +7,26 @@
   <title>Page Title</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.js"></script>
+  <style>
+    .input {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100vw;
+      height: 50px;
+      background-color: skyblue;
+    }
+  </style>
 </head>
 
 <body>
   <div id="wifi">
     检测WiFi功能
   </div>
+
+  <textarea class="input" type="text"></textarea>
+  <audio src="https://cdn-secret.knowyourself.cc/2019/12/17/11/37/42/ubOqxRUUMa.mp3?OSSAccessKeyId=LTAIlu2ryWCTBv6X&Expires=1596532517&Signature=V3WlT44ezKQvOTt0XM60bH41ByA%3D" controls></audio>
   <script>
     let type = window.navigator.connection.effectiveType || window.navigator.connection.type
     console.log(JSON.stringify(type), type)

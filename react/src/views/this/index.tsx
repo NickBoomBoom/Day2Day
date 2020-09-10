@@ -52,8 +52,10 @@ class ThisPage extends React.Component {
         `}}>
         </pre>
       </h4>
-      <button onClick={this.bindTest}> bind 函数绑定  </button>
+      {/* 无法获取this */}
       <button onClick={this.unBindTest}> bind 函数未绑定  </button>
+      {/* 可以获取this */}
+      <button onClick={this.bindTest}> bind 函数绑定  </button>
       <button onClick={this.arrowBind}> 箭头函数绑定  </button>
       <button onClick={() => this.inside()}> 内部箭头函数绑定  </button>
     </div>

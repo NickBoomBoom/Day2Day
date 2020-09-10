@@ -35,11 +35,11 @@
       }
 
       .downUp {
-        animation: downUp .3s;
+        animation: downUp 1s;
       }
 
       .leftRight {
-        animation: leftRight .3s;
+        animation: leftRight 1s;
       }
 
       @keyframes downUp {
@@ -47,7 +47,7 @@
           opacity: 0;
           transform: translateY(1000px) scale(0);
         }
-   
+
       }
 
       @keyframes leftRight {
@@ -87,13 +87,17 @@
         }, time);
       }
 
-      function clearLi(ul){
-        const lis= [...ul.querySelectorAll('li')].filter((item,index) => index>0)
+      function clearLi(ul) {
+        const lis = [...ul.querySelectorAll('li')].filter((item, index) => index > 0)
         lis.forEach(item => ul.removeChild(item))
       }
       animate('down2up', 'downUp')
       animate('left2right', 'leftRight')
 
+
+      setInterval(() => {
+        console.log('我在执行')
+      }, 1000);
 
     </script>
 

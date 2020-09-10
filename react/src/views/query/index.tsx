@@ -37,6 +37,7 @@ class QueryPage extends React.Component<IProps, IState>{
 
     // url
     const uq = url.parse(inputValue, true)
+    console.log(uq)
     res.push({
       params: inputValue,
       handle: `url.parse(${inputValue}, true)`,
@@ -45,11 +46,13 @@ class QueryPage extends React.Component<IProps, IState>{
 
     // URLSearchParams
     const _url: string = '?' + inputValue.split('?')[1]
+    console.log(_url)
     const uuq = new URLSearchParams(_url)
     let uuqRes:any = {}
     for (let key of uuq.keys()) {
       uuqRes[key] = uuq.getAll(key)
     }
+    console.log(uuqRes)
     res.push({
       params: _url,
       handle: `new URLSearchParams(${_url})`,
