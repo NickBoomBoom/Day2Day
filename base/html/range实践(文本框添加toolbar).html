@@ -28,6 +28,28 @@
         background-color: yellowgreen;
       }
 
+      .box {
+        width: 100px;
+        height: 100px;
+        background-color: cadetblue;
+        position: relative;
+      }
+
+      .modal {
+        width: 80px;
+        height: 80px;
+        background-color: red;
+        display: none;
+        position: absolute;
+        top: 0;
+        right: -80px;
+      }
+
+      .box:hover > .modal {
+        display: block;
+
+      }
+
     </style>
   </head>
 
@@ -37,6 +59,12 @@
     </div>
     <div id="bar" onclick='addTag()'>增加</div>
 
+
+
+    <div class="box">
+      <div class="modal">
+      </div>
+    </div>
     <script>
 
       class Tag extends HTMLElement {
