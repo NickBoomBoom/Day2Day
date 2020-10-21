@@ -32,18 +32,23 @@
   </head>
 
   <body>
-    <div id="content" contentEditable='true'>
-
+    <div id="content">
+      测试<chat-tag>数据</chat-tag>事件循环
     </div>
     <div id="bar" onclick='addTag()'>增加</div>
+
     <script>
 
       class Tag extends HTMLElement {
         constructor() {
           super()
+          this.addEventListener('click', this.handleClick)
         }
         connectedCallback() {
           this.setAttribute('onselectstart', 'return false;')
+        }
+        handleClick() {
+          console.log(this)
         }
       }
 
@@ -52,8 +57,6 @@
     </script>
     <script>
 
-      let txt = `测试<chat-tag>数据</chat-tag>事件循环
-      `
       const content = document.getElementById('content')
       const bar = document.getElementById('bar')
 
@@ -77,7 +80,6 @@
           }
         }
         if (isRepeat) {
-          alert('选择重复')
           selection.removeAllRanges()
           return
         }
@@ -88,9 +90,11 @@
 
       function showToolBar(e) {
         bar.style.display = 'block'
-        const { pageX, pageY } = e
-        bar.style.left = (pageX + 5) + 'px'
-        bar.style.top = pageY + 'px'
+        const range = selection.getRangeAt(0);
+
+        const { x, y, width } = range.getBoundingClientRect()
+        bar.style.left = (x + width + 5) + 'px'
+        bar.style.top = y + 'px'
       }
 
       function hideToolBar(e) {
@@ -109,10 +113,7 @@
         hideToolBar()
       }
 
-      function init() {
-        content.innerHTML = txt
-      }
-      init()
+
 
     </script>
   </body>
