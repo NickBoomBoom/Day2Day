@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+      #content {
+        width: 400px;
+        height: 400px;
+        margin: 0 auto;
+        background-color: aliceblue;
+
+      }
+
+      #bar {
+        display: none;
+        position: fixed;
+        background-color: sandybrown;
+
+        user-select: none;
+
+      }
+
+      chat-tag {
+        user-select: none;
+        background-color: yellowgreen;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <div id="content" contentEditable='true'>
+
+    </div>
+    <div id="bar" onclick='addTag()'>增加</div>
+    <script>
+
+      class Tag extends HTMLElement {
+        constructor() {
+          super()
+        }
+        connectedCallback() {
+          this.setAttribute('onselectstart', 'return false;')
+        }
+      }
+
+      window.customElements.define('chat-tag', Tag)
+
+    </script>
+    <script>
+
+      let txt = `测试<chat-tag>数据</chat-tag>事件循环
+      `
+      const content = document.getElementById('content')
+      const bar = document.getElementById('bar')
+
+      let selection = null
+      content.addEventListener('mouseup', e => {
+        selection = window.getSelection()
+        const text = selection.toString()
+        if (!text) {
+          selectionText = ''
+          hideToolBar(e)
+          return
+        }
+        // 选中文字涵盖在某个tag标签里面的时候, 直接弹窗,禁止重复选择
+        const chatTags = document.getElementsByTagName('chat-tag')
+        let isRepeat = false
+        for (let i = 0; i < chatTags.length; i++) {
+          const item = chatTags[i]
+          if (selection.containsNode(item, true)) {
+            isRepeat = true
+            break
+          }
+        }
+        if (isRepeat) {
+          alert('选择重复')
+          selection.removeAllRanges()
+          return
+        }
+
+        showToolBar(e)
+
+      })
+
+      function showToolBar(e) {
+        bar.style.display = 'block'
+        const { pageX, pageY } = e
+        bar.style.left = (pageX + 5) + 'px'
+        bar.style.top = pageY + 'px'
+      }
+
+      function hideToolBar(e) {
+        bar.style.display = 'none'
+        selection.removeAllRanges()
+      }
+
+
+      function addTag() {
+        const range = selection.getRangeAt(0);
+        const text = range.toString()
+        range.deleteContents()
+        const tag = document.createElement('chat-tag')
+        tag.innerText = text
+        range.insertNode(tag)
+        hideToolBar()
+      }
+
+      function init() {
+        content.innerHTML = txt
+      }
+      init()
+
+    </script>
+  </body>
+
+</html>
