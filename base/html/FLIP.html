@@ -39,6 +39,18 @@
     <div class="container">
     </div>
     <button onclick="shuffle()">shuffle</button>
+
+
+    <div>
+      <p>
+        FLIP;
+        First: 先保存初始位置数据
+        Last: 因为dom更新是实时的.所以在First之后,直接更新最后的dom结构,通过微任务是能获取到最终的dom位置
+        Invert: 将dom结构复原回归到First保存的位置
+        Play: 开启第二轮渲染,非微任务
+
+      </p>
+    </div>
     <script>
       /* 
         dom 是实时更新的  dom是实时更新的  dom是实时更新的
@@ -46,7 +58,7 @@
        */
       const container = document.getElementsByClassName('container')[0]
       function createBrands() {
-        return [...Array(4).keys()].map(brand => {
+        return [...Array(81).keys()].map(brand => {
           const div = document.createElement('div')
           div.innerHTML = brand
           div.className = 'c-random__brand'
@@ -84,27 +96,14 @@
         // 塞入dom
         brands.map(container.appendChild.bind(container))
         // 渲染完毕置空
+
         setTimeout(() => {
+          console.log('P')
           brands.forEach(brand => {
-            brand.animate([
-              {
-                transform: 'translate3d(0,0,0)',
-              }
-            ], {
-              duration: 500,
-              fill: 'forwards'
-            })
+            brand.style.transform = `translate3d(0, 0, 0)`
+            brand.style.transition = 'all 1s'
           })
-        });
-
-
-        // setTimeout(() => {
-        //   console.log('P')
-        //   brands.forEach(brand => {
-        //     brand.style.transform = `translate3d(0, 0, 0)`
-        //     brand.style.transition = 'all .5s'
-        //   })
-        // })
+        })
         // requestAnimationFrame(() => {
         //   console.log('P')
         //   brands.forEach(brand => {
@@ -120,6 +119,9 @@
       }
       const brands = createBrands()
       shuffle()
+
+
+  
     </script>
   </body>
 
