@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>app js bridge 测试</title>
+    <script crossorigin="anonymous" integrity="sha384-odQ2fsrmLLFFqugfvDsBEO0wZ9enzFjCquVGvj7I5yXSVuKCjNmrHfL3OzR4kpPF"
+      src="//lib.baomitu.com/vConsole/3.3.4/vconsole.min.js"></script>
+    <style>
+      div {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      span {
+        width: 4em;
+      }
+
+    </style>
+  </head>
+
+  <body>
+
+
+    <div>
+      <span>
+        函数名:
+      </span>
+      <input type="text" id='fn' value='publish_dynamic'>
+    </div>
+    <div>
+      <span>
+        参数:
+      </span>
+      <textarea id="params" cols="30" rows="10">{type:0,id:0}</textarea>
+    </div>
+
+    <button id='btn'>测试</button>
+    <script>
+      var v = new VConsole()
+
+      // https://shimo.im/docs/r53JVWRYDXSjFe3m 指令列表
+
+      /**
+       * 使用 JSBridge 总结：
+       *  1、跟 IOS 交互的时候，只需要且必须注册 iosFunction 方法即可，
+       *      不能在 setupWebViewJavascriptBridge 中执行 bridge.init 方法，否则 IOS 无法调用到 H5 的注册函数；
+       *  2、与安卓进行交互的时候
+       *      ①、使用 iosFunction，就可以实现 H5 调用 安卓的注册函数，但是安卓无法调用 H5 的注册函数，
+       *          并且 H5 调用安卓成功后的回调函数也无法执行
+       *      ②、使用 androidFunction 并且要在 setupWebViewJavascriptBridge 中执行 bridge.init 方法，
+       *          安卓才可以正常调用 H5 的回调函数，并且 H5 调用安卓成功后的回调函数也可以正常执行了
+       */
+
+      const u = navigator.userAgent
+      // Android终端
+      const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1
+
+      /**
+       * Android  与安卓交互时：
+       *      1、不调用这个函数安卓无法调用 H5 注册的事件函数；
+       *      2、但是 H5 可以正常调用安卓注册的事件函数；
+       *      3、还必须在 setupWebViewJavascriptBridge 中执行 bridge.init 方法，否则：
+       *          ①、安卓依然无法调用 H5 注册的事件函数
+       *          ①、H5 正常调用安卓事件函数后的回调函数无法正常执行
+       *
+       * @param {*} callback
+       */
+      const androidFunction = (callback) => {
+        if (window.WebViewJavascriptBridge) {
+          callback(window.WebViewJavascriptBridge)
+        } else {
+          document.addEventListener('WebViewJavascriptBridgeReady', function () {
+            callback(window.WebViewJavascriptBridge)
+          }, false)
+        }
+      }
+
+      /**
+       * IOS 与 IOS 交互时，使用这个函数即可，别的操作都不需要执行
+       * @param {*} callback
+       */
+      const iosFunction = (callback) => {
+        if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge) }
+        if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback) }
+        window.WVJBCallbacks = [callback]
+
+        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iOS_Native_InjectJavascript) {
+          window.webkit.messageHandlers.iOS_Native_InjectJavascript.postMessage(null)
+        } else {
+          window.WVJBCallbacks = [callback]
+          var WVJBIframe = document.createElement('iframe')
+          WVJBIframe.style.display = 'none'
+          WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__'
+          document.documentElement.appendChild(WVJBIframe)
+          setTimeout(function () {
+            document.documentElement.removeChild(WVJBIframe)
+          }, 0)
+        }
+      }
+
+      /**
+       * 注册 setupWebViewJavascriptBridge 方法
+       *  之所以不将上面两个方法融合成一个方法，是因为放在一起，那么就只有 iosFunction 中相关的方法体生效
+       */
+      window.setupWebViewJavascriptBridge = isAndroid ? androidFunction : iosFunction
+
+      /**
+       * 这里如果不做判断是不是安卓，而是直接就执行下面的方法，就会导致
+       *      1、IOS 无法调用 H5 这边注册的事件函数
+       *      2、H5 可以正常调用 IOS 这边的事件函数，并且 H5 的回调函数可以正常执行
+       */
+      if (isAndroid) {
+        /**
+         * 与安卓交互时，不调用这个函数会导致：
+         *      1、H5 可以正常调用 安卓这边的事件函数，但是无法再调用到 H5 的回调函数
+         *
+         * 前提 setupWebViewJavascriptBridge 这个函数使用的是 androidFunction 这个，否则还是会导致上面 1 的现象出现
+         */
+        window.setupWebViewJavascriptBridge(function (bridge) {
+          // 注册 H5 界面的默认接收函数（与安卓交互时，不注册这个事件无法接收回调函数）
+          bridge.init(function (msg, responseCallback) {
+            responseCallback(msg)
+          })
+        })
+      } else {
+        window.setupWebViewJavascriptBridge()
+      }
+
+      /**
+       * 启用webview动桥接设置
+       * @param {String} name 注册的函数名
+       * @param {Function} fn 回调函数
+       */
+      function wbBridgeSetup(name, callback) {
+        window.setupWebViewJavascriptBridge(bridge => {
+          bridge.registerHandler(name, (data = '') => {
+            try {
+              data = JSON.parse(data)
+            } catch (err) {
+
+            }
+            callback && callback(data)
+          })
+        })
+      }
+
+      /**
+       * APP功能暴露接口
+       * @param {String} name 调用那个功能 setTitle | getCity | toast | enableRefresh | showProgress
+       * | getUserInfo | tel | contacts | share | isLogin | wxpay | alipay
+       * @param params 各个功能需要的参数
+       * @param {*} cfn 设置成功后的回调函数
+       *
+       */
+      function appBridge(name, params) {
+        let unresolved = true
+        return new Promise((resolve, reject) => {
+          const callback = data => {
+            try {
+              data = JSON.parse(data)
+            } catch (err) {
+              // console.log('json parse 报错', err)
+            }
+            unresolved = false
+            console.info(`app指令${name}返回`, JSON.stringify(data))
+            return resolve(data)
+          }
+          window.setupWebViewJavascriptBridge(bridge => {
+            console.warn('调取app指令', name, params)
+            bridge.callHandler(name, params, callback)
+          })
+
+          setTimeout(() => {
+            unresolved && resolve()
+          }, 1500) // 设置1.5s超时时间
+        })
+      }
+
+      // 提供调试使用
+      window.app = (name, params) => {
+        window.setupWebViewJavascriptBridge(bridge => {
+          console.warn('调取app指令', name, params)
+          bridge.callHandler(name, params, data => {
+            try {
+              data = JSON.parse(data)
+            } catch (err) {
+              // console.log('json parse 报错', err)
+            }
+            console.error('返回数据 ===>', data)
+          })
+        })
+      }
+
+
+      var btn = document.querySelector('#btn')
+      var fn = document.querySelector('#fn')
+      var params = document.querySelector('#params')
+
+      btn.onclick = function () {
+        console.log(fn.value, params.value)
+        appBridge(fn.value.trim(), params.value.trim())
+      }
+
+    </script>
+
+
+  </body>
+
+</html>

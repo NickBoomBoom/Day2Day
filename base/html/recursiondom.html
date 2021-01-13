@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+      .box {
+        width: 50vw;
+        height: 100vh;
+        margin: -99px 30px;
+        background-color: yellowgreen;
+      }
+
+      .inline-box {
+        width: 100%;
+        height: 100px;
+      }
+
+      .span {
+        font-size: 20px;
+        margin-top: 10px;
+      }
+
+    </style>
+  </head>
+
+  <body>
+
+    <div class="box" style="font-size: 100px;">
+      <div class="inline-box">
+        <span class="span">我是测试</span>
+      </div>
+    </div>
+
+    <script>
+
+      var el = document.querySelector('.box')
+      window.el = el
+      function scaleDom(el, scale) {
+        if (el.nodeType !== Node.ELEMENT_NODE) {
+          return el
+        }
+        // 判断是否存在
+        var reg = /(-?\d+)(px|rem|em|%|vw|vh|vmin|vmax)/g
+        // 提取数字和符号
+        var numUnitReg = /(-?\d+)(.+)/
+        var style = window.getComputedStyle(el, null)
+        for (let key in style) {
+          var value = style.getPropertyValue(key)
+          if (value && typeof value !== 'function' && reg.test(value)) {
+            const num = value.match(reg)
+            num.forEach(item => {
+              numUnitReg.test(item)
+              const [n, unit] = [RegExp.$1, RegExp.$2]
+              value = value.replace(item, n * scale + unit)
+            })
+            el.style[key] = value
+          }
+        }
+
+        var child = el.children
+        if (child && child.length) {
+          for (let key in child) {
+            scaleDom(child[key])
+          }
+        }
+        return el
+      }
+
+      function start(el, scale = 2) {
+        var _el = el.cloneNode(true)
+        _el.style.cssText = `
+        position: fixed;
+        top: -9999px;
+        transform: scale(${1 / scale})
+        `
+        document.body.appendChild(_el)
+        return scaleDom(_el, scale)
+      }
+
+
+
+      var newel = start(el)
+      console.log(newel)
+    </script>
+
+  </body>
+
+</html>
