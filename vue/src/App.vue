@@ -13,10 +13,21 @@
     <button @click="$router.back()">back</button>
     <button @click="$router.forward()">forward</button>
     <button @click="p">push</button>
+
+    <Son @up='receive'></Son>
   </div>
 </template>
 <script>
+import Son from  '@/components/son'
 export default {
+  components:{
+    Son
+  },
+  data() {
+    return {
+      list: []
+    }
+  },
   methods:{
     p () {
       this.$router.push('/b', res => {
@@ -24,6 +35,11 @@ export default {
       }).then(res => {
          console.log(res)
       })
+    },
+    receive(res) {
+      this.list = res
+      console.log(res)
+      console.log(this.list)
     }
   }
 };

@@ -97,20 +97,20 @@
         brands.map(container.appendChild.bind(container))
         // 渲染完毕置空
 
-        setTimeout(() => {
-          console.log('P')
-          brands.forEach(brand => {
-            brand.style.transform = `translate3d(0, 0, 0)`
-            brand.style.transition = 'all 1s'
-          })
-        })
-        // requestAnimationFrame(() => {
+        // setTimeout(() => {
         //   console.log('P')
         //   brands.forEach(brand => {
         //     brand.style.transform = `translate3d(0, 0, 0)`
-        //     brand.style.transition = 'all .5s'
+        //     brand.style.transition = 'all 1s'
         //   })
         // })
+        requestAnimationFrame(() => {
+          console.log('P')
+          brands.forEach(brand => {
+            brand.style.transform = `translate3d(0, 0, 0)`
+            brand.style.transition = 'all .5s'
+          })
+        })
       }
 
       function shuffle() {

@@ -1,42 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+  </head>
 
-<body>
-  <script>
-    var a = new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('1')
-      }, 1000);
-    })
+  <body>
+    <script>
+      // var a = new Promise((resolve, reject) => {
+      //   setTimeout(() => {
+      //     resolve('1')
+      //   }, 1000);
+      // })
 
-    var b = new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('2')
-      }, 2000);
-    })
+      // var b = new Promise((resolve, reject) => {
+      //   setTimeout(() => {
+      //     resolve('2')
+      //   }, 2000);
+      // })
 
-    var c = new Promise((resolve, reject) => {
-      setTimeout(() => {
-        reject('3')
-      }, 4000);
-    })
-
-
-    Promise.all([a, b, c])
-      .then((res) => console.log(...res))
-      .catch(err => console.error(err))
-      .finally(() => console.warn("finally "))
+      // var c = new Promise((resolve, reject) => {
+      //   setTimeout(() => {
+      //     reject('3')
+      //   }, 4000);
+      // })
 
 
+      // Promise.all([a, b, c])
+      //   .then((res) => console.log(...res))
+      //   .catch(err => console.error(err))
+      //   .finally(() => console.warn("finally "))
 
-  </script>
-</body>
+
+
+
+      class NewPromise {
+        constructor(executor) {
+          // 存在三种状态
+          this.enumStatus = {
+            PENDING: 'pending',
+            FULFILLED: 'fulfilled',
+            REJECTED: 'rejected'
+          };
+          // 初始态为等待态
+          this.state = this.enumStatus.PENDING;
+          // 必须存在一个终值
+          this.value = '';
+          // 必须存在一个被拒绝的原因
+          this.reason = '';
+          // 任务中心
+          this.onFulfilledQueue = [];
+          this.onRejectedQueue = [];
+          // 转化执行态
+          let resolve = (value) => {
+            // 修改状态
+            this.state = this.enumStatus.FULFILLED;
+            // 必须有一个终值
+            this.value = value;
+            // 当服务器数据返回时，依次执行预存的成功事务
+            this.onFulfilledQueue.map(fn => fn(this.value));
+          };
+          // 转化失败态
+          let reject = (reason) => {
+            // 修改状态
+            this.state = this.enumStatus.REJECTED;
+            // 如果是失败态，必须有一个据因
+            this.reason = reason;
+            // 当服务器数据返回时，依次执行预存的失败事务
+            this.onRejectedQueue.map(fn => fn(this.reason));
+          };
+          // 如果executor执行报错，直接执行reject
+          try {
+            executor(resolve, reject);
+          } catch (err) {
+            reject(err);
+          }
+        }
+        // 必须包含then方法
+        then(onFulfilled, onRejected) {
+          // 保证onFulfilled和onRejected都是函数类型
+          onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : value => value;
+          onRejected = typeof onRejected === 'function' ? onRejected : err => Throw(err);
+
+          let promise2 = new NewPromise((resolve, reject) => {
+            // 如果当前状态为执行态，则执行onFulfilled函数，将终值作为该函数的参数，否则忽略其
+            if (this.state === this.enumStatus.FULFILLED) {
+              setTimeout(() => {
+                resolvePromise(promise2, onFulfilled(this.value), resolve, reject)
+              });
+            }
+            // 如果当前状态为拒绝态，则执行onRejected函数，将据因作为该函数的参数，否则忽略其
+            if (this.state === this.enumStatus.REJECTED) {
+              setTimeout(() => {
+                resolvePromise(promise2, onRejected(this.reason), resolve, reject)
+              });
+            }
+            // 如果当前状态为等待态，则将其加入事务
+            if (this.state === this.enumStatus.PENDING) {
+              this.onFulfilledQueue.push(() => {
+                resolvePromise(promise2, onFulfilled(this.value), resolve, reject);
+              });
+              this.onRejectedQueue.push(() => {
+                resolvePromise(promise2, onRejected(this.reason), resolve, reject);
+              });
+              console.log(this.onFulfilledQueue, this.onRejectedQueue)
+            }
+          })
+          return promise2
+        }
+      }
+
+
+      function resolvePromise(promise2, x, resolve, reject) {
+        // 1)不能引用同一个对象 可能会造成死循环
+        if (promise2 === x) {
+          return reject(new TypeError('[TypeError: Chaining cycle detected for promise #<Promise>]----'));
+        }
+        let called;// promise的实现可能有多个，但都要遵循promise a+规范，我们自己写的这个promise用不上called,但是为了遵循规范才加上这个控制的，因为别人写的promise可能会有多次调用的情况。
+        // 2)判断x的类型，如果x是对象或者函数，说明x有可能是一个promise，否则就不可能是promise
+        if ((typeof x === 'object' && x != null) || typeof x === 'function') {
+          // 有可能是promise promise要有then方法
+          try {
+            // 因为then方法有可能是getter来定义的, 取then时有风险，所以要放在try...catch...中
+            // 别人写的promise可能是这样的
+            // Object.defineProperty(promise, 'then', {
+            // 	get() {
+            // 		throw new Error();
+            // 	}
+            // })
+            let then = x.then;
+            if (typeof then === 'function') { // 只能认为他是promise了
+              // x.then(()=>{}, ()=>{}); 不要这么写，以防以下写法造成报错， 而且也可以防止多次取值
+              // let obj = {
+              // 	a: 1,
+              // 	get then() {
+              // 		if (this.a++ == 2) {
+              // 			throw new Error();
+              // 		}
+              // 		console.log(1);
+              // 	}
+              // }
+              // obj.then;
+              // obj.then
+
+              // 如果x是一个promise那么在new的时候executor就立即执行了，就会执行他的resolve，那么数据就会传递到他的then中
+              then.call(x, y => {// 当前promise解析出来的结果可能还是一个promise, 直到解析到他是一个普通值
+                if (called) return;
+                called = true;
+                resolvePromise(promise2, y, resolve, reject);// resolve, reject都是promise2的
+              }, r => {
+                if (called) return;
+                called = true;
+                reject(r);
+              });
+            } else {
+              // {a: 1, then: 1} 
+              resolve(x);
+            }
+          } catch (e) {// 取then出错了 有可能在错误中又调用了该promise的成功或则失败
+            if (called) return;
+            called = true;
+            reject(e);
+          }
+        } else {
+          resolve(x);
+        }
+      }
+
+
+      // const p = new NewPromise((resolve, reject) => {
+      //   console.log(1)
+      //   setTimeout(() => {
+      //     console.log(2)
+      //     resolve(2)
+      //   }, 1000);
+      //   // resolve(2)
+      // })
+
+      // p.then(res => {
+      //   console.log(3, res)
+      // }).then(res => {
+      //   console.log(4, res)
+      // })
+
+
+      const p = new Promise((resolve, reject) => {
+        console.log(1)
+        resolve(2)
+      })
+      console.log(3)
+      p.then(res => {
+        setTimeout(() => {
+          console.log('settimeout 1')
+        }, 500);
+        console.log(res)
+      }).then(res => {
+        setTimeout(() => {
+          console.log('settimeout 2')
+        }, 1000);
+        console.log(5)
+      })
+      console.log(4)
+
+      // 1 3 4 2 settimeout1 5 settimou2
+    </script>
+  </body>
 
 </html>
