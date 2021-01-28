@@ -1,20 +1,12 @@
-import Vue from 'vue'
+
 import App from './App.vue'
 import router from './router'
 import { VueHistory } from 'utils94'
-
+import { test } from '@/utils'
+test()
 Vue.config.productionTip = false
 Vue.use(VueHistory, {
-  router,
-  // onExceed(obj) {
-  //   console.warn('exceed',obj)
-  // },
-  // onExit(obj) {
-  //   console.error('exit',obj)
-  // },
-  // onChange(obj) {
-  //   console.log('stack update',obj)
-  // }
+  router
 })
 new Vue({
   router,

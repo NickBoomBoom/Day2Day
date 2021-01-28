@@ -1,10 +1,9 @@
-import Router from 'vue-router'
-import Vue from 'vue'
+
 import a from '@/view/a.vue'
 import b from '@/view/b.vue'
 import c from '@/view/c.vue'
-Vue.use(Router)
-const router = new Router({
+Vue.use(VueRouter)
+const router = new VueRouter({
   mode: 'history',
 
   scrollBehavior(to, from, savedPosition) {

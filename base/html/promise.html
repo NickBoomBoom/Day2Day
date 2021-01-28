@@ -10,111 +10,14 @@
 
   <body>
     <script>
-      // var a = new Promise((resolve, reject) => {
-      //   setTimeout(() => {
-      //     resolve('1')
-      //   }, 1000);
-      // })
-
-      // var b = new Promise((resolve, reject) => {
-      //   setTimeout(() => {
-      //     resolve('2')
-      //   }, 2000);
-      // })
-
-      // var c = new Promise((resolve, reject) => {
-      //   setTimeout(() => {
-      //     reject('3')
-      //   }, 4000);
-      // })
-
-
-      // Promise.all([a, b, c])
-      //   .then((res) => console.log(...res))
-      //   .catch(err => console.error(err))
-      //   .finally(() => console.warn("finally "))
-
-
-
-
-      class NewPromise {
-        constructor(executor) {
-          // 存在三种状态
-          this.enumStatus = {
-            PENDING: 'pending',
-            FULFILLED: 'fulfilled',
-            REJECTED: 'rejected'
-          };
-          // 初始态为等待态
-          this.state = this.enumStatus.PENDING;
-          // 必须存在一个终值
-          this.value = '';
-          // 必须存在一个被拒绝的原因
-          this.reason = '';
-          // 任务中心
-          this.onFulfilledQueue = [];
-          this.onRejectedQueue = [];
-          // 转化执行态
-          let resolve = (value) => {
-            // 修改状态
-            this.state = this.enumStatus.FULFILLED;
-            // 必须有一个终值
-            this.value = value;
-            // 当服务器数据返回时，依次执行预存的成功事务
-            this.onFulfilledQueue.map(fn => fn(this.value));
-          };
-          // 转化失败态
-          let reject = (reason) => {
-            // 修改状态
-            this.state = this.enumStatus.REJECTED;
-            // 如果是失败态，必须有一个据因
-            this.reason = reason;
-            // 当服务器数据返回时，依次执行预存的失败事务
-            this.onRejectedQueue.map(fn => fn(this.reason));
-          };
-          // 如果executor执行报错，直接执行reject
-          try {
-            executor(resolve, reject);
-          } catch (err) {
-            reject(err);
-          }
-        }
-        // 必须包含then方法
-        then(onFulfilled, onRejected) {
-          // 保证onFulfilled和onRejected都是函数类型
-          onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : value => value;
-          onRejected = typeof onRejected === 'function' ? onRejected : err => Throw(err);
-
-          let promise2 = new NewPromise((resolve, reject) => {
-            // 如果当前状态为执行态，则执行onFulfilled函数，将终值作为该函数的参数，否则忽略其
-            if (this.state === this.enumStatus.FULFILLED) {
-              setTimeout(() => {
-                resolvePromise(promise2, onFulfilled(this.value), resolve, reject)
-              });
-            }
-            // 如果当前状态为拒绝态，则执行onRejected函数，将据因作为该函数的参数，否则忽略其
-            if (this.state === this.enumStatus.REJECTED) {
-              setTimeout(() => {
-                resolvePromise(promise2, onRejected(this.reason), resolve, reject)
-              });
-            }
-            // 如果当前状态为等待态，则将其加入事务
-            if (this.state === this.enumStatus.PENDING) {
-              this.onFulfilledQueue.push(() => {
-                resolvePromise(promise2, onFulfilled(this.value), resolve, reject);
-              });
-              this.onRejectedQueue.push(() => {
-                resolvePromise(promise2, onRejected(this.reason), resolve, reject);
-              });
-              console.log(this.onFulfilledQueue, this.onRejectedQueue)
-            }
-          })
-          return promise2
-        }
-      }
-
+      const PENDING = 'PENDING';
+      const RESOLVED = 'RESOLVED';
+      const REJECTED = 'REJECTED';
 
       function resolvePromise(promise2, x, resolve, reject) {
+        console.log( x)
+        console.warn(resolve)
+        console.error(reject)
         // 1)不能引用同一个对象 可能会造成死循环
         if (promise2 === x) {
           return reject(new TypeError('[TypeError: Chaining cycle detected for promise #<Promise>]----'));
@@ -171,41 +74,163 @@
       }
 
 
-      // const p = new NewPromise((resolve, reject) => {
-      //   console.log(1)
-      //   setTimeout(() => {
-      //     console.log(2)
-      //     resolve(2)
-      //   }, 1000);
-      //   // resolve(2)
-      // })
+      class MyPromise {
+        constructor(executor) {
+          this.status = PENDING; // 宏变量, 默认是等待态
+          this.value = undefined; // then方法要访问到所以放到this上
+          this.reason = undefined; // then方法要访问到所以放到this上
+          this.onResolvedCallbacks = [];// 专门存放成功的回调函数
+          this.onRejectedCallbacks = [];// 专门存放成功的回调函数
+          let resolve = (value) => {
+            if (value instanceof MyPromise) {
+              value.then(resolve, reject);
+              return;
+            }
+            if (this.status === PENDING) {
+              this.value = value;
+              this.status = RESOLVED;
+              this.onResolvedCallbacks.forEach(fn => fn());// 需要让成功的方法依次执行
+            }
+          };
+          let reject = (reason) => {
+            if (this.status === PENDING) {
+              this.reason = reason;
+              this.status = REJECTED;
+              this.onRejectedCallbacks.forEach(fn => fn());// 需要让失败的方法依次执行
+            }
+          };
+          // 执行executor传入我们定义的成功和失败函数:把内部的resolve和reject传入executor中用户写的resolve, reject
+          try {
+            executor(resolve, reject);
+          } catch (e) {
+            reject(e);//如果内部出错 直接将error手动调用reject向下传递
+          }
+        }
+        then(onfulfilled, onrejected) {
+          onfulfilled = typeof onfulfilled === 'function' ? onfulfilled : v => v;
+          onrejected = typeof onrejected === 'function' ? onrejected : error => { throw error };
+          let promise2 = new MyPromise((resolve, reject) => {
+            if (this.status === RESOLVED) {
+              setTimeout(() => {
+                try {
+                  let x = onfulfilled(this.value);
+                  resolvePromise(promise2, x, resolve, reject);
+                } catch (e) {
+                  console.log(e);
+                  reject(e);
+                }
+              }, 0);
+            }
+            if (this.status === REJECTED) {
+              setTimeout(() => {
+                try {
+                  let x = onrejected(this.reason);
+                  resolvePromise(promise2, x, resolve, reject);
+                } catch (e) {
+                  reject(e);
+                }
+              }, 0);
+            }
+            if (this.status === PENDING) {
+              this.onResolvedCallbacks.push(() => {
+                setTimeout(() => {
+                  try {
+                    let x = onfulfilled(this.value);
+                    resolvePromise(promise2, x, resolve, reject);
+                  } catch (e) {
+                    reject(e);
+                  }
+                }, 0);
+              });
+              this.onRejectedCallbacks.push(() => {
+                setTimeout(() => {
+                  try {
+                    let x = onrejected(this.reason);
+                    resolvePromise(promise2, x, resolve, reject);
+                  } catch (e) {
+                    reject(e);
+                  }
+                }, 0);
+              });
+            }
+          });
 
-      // p.then(res => {
-      //   console.log(3, res)
-      // }).then(res => {
-      //   console.log(4, res)
-      // })
+          return promise2;
+        }
+        catch(errCallback) {
+          return this.then(null, errCallback);
+        }
+        resolve(value) {
+          return new MyPromise((resolve, reject) => {
+            resolve(value);
+          })
+        }
+        reject(value) {
+          return new MyPromise((resolve, reject) => {
+            reject(value);
+          })
+        }
+        all(promises) {
+          return new MyPromise((resolve, reject) => {
+            let result = [];
+            let len = promises.length;
+            if (len === 0) {
+              resolve(result);
+              return;
+            }
+            const handleData = (data, index) => {
+              result[index] = data;
+              // 最后一个 promise 执行完
+              if (index == len - 1) resolve(result);
+            }
+            for (let i = 0; i < len; i++) {
+              // 为什么不直接 promise[i].then, 因为promise[i]可能不是一个promise
+              MyPromise.resolve(promise[i]).then(data => {
+                handleData(data, i);
+              }).catch(err => {
+                reject(err);
+              })
+            }
+          })
+        }
+        race(promises) {
+          return new MyPromise((resolve, reject) => {
+            let len = promises.length;
+            if (len === 0) return;
+            for (let i = 0; i < len; i++) {
+              MyPromise.resolve(promise[i]).then(data => {
+                resolve(data);
+                return;
+              }).catch(err => {
+                reject(err);
+                return;
+              })
+            }
+          })
+        }
+      }
+      MyPromise.prototype.finally = function (callback) {
+        this.then(value => {
+          return MyPromise.resolve(callback()).then(() => {
+            return value;
+          });
+        }, error => {
+          return MyPromise.resolve(callback()).then(() => {
+            throw error;
+          });
+        });
+      }
 
 
-      const p = new Promise((resolve, reject) => {
-        console.log(1)
-        resolve(2)
-      })
-      console.log(3)
-      p.then(res => {
-        setTimeout(() => {
-          console.log('settimeout 1')
-        }, 500);
-        console.log(res)
+      new MyPromise((resolve, reject) => {
+        console.log('立即执行')
+        resolve(111)
       }).then(res => {
-        setTimeout(() => {
-          console.log('settimeout 2')
-        }, 1000);
-        console.log(5)
+        console.log('resolve ', res)
+      }).then(()=> {
+        console.log('我是子')
       })
-      console.log(4)
-
-      // 1 3 4 2 settimeout1 5 settimou2
+      console.log(3333)
     </script>
   </body>
 
