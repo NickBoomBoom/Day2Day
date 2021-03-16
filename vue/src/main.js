@@ -1,9 +1,8 @@
 
 import App from './App.vue'
 import router from './router'
-import { VueHistory } from 'utils94'
-import { test } from '@/utils'
-test()
+// import { VueHistory } from 'utils94'
+import Utils, { VueHistory } from 'utils94'
 Vue.config.productionTip = false
 Vue.use(VueHistory, {
   router
