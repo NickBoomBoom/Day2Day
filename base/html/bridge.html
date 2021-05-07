@@ -28,16 +28,25 @@
       <span>
         函数名:
       </span>
-      <input type="text" id='fn' value='publish_dynamic'>
+      <input type="text" id='fn' value='socialOperation'>
     </div>
     <div>
       <span>
         参数:
       </span>
-      <textarea id="params" cols="30" rows="10">{type:0,id:0}</textarea>
+      <textarea id="params" cols="30" rows="10">{
+        type: 0,
+        contentType: 4,
+        title: '测试title',
+        content:'content',
+        miniAppPath: '/pages/mine/mine',
+        miniAppType: 0,
+      }
+      </textarea>
     </div>
 
     <button id='btn'>测试</button>
+    <a href="https://shimo.im/sheets/dPkpK1BBREIKBNqO" target="_blank" rel="noopener noreferrer">指令文档</a>
     <script>
       var v = new VConsole()
 

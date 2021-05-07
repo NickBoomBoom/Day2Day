@@ -7536,10 +7536,10 @@ utils-merge@1.0.1:
   resolved "https://registry.npm.taobao.org/utils-merge/download/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
 
-utils94@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/utils94/-/utils94-2.0.0.tgz#f241dc171a991582a2b64f8643cbcfc78987bc2d"
-  integrity sha512-zAaoD8ap2pp4mG1qVoREg3kzcttBabFs/4zaFaJoF9/6uqxZy4/nG2t7FA41Fls2CPE+uVUzznDR+qJnXsgV3g==
+utils94@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.npmjs.org/utils94/-/utils94-2.0.4.tgz#1981a88b40c0339a6a5c2cc330a4b48e1d56595f"
+  integrity sha512-y4wW/iImw3AUYocviZJW/IfYkC8ILfKrd3XXtagQhGr8kXs+4PmaRpWUGd4N0J4Vc777ATkQI8nyEYiENGbosw==
   dependencies:
     weixin-js-sdk "^1.4.0-test"
 
