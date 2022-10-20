@@ -1,0 +1,36 @@
+.query-root {
+  padding   : 20px 30px;
+  box-sizing: border-box;
+  font-size: 18px;
+
+  .input-box {
+    display    : flex;
+    align-items: center;
+
+    input {
+      width       : 80%;
+      height      : 28px;
+      margin-right: 10px;
+
+    }
+  }
+
+  .result {
+    background-color: skyblue;
+
+    &-item {
+      padding: 10px 20px;
+
+      pre {
+        padding-left: 3em;
+      }
+
+      &:nth-last-child(n+2) {
+        border-bottom: 2px solid black;
+        margin-bottom: 10px;
+      }
+    }
+
+
+  }
+}

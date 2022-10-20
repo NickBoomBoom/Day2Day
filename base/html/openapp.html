@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <meta http-equiv=Content-Type content="text/html;charset=utf-8">
+    <!-- ios  smart app banner -->
+    <meta name="apple-itunes-app" content="app-id=1023600494, app-argument=tigerbrokersusstock://com.tigerbrokers.usstock/post?postId=7125" />
+    <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+    <title>点击唤醒demo</title>
+    <style>
+        #zjmobliestart{font-size:40px;}
+</style>
+</head>
+
+<body>
+
+    <h3>1. URL Scheme 调用(在微信, QQ 中无法使用, 在其他外部可使用)</h3>
+
+    <a href="weixin://">微信++++ 在微信内部被禁用</a>
+    <br>
+    <a href="alipay://">尝试 调用支付宝 在微信内部被禁用</a>
+    <br>
+    <a href="mqq://">QQ 调用不行 微信自己都干掉了</a>
+    <br>
+    <a href="sinaweibo://qrcode">新浪微博 是否能打开, 测试下 qq webview 中是否能打开</a>
+
+    <h3>
+        2. IOS 中 已使用 smart app banner 换起 app , 只能在 safri 浏览器中可使用
+        PS: 当用户点击 banner 左侧 x 号, 下次再进入banner 不显示(除非用户主动在设置中 <i>清空数据</i>)
+    </h3>
+    <p>
+        < meta name="apple-itunes-app" content="app-id=1023600494, app-argument=tigerbrokersusstock://com.tigerbrokers.usstock/post?postId=7125" />
+    </p>
+
+    <iframe src="weixin://" frameborder="0"></iframe>
+
+
+
+
+    <!--
+    说明：通过h5可换醒app，如访问一个URL，点击按钮，打开应用，如果该应用APP没有安装，那么直接跳转到App Store的APP下载页面，通过点击的方式。兼容性较好，如果安装了app，在手机各大浏览器(360浏览器 uc浏览器 搜狗浏览器 QQ浏览器 百度浏览器 )和QQ客户端中，能唤醒。微信 新浪微博客户端 腾讯微博客户端无法唤醒。
+    -->
+
+    <!-- <a href="zjmobile://platformapi/startapp" id="zjmobliestart" target="_blank">唤醒浙江移动手机营业厅！</a> -->
+
+
+    <script type="text/javascript">
+    // function applink(){  
+    //     return function(){  
+    //         var clickedAt = +new Date;  
+    //          setTimeout(function(){
+    //              !window.document.webkitHidden && setTimeout(function(){ 
+    //                    if (+new Date - clickedAt < 2000){  
+    //                        window.location = 'https://itunes.apple.com/us/app/zhe-jiang-yi-dong-shou-ji/id898243566#weixin.qq.com';  
+    //                    }  
+    //              }, 500);       
+    //          }, 500)   
+    //     };  
+    // }  
+    // document.getElementById("zjmobliestart").onclick = applink();  
+    </script>
+
+    <script>
+        
+    </script>
+</body>
+
+</html>

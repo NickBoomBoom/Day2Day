@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+
+  <body>
+    <div class="main">
+      <div class="box">
+        <div class="l">
+        </div>
+        <div class="r">
+          <div class="r-title">我是title</div>
+          <div class="r-info">具体信息</div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+</html>
+<style>
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .main {
+    height: 100vh;
+    background-color: skyblue;
+    margin: 0 auto;
+    padding: 16px 16px 0;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .box {
+    width: 92%;
+    background-color: yellowgreen;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+
+  }
+
+  .l {
+    width: 88px;
+    height: 88px;
+    background-color: red;
+  }
+
+  .r {
+    height: 88px;
+    background-color: antiquewhite;
+    flex: 1;
+    margin-left: 20px;
+    font-size: 23px;
+  }
+/* 
+min- 大于等于 最小
+max- 小于等于 最大
+ */
+
+
+  @media (max-width: 1024px) {
+    .main {
+      width: 100vw;
+    }
+  }
+    @media (min-width: 1025px) {
+    .main {
+      max-width: 375px;
+    }
+  }
+
+
+</style>
+<script>
+
+  console.log(
+    window.screen.availWidth,
+    window.screen.width,
+  )
+</script>

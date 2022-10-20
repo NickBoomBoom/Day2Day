@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+  </head>
+
+  <body>
+    <script>
+      const PENDING = 'PENDING';
+      const RESOLVED = 'RESOLVED';
+      const REJECTED = 'REJECTED';
+
+      function resolvePromise(promise2, x, resolve, reject) {
+        console.log( x)
+        console.warn(resolve)
+        console.error(reject)
+        // 1)不能引用同一个对象 可能会造成死循环
+        if (promise2 === x) {
+          return reject(new TypeError('[TypeError: Chaining cycle detected for promise #<Promise>]----'));
+        }
+        let called;// promise的实现可能有多个，但都要遵循promise a+规范，我们自己写的这个promise用不上called,但是为了遵循规范才加上这个控制的，因为别人写的promise可能会有多次调用的情况。
+        // 2)判断x的类型，如果x是对象或者函数，说明x有可能是一个promise，否则就不可能是promise
+        if ((typeof x === 'object' && x != null) || typeof x === 'function') {
+          // 有可能是promise promise要有then方法
+          try {
+            // 因为then方法有可能是getter来定义的, 取then时有风险，所以要放在try...catch...中
+            // 别人写的promise可能是这样的
+            // Object.defineProperty(promise, 'then', {
+            // 	get() {
+            // 		throw new Error();
+            // 	}
+            // })
+            let then = x.then;
+            if (typeof then === 'function') { // 只能认为他是promise了
+              // x.then(()=>{}, ()=>{}); 不要这么写，以防以下写法造成报错， 而且也可以防止多次取值
+              // let obj = {
+              // 	a: 1,
+              // 	get then() {
+              // 		if (this.a++ == 2) {
+              // 			throw new Error();
+              // 		}
+              // 		console.log(1);
+              // 	}
+              // }
+              // obj.then;
+              // obj.then
+
+              // 如果x是一个promise那么在new的时候executor就立即执行了，就会执行他的resolve，那么数据就会传递到他的then中
+              then.call(x, y => {// 当前promise解析出来的结果可能还是一个promise, 直到解析到他是一个普通值
+                if (called) return;
+                called = true;
+                resolvePromise(promise2, y, resolve, reject);// resolve, reject都是promise2的
+              }, r => {
+                if (called) return;
+                called = true;
+                reject(r);
+              });
+            } else {
+              // {a: 1, then: 1} 
+              resolve(x);
+            }
+          } catch (e) {// 取then出错了 有可能在错误中又调用了该promise的成功或则失败
+            if (called) return;
+            called = true;
+            reject(e);
+          }
+        } else {
+          resolve(x);
+        }
+      }
+
+
+      class MyPromise {
+        constructor(executor) {
+          this.status = PENDING; // 宏变量, 默认是等待态
+          this.value = undefined; // then方法要访问到所以放到this上
+          this.reason = undefined; // then方法要访问到所以放到this上
+          this.onResolvedCallbacks = [];// 专门存放成功的回调函数
+          this.onRejectedCallbacks = [];// 专门存放成功的回调函数
+          let resolve = (value) => {
+            if (value instanceof MyPromise) {
+              value.then(resolve, reject);
+              return;
+            }
+            if (this.status === PENDING) {
+              this.value = value;
+              this.status = RESOLVED;
+              this.onResolvedCallbacks.forEach(fn => fn());// 需要让成功的方法依次执行
+            }
+          };
+          let reject = (reason) => {
+            if (this.status === PENDING) {
+              this.reason = reason;
+              this.status = REJECTED;
+              this.onRejectedCallbacks.forEach(fn => fn());// 需要让失败的方法依次执行
+            }
+          };
+          // 执行executor传入我们定义的成功和失败函数:把内部的resolve和reject传入executor中用户写的resolve, reject
+          try {
+            executor(resolve, reject);
+          } catch (e) {
+            reject(e);//如果内部出错 直接将error手动调用reject向下传递
+          }
+        }
+        then(onfulfilled, onrejected) {
+          onfulfilled = typeof onfulfilled === 'function' ? onfulfilled : v => v;
+          onrejected = typeof onrejected === 'function' ? onrejected : error => { throw error };
+          let promise2 = new MyPromise((resolve, reject) => {
+            if (this.status === RESOLVED) {
+              setTimeout(() => {
+                try {
+                  let x = onfulfilled(this.value);
+                  resolvePromise(promise2, x, resolve, reject);
+                } catch (e) {
+                  console.log(e);
+                  reject(e);
+                }
+              }, 0);
+            }
+            if (this.status === REJECTED) {
+              setTimeout(() => {
+                try {
+                  let x = onrejected(this.reason);
+                  resolvePromise(promise2, x, resolve, reject);
+                } catch (e) {
+                  reject(e);
+                }
+              }, 0);
+            }
+            if (this.status === PENDING) {
+              this.onResolvedCallbacks.push(() => {
+                setTimeout(() => {
+                  try {
+                    let x = onfulfilled(this.value);
+                    resolvePromise(promise2, x, resolve, reject);
+                  } catch (e) {
+                    reject(e);
+                  }
+                }, 0);
+              });
+              this.onRejectedCallbacks.push(() => {
+                setTimeout(() => {
+                  try {
+                    let x = onrejected(this.reason);
+                    resolvePromise(promise2, x, resolve, reject);
+                  } catch (e) {
+                    reject(e);
+                  }
+                }, 0);
+              });
+            }
+          });
+
+          return promise2;
+        }
+        catch(errCallback) {
+          return this.then(null, errCallback);
+        }
+        resolve(value) {
+          return new MyPromise((resolve, reject) => {
+            resolve(value);
+          })
+        }
+        reject(value) {
+          return new MyPromise((resolve, reject) => {
+            reject(value);
+          })
+        }
+        all(promises) {
+          return new MyPromise((resolve, reject) => {
+            let result = [];
+            let len = promises.length;
+            if (len === 0) {
+              resolve(result);
+              return;
+            }
+            const handleData = (data, index) => {
+              result[index] = data;
+              // 最后一个 promise 执行完
+              if (index == len - 1) resolve(result);
+            }
+            for (let i = 0; i < len; i++) {
+              // 为什么不直接 promise[i].then, 因为promise[i]可能不是一个promise
+              MyPromise.resolve(promise[i]).then(data => {
+                handleData(data, i);
+              }).catch(err => {
+                reject(err);
+              })
+            }
+          })
+        }
+        race(promises) {
+          return new MyPromise((resolve, reject) => {
+            let len = promises.length;
+            if (len === 0) return;
+            for (let i = 0; i < len; i++) {
+              MyPromise.resolve(promise[i]).then(data => {
+                resolve(data);
+                return;
+              }).catch(err => {
+                reject(err);
+                return;
+              })
+            }
+          })
+        }
+      }
+      MyPromise.prototype.finally = function (callback) {
+        this.then(value => {
+          return MyPromise.resolve(callback()).then(() => {
+            return value;
+          });
+        }, error => {
+          return MyPromise.resolve(callback()).then(() => {
+            throw error;
+          });
+        });
+      }
+
+
+      new MyPromise((resolve, reject) => {
+        console.log('立即执行')
+        resolve(111)
+      }).then(res => {
+        console.log('resolve ', res)
+      }).then(()=> {
+        console.log('我是子')
+      })
+      console.log(3333)
+    </script>
+  </body>
+
+</html>

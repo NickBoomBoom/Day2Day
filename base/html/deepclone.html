@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+
+  <body>
+    <script>
+
+      function clone(target, map = new Map()) {
+        console.error(target)
+        if (typeof target === 'object') {
+          // 判断数组和对象
+          let cloneTarget = Array.isArray(target) ? [] : {};
+          // 在map中查找是否存有
+          console.warn(map.get(target))
+          if (map.get(target)) {
+            return map.get(target);
+          }
+          map.set(target, cloneTarget);
+          for (const key in target) {
+            cloneTarget[key] = clone(target[key], map);
+          }
+          console.log(map)
+          return cloneTarget;
+        } else {
+          return target;
+        }
+      };
+
+      const target = {
+        field1: 1,
+        field2: undefined,
+        field3: {
+          child: 'child'
+        },
+        field4: [2, 4, 8]
+      };
+      target.target = target;
+
+      clone(target)
+
+    </script>
+  </body>
+
+</html>

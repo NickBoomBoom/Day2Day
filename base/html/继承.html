@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+
+    // 新建一个 Animal 类
+    function Animal(name) {
+      // 属性
+      this.name = name || 'animal'
+      // 实例方法
+      this.sleep = function () {
+        return this.name + '正在睡觉!!!!!'
+      }
+    }
+
+    // 原型方法
+    Animal.prototype.eat = function (food) {
+      return this.name + '正在吃' + food
+    }
+
+
+    // 新建一个 Goods 类
+    function Goods(name) {
+      this.goodsName = name || '商品名'
+
+      this.show = function () {
+        console.log('商品名 ==> ', this.goodsName)
+      }
+    }
+
+    Goods.prototype.buy = function () {
+      console.log('买 ==> ', this.goodsName)
+    }
+    // 打印 Animal
+    // console.log('Animal ===> ', Animal)
+    // console.log('Animal prototype ===> ', Animal.prototype)
+
+
+    //  类的继承   
+    // 1. 原型链竭诚   无法实现多继承
+    // function Cat() { }
+    // Cat.prototype = new Animal()
+    // Cat.prototype.name = 'Cat'
+
+
+    // 2. 构造函数继承   只能继承父类实例的属性和方法, 不能继承原型上的属性和方法
+    // function Cat(name) {
+    //   Animal.call(this)
+    //   Goods.call(this)
+    //   this.name = name 
+    //   this.goodsName = name 
+    // }
+
+
+    // 3. 实例继承  不支持多继承 
+    // function Cat(name) {
+    //   var  instance = new Animal()
+    //   instance.name = name 
+    //   return instance
+    // }
+
+    // 4. 拷贝继承  支持多继承, 但是利用循环, 效率低
+    // function Cat(name) {
+    //   var animal = new Animal()
+    //   for (let i in animal) {
+    //     let attr = animal[i]
+    //     Cat.prototype[i] = attr
+    //   }
+    // }
+
+    // 5. 组合继承  原型继承  和  构造函数继承 组合  
+    //  调用了两次父类构造函数, 生成了两份实例
+    function Cat(name) {
+      Animal.call(this)
+      this.name = name
+    }
+    // Cat.prototype = new Animal()
+    // 组合继承需要修复构造函数指向
+    // Cat.prototype.constructor = Cat
+
+
+    // 6. 寄生组合继承   史上最完美
+    // function Cat(name) {
+    //   Animal.call(this)
+    //   this.name = name
+    // }
+    // (
+    //   function () {
+    //     // 创建一个没有实例方法的类
+    //     let Super = function () {}
+    //     Super.prototype =  Animal.prototype
+    //     // 将实例作为子类的原型
+    //     Cat.prototype = new Super()
+    //   }
+    // )()
+
+    // Animal test
+    let cat = new Cat('qq')
+    console.log('name ==> ', cat.name)
+    console.log('sleep() ==> ', cat.sleep())
+    console.log('est() ==> ', cat.eat('fish'))
+    console.log('cat 是否属于 Animal 类', cat instanceof Animal)
+    console.log('cat 是否属于 Cat 实例', cat instanceof Cat)
+
+
+    // Goods test
+    // console.log('goodsName ==> ', cat.goodsName)
+    // console.log('show() ==> ',cat.show())
+    // console.log('buy() ==> ', cat.buy())
+  </script>
+
+</body>
+
+</html>
