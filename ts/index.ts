@@ -40,21 +40,13 @@ const html: string = eval(`(${optionsString})`).template
 if (Node.isObjectLiteralExpression(options)) {
   template = options.getProperty('template')
 }
-// if (Node.isObjectLiteralExpression(optionsString)) {
-//   html =optionsString.getProperties()
-//   optionsString.getProperties().forEach(t=> {
-//     if(Node.isPropertyAssignment(t)) {
-//       console.log(t.getStartLineNumber)
-//     }
-//   })
-// }
 
 const $ = cheerio.load(html, {
   xmlMode: true,
-  decodeEntities: false
-  // quirksMode: true,
-  // lowerCaseAttributeNames: false,
-  // _useHtmlParser2: true
+  decodeEntities: false,
+  _useHtmlParser2: true,
+  recognizeSelfClosing: false
+
 })
 const from$ = $('form')
 const formControl = $('[formControlName]')
@@ -82,12 +74,18 @@ formChildrenHtmls.splice(realInsertIndex, 0, ...renderHtml)
 from$.html(
   formChildrenHtmls.join('')
 )
-const finalRenderHtml = ($.html() || '').replace(/=""/g, '')
+let finalRenderHtml = ($.html() || '').replace(/=""/g, '')
 
+const reg = /\<span([^\/\>])+\/\>/g
+const arr = finalRenderHtml.match(reg)
+console.log(arr)
+arr?.forEach(t => {
+  finalRenderHtml = finalRenderHtml.replace(t, t.replace('/>', '></span>'))
+})
 
 template.replaceWithText('template: `' + finalRenderHtml + '`')
-
-project.save()
+console.log(111,finalRenderHtml)
+// project.save()
 
 
 function getHtml(item: any): string {
