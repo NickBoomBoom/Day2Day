@@ -132,7 +132,7 @@ export class BasisEnumCategoryComponent implements OnInit {
                 cell: (row: any) => row.id,
             },
             {
-                key: 'cnName',
+                key: 'search',
                 header: '分类中文',
                 showSort: false,
                 cell: (row: any) => row?.cnName,
