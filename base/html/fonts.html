@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE> 获取当前系统字体和排版样式www.aa25.cn </TITLE>
+ 
+<SCRIPT LANGUAGE="JavaScript">
+function getSystemFonts(){
+    var a=dlgHelper.fonts.count;
+    var fArray = new Array();
+    var oDropDown = document.all.fonts;
+    for (i = 1;i < dlgHelper.fonts.count;i++){
+        fArray[i] = dlgHelper.fonts(i);
+        var aOptions = oDropDown.options;    
+        var oOption = document.createElement("OPTION");
+        aOptions.add(oOption);    
+        oOption.text = fArray[i];
+        oOption.Value = i;
+    }
+}
+ 
+function getBlockFormats(){
+    var a=dlgHelper.blockFormats.count;
+    var fArray = new Array();
+    var oDropDown = document.all.formats;
+    oDropDown.setAttribute("id","FormatList");
+    for (i = 1;i < dlgHelper.blockFormats.count;i++)
+    {
+        fArray[i] = dlgHelper.blockFormats(i);
+        var aOptions = oDropDown.options;    
+        var oOption = document.createElement("OPTION");
+        aOptions.add(oOption);    
+        oOption.text = fArray[i];
+        oOption.Value = i;
+    }
+}
+//-->
+</SCRIPT>
+</HEAD>
+ 
+<BODY onload="getSystemFonts();getBlockFormats()">
+系统字体和排版样式 SystemFont and BlockFormats__www.aa25.cn<BR>
+<Select NAME="fonts" onchange="document.body.style.fontFamily = this.options[this.selectedIndex].text">
+</Select>
+<Select NAME="formats" onchange="document.body.style.fontFamily = this.options[this.selectedIndex].text">
+</Select>
+<OBJECT ID=dlgHelper CLASSID="clsid:3050f819-98b5-11cf-bb82-00aa00bdce0b" WIDTH="0px" HEIGHT="0px"></OBJECT>
+</BODY>
+ 
+</HTML>
