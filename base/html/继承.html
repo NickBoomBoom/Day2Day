@@ -12,33 +12,33 @@
   <script>
 
     // 新建一个 Animal 类
-    function Animal(name) {
-      // 属性
-      this.name = name || 'animal'
-      // 实例方法
-      this.sleep = function () {
-        return this.name + '正在睡觉!!!!!'
-      }
-    }
+    // function Animal(name) {
+    //   // 属性
+    //   this.name = name || 'animal'
+    //   // 实例方法
+    //   this.sleep = function () {
+    //     return this.name + '正在睡觉!!!!!'
+    //   }
+    // }
 
-    // 原型方法
-    Animal.prototype.eat = function (food) {
-      return this.name + '正在吃' + food
-    }
+    // // 原型方法
+    // Animal.prototype.eat = function (food) {
+    //   return this.name + '正在吃' + food
+    // }
 
 
-    // 新建一个 Goods 类
-    function Goods(name) {
-      this.goodsName = name || '商品名'
+    // // 新建一个 Goods 类
+    // function Goods(name) {
+    //   this.goodsName = name || '商品名'
 
-      this.show = function () {
-        console.log('商品名 ==> ', this.goodsName)
-      }
-    }
+    //   this.show = function () {
+    //     console.log('商品名 ==> ', this.goodsName)
+    //   }
+    // }
 
-    Goods.prototype.buy = function () {
-      console.log('买 ==> ', this.goodsName)
-    }
+    // Goods.prototype.buy = function () {
+    //   console.log('买 ==> ', this.goodsName)
+    // }
     // 打印 Animal
     // console.log('Animal ===> ', Animal)
     // console.log('Animal prototype ===> ', Animal.prototype)
@@ -78,10 +78,10 @@
 
     // 5. 组合继承  原型继承  和  构造函数继承 组合  
     //  调用了两次父类构造函数, 生成了两份实例
-    function Cat(name) {
-      Animal.call(this)
-      this.name = name
-    }
+    // function Cat(name) {
+    //   Animal.call(this)
+    //   this.name = name
+    // }
     // Cat.prototype = new Animal()
     // 组合继承需要修复构造函数指向
     // Cat.prototype.constructor = Cat
@@ -103,18 +103,51 @@
     // )()
 
     // Animal test
-    let cat = new Cat('qq')
-    console.log('name ==> ', cat.name)
-    console.log('sleep() ==> ', cat.sleep())
-    console.log('est() ==> ', cat.eat('fish'))
-    console.log('cat 是否属于 Animal 类', cat instanceof Animal)
-    console.log('cat 是否属于 Cat 实例', cat instanceof Cat)
+    // let cat = new Cat('qq')
+    // console.log('name ==> ', cat.name)
+    // console.log('sleep() ==> ', cat.sleep())
+    // console.log('est() ==> ', cat.eat('fish'))
+    // console.log('cat 是否属于 Animal 类', cat instanceof Animal)
+    // console.log('cat 是否属于 Cat 实例', cat instanceof Cat)
 
 
     // Goods test
     // console.log('goodsName ==> ', cat.goodsName)
     // console.log('show() ==> ',cat.show())
     // console.log('buy() ==> ', cat.buy())
+
+
+
+    const arr = [
+      {
+        name: 1,
+        children: [
+
+          {
+            name: 2,
+            children: [
+              {
+                name: 3,
+                children: []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+
+    let target = arr
+    const position = [0, 0]
+    position.forEach(t => {
+      target = target[t].children
+    })
+
+    console.log(target)
+    target.push({
+      name: 5
+    })
+
+    console.log(target, arr)
   </script>
 
 </body>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+</head>
+
+<body>
+
+  <div id="handsontable"></div>
+  <button id="exportButton">导出为 Excel</button>
+  <script>
+    document.getElementById("exportButton").addEventListener("click", function () {
+      const container = document.createElement("div");
+      const hot = new Handsontable(container, {
+        data: [["ID", "Name"]],
+        colHeaders: false,
+        rowHeaders: false,
+        fixedRowsTop: 1, // 冻结第一行
+        cells: function (row, col, prop) {
+          const cellProperties = {};
+          // 设置第一行的样式
+          if (row === 0) {
+            cellProperties.renderer = function (instance, td, row, col, prop, value, cellProperties) {
+              Handsontable.renderers.TextRenderer.apply(this, arguments);
+              td.style.background = "gray"; // 设置背景颜色为灰色
+            };
+          }
+          return cellProperties;
+        },
+      });
+      const exportPlugin = hot.getPlugin("exportFile");
+      exportPlugin.downloadFile("csv", {
+        filename: "excel_with_frozen_row",
+        columnHeaders: false,
+        rowHeaders: false,
+      });
+    });
+  </script>
+</body>
+
+</html>

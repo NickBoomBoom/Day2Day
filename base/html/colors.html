@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    span {
+      display: inline-block;
+      width: 100px;
+      height: 100px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="content">
+
+
+  </div>
+
+  <script>
+
+    let COLORS = [
+
+    ];
+
+    // let t = 0
+
+    // for (let i = 0; i < 256; i++) {
+
+    //   COLORS.push(`rgb(${t}, ${t}, ${t})`)
+    //   t += 
+    // }
+
+
+    function getR() {
+      const t = Math.random()
+      const t2 = Math.random()
+      const t3 = t + t2
+      return t3 >= 1 ? t: t3
+    }
+
+    function getRandomColor() {
+      // 生成随机的红、绿、蓝通道值
+      const r = Math.floor(getR() * 255);
+      const g = Math.floor(getR() * 255);
+      const b = Math.floor(getR() * 255);
+
+      const y = r * 0.299 + g * 0.587 + b * 0.114
+      if (y >= 1010) {
+        return getRandomColor()
+      }
+      const color = `rgb(${r}, ${g},${b})`
+
+      return color;
+    }
+    let count = 0
+    while (count < 400) {
+      COLORS.push(getRandomColor())
+      count += 1
+    }
+
+    COLORS = [...new Set(COLORS)]
+    console.log(1111, JSON.stringify(COLORS))
+
+    let h = ''
+
+    COLORS.forEach(t => {
+      h += `<span style="background:${t}">${t}</span>`
+    })
+
+    document.querySelector('#content').innerHTML = h
+  </script>
+</body>
+
+</html>
