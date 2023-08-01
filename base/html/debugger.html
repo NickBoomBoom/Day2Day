@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <b>
+    测试开发者模式 无限debugger
+  </b>
+  <script>
+
+    (() => {
+      function block() {
+        if (window.outerHeight - window.innerHeight > 200 || window.outerWidth - window.innerWidth > 200) {
+          document.body.innerHTML = "检测到非法调试,请关闭后刷新重试!";
+        }
+        setInterval(() => {
+          (function () {
+            return false;
+          }
+          ['constructor']('debugger')
+          ['call']());
+        }, 50);
+      }
+      try {
+        block();
+      } catch (err) { }
+    })();
+  </script>
+
+</body>
+
+</html>

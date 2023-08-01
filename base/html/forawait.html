@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+
+
+    const p = () => new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(Date.now())
+      }, 2000);
+    })
+
+    async function handle() {
+
+
+      for (let i = 0; i < 10; i++) {
+        console.log(i, Date.now())
+        console.time()
+        const res = await p()
+        console.timeEnd()
+        console.log(i, res)
+        console.log(i, 'is end ')
+      }
+    }
+    handle()
+  </script>
+</body>
+
+</html>
