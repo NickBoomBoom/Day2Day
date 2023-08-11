@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>360度查看</title>
+	<style>
+		body {
+			margin: 0;
+			overflow: hidden;
+		}
+
+		#container {
+			position: relative;
+		}
+
+		#toggleButton {
+			position: absolute;
+			top: 20px;
+			left: 20px;
+			z-index: 1;
+			background-color: rgba(0, 0, 0, 0.5);
+			padding: 10px;
+			color: white;
+			cursor: pointer;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="container">
+		<button id="toggleButton">切换视角</button>
+
+	</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+	<script>
+		// 创建场景
+		const scene = new THREE.Scene();
+
+		// 创建相机
+		const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+		camera.position.set(0, 0, 0.1);
+
+		// 创建渲染器
+		const renderer = new THREE.WebGLRenderer();
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		document.getElementById('container').appendChild(renderer.domElement);
+
+		// 创建全景材质
+		const textureLoader = new THREE.TextureLoader();
+		const texture = textureLoader.load('../img/3d.jpg');
+		texture.wrapS = THREE.RepeatWrapping;
+		texture.repeat.x = -1;
+		const material = new THREE.MeshBasicMaterial({ map: texture });
+
+		// 创建球体
+		const sphereGeometry = new THREE.SphereGeometry(500, 60, 40);
+		sphereGeometry.scale(-1, 1, 1); // 翻转球体内部
+		const sphere = new THREE.Mesh(sphereGeometry, material);
+		scene.add(sphere);
+
+		// 渲染循环
+
+
+		const toggleButton = document.getElementById('toggleButton');
+		let currentView = 'front'; // 当前视角
+
+		toggleButton.addEventListener('click', () => {
+			stopAutoRotate()
+			if (currentView === 'front') {
+				// 切换到反面视角
+				camera.rotation.y = Math.PI;
+				currentView = 'back';
+			} else {
+				// 切换回正面视角
+				camera.rotation.y = 0;
+				currentView = 'front';
+			}
+
+			setTimeout(() => {
+
+				startAutoRotate();
+			});
+
+		});
+
+		// 自动360度渲染
+		let autoRotate = false;
+
+		function startAutoRotate() {
+			autoRotate = true;
+		}
+
+		function stopAutoRotate() {
+			autoRotate = false;
+		}
+
+		let rotationSpeed = 0.0013;
+
+		function animate() {
+			requestAnimationFrame(animate);
+
+			if (autoRotate) {
+				sphere.rotation.y += rotationSpeed;
+			}
+
+			renderer.render(scene, camera);
+		}
+
+		toggleButton.addEventListener('click', () => {
+			stopAutoRotate(); // 停止自动旋转
+		});
+
+		// 鼠标悬停时停止自动旋转
+		document.getElementById('container').addEventListener('mouseenter', () => {
+			// stopAutoRotate();
+		});
+
+		// 鼠标移出时重新开始自动旋转
+		document.getElementById('container').addEventListener('mouseleave', () => {
+		});
+		startAutoRotate();
+
+		animate();
+	</script>
+</body>
+
+</html>
