@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="./js/tinymce.min.js"></script>
+</head>
+
+<body>
+
+
+  <form>
+
+
+    <textarea id="editor">
+  </textarea>
+
+    <button style="display: none;" name="submitbtn"></button>
+  </form>
+
+  <script>
+
+    tinymce.PluginManager.add('slashcommands', function (editor) {
+      var insertActions = [
+        {
+          text: '标题 1',
+          icon: 'h1',
+          action: function () {
+            editor.execCommand('mceInsertContent', false, '<h1>标题 1</h1>')
+            editor.selection.select(editor.selection.getNode());
+          }
+        },
+        {
+          text: '标题 2',
+          icon: 'h2',
+          action: function () {
+            editor.execCommand('mceInsertContent', false, '<h2>标题 2</h2>');
+            editor.selection.select(editor.selection.getNode());
+          }
+        },
+        {
+          text: '标题 3',
+          icon: 'h3',
+          action: function () {
+            editor.execCommand('mceInsertContent', false, '<h3>标题 3</h3>');
+            editor.selection.select(editor.selection.getNode());
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          text: 'Bulleted list',
+          icon: 'unordered-list',
+          action: function () {
+            editor.execCommand('InsertUnorderedList', false);
+          }
+        },
+
+        {
+          text: 'Numbered list',
+          icon: 'ordered-list',
+          action: function () {
+            editor.execCommand('InsertOrderedList', false);
+          }
+        },
+        {
+          text: 'code',
+          icon: 'ordered-list',
+          action: function () {
+            editor.execCommand('CodeSample');
+          }
+        },
+        {
+          text: '全屏(Ctrl+Shift+F)',
+          icon: 'ordered-list',
+          action: function () {
+            editor.execCommand('mceFullScreen');
+          }
+        },
+        {
+          text: '帮助',
+          icon: 'help',
+          action: function () {
+            editor.execCommand('mceHelp');
+          }
+        },
+
+      ];
+
+      // Register the slash commands autocompleter
+      editor.ui.registry.addAutocompleter('slashcommands', {
+        ch: '/',
+        minChars: 0,
+        columns: 1,
+        fetch: function (pattern) {
+          const matchedActions = insertActions.filter(function (action) {
+            return action.type === 'separator' ||
+              action.text.toLowerCase().indexOf(pattern.toLowerCase()) !== -1;
+          });
+
+          return new Promise((resolve) => {
+            var results = matchedActions.map(function (action) {
+              return {
+                meta: action,
+                text: action.text,
+                icon: action.icon,
+                value: action.text,
+                type: action.type
+              }
+            });
+            resolve(results);
+          });
+        },
+        onAction: function (autocompleteApi, rng, action, meta) {
+          editor.selection.setRng(rng);
+          // Some actions don't delete the "slash", so we delete all the slash
+          // command content before performing the action
+          editor.execCommand('Delete');
+          meta.action();
+          autocompleteApi.hide();
+        }
+      });
+      return {};
+    });
+
+    tinymce.init({
+      selector: "textarea",
+      plugins: [
+        'slashcommands', // 斜杠模式
+        'lists',  // 有序列表 无序列表 
+        'table',  // 表格
+        'anchor', // 光标定位 a标签   mceAnchor
+        'link',//插入url
+        'autolink', // 自动识别url 只能识别www开头的
+        // 'autoresize', // 自动调整编辑器大小以适应其中的内容
+        'charmap', // 特殊字符 mceShowCharmap
+        'code', // 源代码查看  mceCodeEditor
+        'codesample',// 源代码输入  搭配prism.js prism.css使用
+        'directionality', // 文字阅读方向  mceDirectionLTR  mceDirectionRTL
+        'emoticons', // emoji 表情  mceEmoticons
+        'fullscreen', // 全屏插件  mceFullScreen
+        'help', // 帮助文档  mceHelp
+
+        'image', // 图片模块 mceImage
+        'media',// 媒体文件  mceMedia
+        'nonbreaking', // 不中断空间 mceNonBreaking
+        'quickbars', // 快捷工具栏
+        'save', // 保存  mceSave  mceCancel
+        'autosave',// 自动保存 30s自动保存, 保留时间20m
+        'preview', // 预览
+        'searchreplace',  // SearchReplace
+       'wordcount'
+      ],
+      toolbar: "table  numlist bullist anchor link charmap code codesample ltr rtl emoticons fullscreen help image media nonbreaking pagebreak preview save searchreplace  ",
+      language: 'zh_CN',
+      menu: { tools: { title: 'Tools', items: 'listprops' } },
+      height: '90vh',
+
+      link_default_target: '_blank', // 链接默认打开状态
+
+      // TODO: 图片清单,后面建立素材库,可以直接从这里面取
+      // image_list: [
+      //   { title: 'My image 1', value: 'https://www.example.com/my1.gif' },
+      //   { title: 'My image 2', value: 'http://www.moxiecode.com/my2.gif' }
+      // ],
+      /* enable automatic uploads of images represented by blob or data URIs*/
+      automatic_uploads: true,
+      file_picker_types: 'image',
+      image_caption: true,
+      images_upload_url: 'http://127.0.0.1:4399/upload',
+
+ 
+
+      link_context_toolbar: true,
+
+
+      nonbreaking_force_tab: true,
+
+      quickbars_insert_toolbar: false,
+      quickbars_selection_toolbar: 'bold italic underline | blocks | bullist numlist | blockquote quicklink ',
+
+      // quickbars_image_toolbar: 'bold italic underline blocks bullist numlist blockquote quicklink ',
+
+      contextmenu: 'undo redo | inserttable | cell row column deletetable | help',
+
+      powerpaste_word_import: 'clean',
+      powerpaste_html_import: 'clean',
+
+
+      save_oncancelcallback: (e) => {
+        console.log('Save canceled', e);
+      }, save_onsavecallback: (e) => {
+        console.log('Saved', e.getContent());
+      }
+
+    });
+  </script>
+</body>
+
+</html>
