@@ -15,15 +15,12 @@
 
 
     <textarea id="editor">
-      我是测试数据
   </textarea>
 
     <button style="display: none;" name="submitbtn"></button>
   </form>
 
   <script>
-
-
 
 
     function registerSlashCommands(editor) {
@@ -117,7 +114,7 @@
             editor.execCommand('Underline');
           }
         },
-       
+
 
         {
           type: 'separator'
@@ -207,7 +204,7 @@
           icon: 'search',
           action: function () {
             editor.execCommand('SearchReplace');
-          
+
           }
         },
 
@@ -285,103 +282,230 @@
       });
     }
 
+
+    /**
+     * 基础toolbar 配置
+     * 
+    */
+    const BASE_TOOLBAR = 'undo redo styles fontfamily fontsize'
+
+    /**
+     *  插件及对应的toolbar配置
+     *  {
+     *    [pluginName: string] : object // 插件配置
+     *  }
+     */
+    const PLUGIN_TOOLBAR_CONFIG = {
+      // 有序 无序列表
+      lists: {
+        toolbar: 'numlist bullist'
+      },
+      // 任务列表
+      checklist: {
+        toolbar: 'checklist'
+      },
+      // 表格 
+      table: {
+        toolbar: 'table tableinsertdialog tablecellprops tableprops advtablerownumbering'
+      },
+      advtable: {
+        toolbar: 'advtablerownumbering'
+      },
+
+
+      // link
+      link: {
+        props: {
+
+          link_context_toolbar: true,
+          link_default_target: '_blank', // 链接默认打开状态
+        },
+        toolbar: "link"
+      },
+      // 自动识别url 只能识别www开头的
+      autolink: {
+
+      },
+
+      casechange: {
+        toolbar: 'casechange'
+      },
+      // 特殊字符 mceShowCharmap
+      charmap: {
+        toolbar: 'charmap'
+      },
+      // 源代码查看  mceCodeEditor
+      advcode: {
+        toolbar: 'code'
+      },
+      // 插入代码  搭配prism.js prism.css使用
+      codesample: {
+        toolbar: "codesample"
+      },
+      // 文字阅读方向  mceDirectionLTR  mceDirectionRTL
+      directionality: {
+        toolbar: 'ltr rtl'
+      },
+
+      // emoji 表情  mceEmoticons
+      emoticons: {
+        toolbar: 'emoticons'
+      },
+      // 全屏插件  mceFullScreen
+      fullscreen: {
+        toolbar: 'fullscreen'
+      },
+      // 帮助文档  mceHelp
+      help: {
+        toolbar: "help"
+      },
+      // 图片模块 mceImage
+      image: {
+        props: {
+          // image_caption: true,
+          file_picker_types: 'image',
+          images_upload_url: 'http://127.0.0.1:4399/upload',
+        },
+        toolbar: "image"
+      },
+      editimage: {
+        props: {
+        }
+      },
+      // 媒体文件
+      media: {
+        toolbar: "media"
+      },
+      // 文档黏贴
+      powerpaste: {
+        props: {
+          powerpaste_word_import: 'prompt',  // 交予用户选择合并or清除格式
+          powerpaste_html_import: 'prompt',// 交予用户选择合并or清除格式
+          powerpaste_googledocs_import: 'prompt',// 交予用户选择合并or清除格式
+        },
+
+      },
+      //  nonbreaking 不中断空间 html字符实体替换空格
+      nonbreaking: {
+        props: {
+          nonbreaking_force_tab: true,
+
+        },
+        toolbar: 'nonbreaking'
+      },
+      // 快捷工具栏
+      quickbars: {
+        props: {
+          quickbars_insert_toolbar: "styles fontfamily fontsize",
+          quickbars_selection_toolbar: `styles bold italic underline strikethrough superscript subscript fontfamily fontsize lineheight | bullist numlist checklist | blockquote quicklink removeformat | indent outdent aligncenter alignjustify alignleft alignnone alignright | backcolor forecolor |`,
+          contextmenu: 'undo redo | inserttable | cell row column deletetable | help',
+        },
+      },
+      // 保存回调 cancel  save
+      save: {
+        props: {
+          save_oncancelcallback: (e) => {
+            console.log('Save canceled', e);
+          },
+          save_onsavecallback: (e) => {
+            console.log('Saved', e.getContent());
+          },
+        },
+        toolbar: "cancel save"
+      },
+      autosave: {
+        props: {
+          autosave_prefix: 'autosave-{path}-{query}-{id}-',
+          autosave_restore_when_empty: true, // 自动还原上次因为崩溃丢失的文稿
+        },
+        toolbar: 'restoredraft'
+      },
+      searchreplace: {
+        props: {
+
+        },
+        toolbar: "searchreplace"
+      },
+      wordcount: {},
+      pagebreak: {
+        toolbar: "pagebreak"
+      },
+      // 导出pdf mceExportDownload
+      export: {
+        toolbar: "export"
+      },
+      formatpainter: {
+        toolbar: 'formatpainter'
+      },
+
+      pageembed: {
+        toolbar: "pageembed"
+      },
+      tableofcontents: {
+        toolbar: "tableofcontents"
+      }
+    }
+
+    function initPluginToolbar() {
+      let plugins = []
+      let pluginsConfig = {}
+      let toolbar = ''
+      for (const [key, value] of Object.entries(PLUGIN_TOOLBAR_CONFIG)) {
+        plugins.push(key)
+        const { props, toolbar: _toolbar } = value
+        pluginsConfig = {
+          ...pluginsConfig,
+          ...(props || {})
+        }
+        value && (toolbar += ` ${_toolbar}`)
+      }
+
+      return {
+        plugins,
+        pluginsConfig,
+        toolbar
+      }
+    }
+
+
+
+    const { plugins, toolbar, pluginsConfig } = initPluginToolbar()
     tinymce.init({
+      // 基础配置
       selector: "textarea",
       placeholder: "Type here...",
       auto_focus: true,
-      highlight_on_focus: true,
+      language: 'zh_CN', // 默认走中文
+      automatic_uploads: true, // 图片自动上传
+      resize: false,
+      font_size_input_default_unit: 'px',
+      // 菜单栏配置 (不显示)
       menubar: false,
-      // skin:  'oxide',
-      content_css:  ['jam','custom'],
- 
-
-
-  skin: 'jam',
-  icons: 'jam',
-      plugins: [
-        'lists',  // 有序列表 无序列表 
-        'table',  // 表格
-
-        // 'anchor', // 光标定位 a标签   mceAnchor
-        'link',//插入url
-        'autolink', // 自动识别url 只能识别www开头的
-        // 'autoresize', // 自动调整编辑器大小以适应其中的内容
-        'charmap', // 特殊字符 mceShowCharmap
-        'code', // 源代码查看  mceCodeEditor
-        'codesample',// 源代码输入  搭配prism.js prism.css使用
-        'directionality', // 文字阅读方向  mceDirectionLTR  mceDirectionRTL
-        'emoticons', // emoji 表情  mceEmoticons
-        'fullscreen', // 全屏插件  mceFullScreen
-        'help', // 帮助文档  mceHelp
-
-        'image', // 图片模块 mceImage
-        'media',// 媒体文件  mceMedia
-        'nonbreaking', // 不中断空间 mceNonBreaking
-        'quickbars', // 快捷工具栏
-        'save', // 保存  mceSave  mceCancel
-        'autosave',// 自动保存 30s自动保存, 保留时间20m
-        'searchreplace',  // SearchReplace
-        'wordcount',
-        'checklist'
-      ],
-      toolbar: "styles fontfamily table numlist bullist anchor link charmap code codesample ltr rtl emoticons fullscreen help image media nonbreaking pagebreak preview save searchreplace  checklist",
-      language: 'zh_CN',
-      menu: { tools: { title: 'Tools', items: 'listprops' } },
+      // 工具栏配置
+      toolbar_sticky: true,
+      toolbar: BASE_TOOLBAR + ' ' + toolbar,
+      toolbar_persist: true,
+      // 皮肤,icon,样式替换
+      content_css: ['custom'],
+      skin: 'jam',
+      icons: 'jam',
+      plugins,
+      ...pluginsConfig,
       height: '90vh',
-
-      link_default_target: '_blank', // 链接默认打开状态
-
-      // TODO: 图片清单,后面建立素材库,可以直接从这里面取
-      // image_list: [
-      //   { title: 'My image 1', value: 'https://www.example.com/my1.gif' },
-      //   { title: 'My image 2', value: 'http://www.moxiecode.com/my2.gif' }
-      // ],
-      /* enable automatic uploads of images represented by blob or data URIs*/
-      automatic_uploads: true,
-      file_picker_types: 'image',
-      image_caption: true,
-      images_upload_url: 'http://127.0.0.1:4399/upload',
-
-
-
-      link_context_toolbar: true,
-
-
-      nonbreaking_force_tab: true,
-
-      quickbars_insert_toolbar: "styles fontfamily fontsize",
-      quickbars_selection_toolbar: `styles bold italic underline strikethrough superscript subscript fontfamily fontsize lineheight | bullist numlist checklist | blockquote quicklink removeformat | indent outdent aligncenter alignjustify alignleft alignnone alignright | backcolor forecolor |`,
-      contextmenu: 'undo redo | inserttable | cell row column deletetable | help',
-
-      // powerpaste_word_import: 'clean',
-      // powerpaste_html_import: 'clean',
-
-
-      save_oncancelcallback: (e) => {
-        console.log('Save canceled', e);
-      },
-      save_onsavecallback: (e) => {
-        console.log('Saved', e.getContent());
-      },
-
       setup: (editor) => {
         registerSlashCommands(editor)
-
-        editor.on('OpenWindow', (e ) => {
+        editor.on('OpenWindow', (e) => {
           setTimeout(() => {
-            const  dialog =  document.querySelector(".tox-dialog")
+            const dialog = document.querySelector(".tox-dialog")
             const firstTextarea = dialog.querySelector('textarea')
-            const firstInput =  dialog.querySelector('input')
-            const focusEl =  firstTextarea || firstInput
+            const firstInput = dialog.querySelector('input')
+            const focusEl = firstTextarea || firstInput
             if (focusEl) {
               focusEl.focus()
             }
           });
         })
- 
       }
-
-
 
     });
   </script>

@@ -676,7 +676,8 @@ div.mce-footnotes li>a.mce-footnotes-backlink {
 }
 
 .mce-toc {
-  border: 1px solid gray
+  border: 1px solid #e5e5eb;
+  border-radius: 4px;
 }
 
 .mce-toc h2 {
@@ -808,3 +809,16 @@ table {
 }
 
 /*# sourceMappingURL=content.min.css.map */
+
+
+.mce-content-body:not([dir=rtl]) blockquote {
+  border-left: 2px solid #ccc;
+  margin-left: 1.5rem;
+  padding-left: 1rem
+}
+
+.mce-content-body[dir=rtl] blockquote {
+  border-right: 2px solid #ccc;
+  margin-right: 1.5rem;
+  padding-right: 1rem
+}

@@ -4283,7 +4283,7 @@ body.tox-dialog__disable-scroll {
 }
 
 .tox .tox-toolbar,.tox .tox-toolbar__overflow,.tox .tox-toolbar__primary {
-  background: url("data:image/svg+xml;charset=utf8,%3Csvg height='31px' viewBox='0 0 40 31px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='30px' width='100' height='1' fill='%23e5e5eb'/%3E%3C/svg%3E") left 0 top 0 #fff!important
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg height='31px' viewBox='0 0 40 31px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='30px' width='100' height='1' fill='%23e5e5eb'/%3E%3C/svg%3E") left 0 top 0 repeat-x #fff!important
 }
 
 .tox .tox-menubar+.tox-toolbar-overlord {
@@ -4352,3 +4352,4 @@ body.tox-dialog__disable-scroll {
 }
 
 /*# sourceMappingURL=skin.min.css.map */
+
