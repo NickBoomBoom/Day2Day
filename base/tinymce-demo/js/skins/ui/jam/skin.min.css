@@ -6,6 +6,15 @@
  *
  * Version: 2.5.0-67
  */
+ 
+ :root {
+   /* rgba(245,194,90,.3) */
+  --q-color-active:  rgba(245,194,90,.3);  
+  /* #f5c25a */
+  --q-color-primary:  #f5c25a;
+  /* #ffe89d */
+  --q-color-action: #ffe89d;
+ }
  .tox {
   box-shadow: none;
   box-sizing: content-box;
@@ -68,7 +77,6 @@
 }
 
 .tox-tinymce {
-  border: 1px solid #e5e5eb;
   border-radius: 3px;
   box-shadow: none;
   box-sizing: border-box;
@@ -152,15 +160,15 @@ button::-moz-focus-inner {
 }
 
 .tox .tox-dialog__body-content .accessibility-issue--info .tox-form__group h2 {
-  color: #f5c25a
+  color: var(--q-color-primary)
 }
 
 .tox .tox-dialog__body-content .accessibility-issue--info .tox-icon svg {
-  fill: #f5c25a
+  fill: var(--q-color-primary)
 }
 
 .tox .tox-dialog__body-content .accessibility-issue--info a.tox-button--naked.tox-button--icon {
-  background-color: #f5c25a;
+  background-color: var(--q-color-primary);
   color: #fff
 }
 
@@ -186,7 +194,7 @@ button::-moz-focus-inner {
 }
 
 .tox .tox-dialog__body-content .accessibility-issue--warn a.tox-button--naked.tox-button--icon {
-  background-color: #ffe89d;
+  background-color: var(--q-color-action);
   color: #555
 }
 
@@ -246,7 +254,7 @@ button::-moz-focus-inner {
 }
 
 .tox .tox-dialog__body-content .accessibility-issue__header .tox-form__group h1,.tox .tox-dialog__body-content .tox-form__group .accessibility-issue__description h2 {
-  font-size: 12.25px;
+  font-size:12px;
   margin-top: 0
 }
 
@@ -320,11 +328,11 @@ button::-moz-focus-inner {
 }
 
 .tox .tox-button {
-  background-color: #f5c25a;
+  background-color: var(--q-color-primary);
   background-image: none;
   background-position: 0 0;
   background-repeat: repeat;
-  border-color: #f5c25a;
+  border-color: var(--q-color-primary);
   border-radius: 100px;
   border-style: solid;
   border-width: 1px;
@@ -352,7 +360,7 @@ button::-moz-focus-inner {
 .tox .tox-button::before {
   border-radius: 100px;
   bottom: -1px;
-  box-shadow: inset 0 0 0 2px #fff,0 0 0 1px #f5c25a,0 0 0 3px rgba(245,194,90,.25);
+  box-shadow: inset 0 0 0 2px #fff,0 0 0 1px var(--q-color-primary),0 0 0 3px rgba(245,194,90,.25);
   content: '';
   left: -1px;
   opacity: 0;
@@ -363,9 +371,9 @@ button::-moz-focus-inner {
 }
 
 .tox .tox-button[disabled] {
-  background-color: #f5c25a;
+  background-color: var(--q-color-primary);
   background-image: none;
-  border-color: #f5c25a;
+  border-color: var(--q-color-primary);
   box-shadow: none;
   color: rgba(85,85,85,.5);
   cursor: not-allowed
@@ -568,7 +576,7 @@ button::-moz-focus-inner {
 }
 
 .tox .tox-button-link--sm {
-  font-size: 12.25px
+  font-size:12px
 }
 
 .tox .tox-button--naked {
@@ -650,12 +658,12 @@ button::-moz-focus-inner {
 
 .tox .tox-checkbox__icons .tox-checkbox-icon__indeterminate svg {
   display: none;
-  fill: #f5c25a
+  fill: var(--q-color-primary)
 }
 
 .tox .tox-checkbox__icons .tox-checkbox-icon__checked svg {
   display: none;
-  fill: #f5c25a
+  fill: var(--q-color-primary)
 }
 
 .tox .tox-checkbox--disabled {
@@ -693,7 +701,7 @@ button::-moz-focus-inner {
 
 .tox input.tox-checkbox__input:focus+.tox-checkbox__icons {
   border-radius: 3px;
-  box-shadow: inset 0 0 0 1px #f5c25a;
+  box-shadow: inset 0 0 0 1px var(--q-color-primary);
   padding: calc(4px - 1px)
 }
 
@@ -742,7 +750,7 @@ button::-moz-focus-inner {
   border-right-width: 0;
   border-style: solid;
   border-top-width: 1px;
-  padding: 4px 0
+  padding: 0px 0
 }
 
 .tox .tox-collection--list .tox-collection__group:first-child {
@@ -780,7 +788,7 @@ button::-moz-focus-inner {
 }
 
 .tox .tox-collection--list .tox-collection__item {
-  padding: 4px 8px
+  padding: 0px 8px
 }
 
 .tox .tox-collection--toolbar .tox-collection__item {
@@ -799,25 +807,26 @@ button::-moz-focus-inner {
 }
 
 .tox .tox-collection--list .tox-collection__item--active {
-  background-color: rgba(245,194,90,.3)
+  background-color: var(--q-color-active)
+  /* background-color: var(--q-color-active) */
 }
 
 .tox .tox-collection--toolbar .tox-collection__item--enabled {
-  background-color: #f5c25a;
+  background-color: var(--q-color-primary);
   color: #555
 }
 
 .tox .tox-collection--toolbar .tox-collection__item--active {
-  background-color: rgba(245,194,90,.3)
+  background-color: var(--q-color-active)
 }
 
 .tox .tox-collection--grid .tox-collection__item--enabled {
-  background-color: #f5c25a;
+  background-color: var(--q-color-primary);
   color: #555
 }
 
 .tox .tox-collection--grid .tox-collection__item--active:not(.tox-collection__item--state-disabled) {
-  background-color: rgba(245,194,90,.3);
+  background-color: var(--q-color-active);
   color: #555
 }
 
@@ -850,7 +859,7 @@ button::-moz-focus-inner {
   color: currentColor;
   display: inline-block;
   flex: 1;
-  font-size: 12.25px;
+  font-size:12px;
   font-style: normal;
   font-weight: 700;
   line-height: 24px;
@@ -861,7 +870,7 @@ button::-moz-focus-inner {
 .tox .tox-collection__item-accessory {
   color: #aaa;
   display: inline-block;
-  font-size: 12.25px;
+  font-size:12px;
   height: 24px;
   line-height: 24px;
   text-transform: none
@@ -1220,7 +1229,7 @@ button::-moz-focus-inner {
 }
 
 .tox .tox-swatches__picker-btn:hover {
-  background: rgba(245,194,90,.3)
+  background: var(--q-color-active)
 }
 
 .tox div.tox-swatch:not(.tox-swatch--remove) svg {
@@ -1283,7 +1292,7 @@ button::-moz-focus-inner {
 
 .tox .tox-comment__body {
   color: #555;
-  font-size: 12.25px;
+  font-size:12px;
   font-style: normal;
   font-weight: 700;
   line-height: 1.3;
@@ -1304,7 +1313,7 @@ button::-moz-focus-inner {
 
 .tox .tox-comment__expander p {
   color: #aaa;
-  font-size: 12.25px;
+  font-size:12px;
   font-style: normal
 }
 
@@ -1391,7 +1400,7 @@ button::-moz-focus-inner {
 .tox .tox-comment__overlaytext {
   bottom: 0;
   flex-direction: column;
-  font-size: 12.25px;
+  font-size:12px;
   left: 0;
   padding: 1em;
   position: absolute;
@@ -1470,7 +1479,7 @@ button::-moz-focus-inner {
 
 .tox .tox-user__name {
   color: #555;
-  font-size: 12.25px;
+  font-size:12px;
   font-style: normal;
   font-weight: 700;
   line-height: 18px;
@@ -1639,7 +1648,7 @@ button::-moz-focus-inner {
   color: #aaa;
   display: inline-block;
   flex-shrink: 0;
-  font-size: 12.25px;
+  font-size:12px;
   line-height: 1.3;
   margin-bottom: 8px;
   max-width: 13em;
@@ -1651,8 +1660,8 @@ button::-moz-focus-inner {
 }
 
 .tox .tox-dialog__body-nav-item--active {
-  border-bottom: 2px solid #f5c25a;
-  color: #f5c25a
+  border-bottom: 2px solid var(--q-color-primary);
+  color: var(--q-color-primary)
 }
 
 .tox .tox-dialog__body-content {
@@ -1685,7 +1694,7 @@ button::-moz-focus-inner {
 }
 
 .tox .tox-dialog__body-content a {
-  color: #f5c25a;
+  color: var(--q-color-primary);
   cursor: pointer;
   text-decoration: none
 }
@@ -2158,7 +2167,7 @@ body.tox-dialog__disable-scroll {
 }
 
 .tox .tox-color-input span:focus:not([aria-disabled=true]),.tox .tox-color-input span:hover:not([aria-disabled=true]) {
-  border-color: #f5c25a;
+  border-color: var(--q-color-primary);
   cursor: pointer
 }
 
@@ -2201,7 +2210,7 @@ body.tox-dialog__disable-scroll {
 .tox .tox-label,.tox .tox-toolbar-label {
   color: #aaa;
   display: block;
-  font-size: 12.25px;
+  font-size:12px;
   font-style: normal;
   font-weight: 700;
   line-height: 1.3;
@@ -2333,7 +2342,7 @@ body.tox-dialog__disable-scroll {
 
 .tox .tox-custom-editor:focus-within,.tox .tox-dialog__iframe.tox-dialog__iframe--bordered:focus-within,.tox .tox-listboxfield .tox-listbox--select:focus,.tox .tox-textarea-wrap:focus-within,.tox .tox-textarea:focus,.tox .tox-textfield:focus {
   background-color: #fff;
-  border-color: #f5c25a;
+  border-color: var(--q-color-primary);
   box-shadow: none;
   outline: 2px solid rgba(245,194,90,.25)
 }
@@ -2350,7 +2359,7 @@ body.tox-dialog__disable-scroll {
   border: 0;
   border-color: transparent;
   box-shadow: unset;
-  color: #f5c25a;
+  color: var(--q-color-primary);
   cursor: pointer;
   display: block;
   margin: 0;
@@ -2451,7 +2460,7 @@ body.tox-dialog__disable-scroll {
 
 .tox .tox-selectfield select:focus {
   background-color: #fff;
-  border-color: #f5c25a;
+  border-color: var(--q-color-primary);
   box-shadow: none;
   outline: 2px solid rgba(245,194,90,.25)
 }
@@ -2658,7 +2667,7 @@ body.tox-dialog__disable-scroll {
 .tox .tox-insert-table-picker__label {
   color: #aaa;
   display: block;
-  font-size: 12.25px;
+  font-size:12px;
   padding: 4px;
   text-align: center;
   width: 100%
@@ -2739,7 +2748,7 @@ body.tox-dialog__disable-scroll {
   color: #086be6;
   cursor: pointer;
   display: flex;
-  font-size: 12.25px;
+  font-size:12px;
   height: 23.275px;
   padding: 4px 8px;
   white-space: nowrap
@@ -2762,7 +2771,7 @@ body.tox-dialog__disable-scroll {
   color: #666;
   display: flex;
   flex: 0 0 auto;
-  font-size: 12.25px;
+  font-size:12px;
   font-style: normal;
   font-weight: 700;
   height: 24px;
@@ -2784,21 +2793,21 @@ body.tox-dialog__disable-scroll {
 }
 
 .tox .tox-mbtn:focus:not(:disabled) {
-  background: rgba(245,194,90,.3);
+  background: var(--q-color-active);
   border: 0;
   box-shadow: none;
   color: #555
 }
 
 .tox .tox-mbtn--active {
-  background: #f5c25a;
+  background: var(--q-color-primary);
   border: 0;
   box-shadow: none;
   color: #555
 }
 
 .tox .tox-mbtn:hover:not(:disabled):not(.tox-mbtn--active) {
-  background: rgba(245,194,90,.3);
+  background: var(--q-color-active);
   border: 0;
   box-shadow: none;
   color: #555
@@ -2829,7 +2838,7 @@ body.tox-dialog__disable-scroll {
   box-shadow: none;
   box-sizing: border-box;
   display: grid;
-  font-size: 12.25px;
+  font-size:12px;
   font-weight: 700;
   grid-template-columns: minmax(40px,1fr) auto minmax(40px,1fr);
   margin-top: 4px;
@@ -2839,7 +2848,7 @@ body.tox-dialog__disable-scroll {
 }
 
 .tox .tox-notification p {
-  font-size: 12.25px;
+  font-size:12px;
   font-weight: 700
 }
 
@@ -3187,7 +3196,7 @@ body.tox-dialog__disable-scroll {
 }
 
 .tox .tox-slider__handle {
-  background-color: #f5c25a;
+  background-color: var(--q-color-primary);
   border: 2px solid #f2b02a;
   border-radius: 3px;
   box-shadow: none;
@@ -3382,7 +3391,7 @@ body.tox-dialog__disable-scroll {
   color: #666;
   display: flex;
   flex: 0 0 auto;
-  font-size: 12.25px;
+  font-size:12px;
   font-style: normal;
   font-weight: 700;
   height: 24px;
@@ -3407,13 +3416,13 @@ body.tox-dialog__disable-scroll {
 }
 
 .tox .tox-tbtn:focus {
-  background: rgba(245,194,90,.3);
+  background: var(--q-color-active);
   border: 0;
   box-shadow: none
 }
 
 .tox .tox-tbtn:hover {
-  background: rgba(245,194,90,.3);
+  background: var(--q-color-active);
   border: 0;
   box-shadow: none;
   color: #555
@@ -3424,7 +3433,7 @@ body.tox-dialog__disable-scroll {
 }
 
 .tox .tox-tbtn:active {
-  background: #f5c25a;
+  background: var(--q-color-primary);
   border: 0;
   box-shadow: none;
   color: #555
@@ -3451,7 +3460,7 @@ body.tox-dialog__disable-scroll {
 }
 
 .tox .tox-tbtn--enabled,.tox .tox-tbtn--enabled:hover {
-  background: #f5c25a;
+  background: var(--q-color-primary);
   border: 0;
   box-shadow: none;
   color: #555
@@ -3528,7 +3537,7 @@ body.tox-dialog__disable-scroll {
 }
 
 .tox .tox-number-input .tox-input-wrapper:focus {
-  background: rgba(245,194,90,.3)
+  background: var(--q-color-active)
 }
 
 .tox .tox-number-input input {
@@ -3541,7 +3550,7 @@ body.tox-dialog__disable-scroll {
 }
 
 .tox .tox-number-input input:hover {
-  background: rgba(245,194,90,.3);
+  background: var(--q-color-active);
   color: #555
 }
 
@@ -3574,11 +3583,11 @@ body.tox-dialog__disable-scroll {
 }
 
 .tox .tox-number-input button:focus {
-  background: rgba(245,194,90,.3)
+  background: var(--q-color-active)
 }
 
 .tox .tox-number-input button:hover {
-  background: rgba(245,194,90,.3);
+  background: var(--q-color-active);
   border: 0;
   box-shadow: none;
   color: #555
@@ -3589,7 +3598,7 @@ body.tox-dialog__disable-scroll {
 }
 
 .tox .tox-number-input button:active {
-  background: #f5c25a;
+  background: var(--q-color-primary);
   border: 0;
   box-shadow: none;
   color: #555
@@ -3620,7 +3629,7 @@ body.tox-dialog__disable-scroll {
 }
 
 .tox .tox-number-input:focus:not(:active)>.tox-input-wrapper,.tox .tox-number-input:focus:not(:active)>button {
-  background: rgba(245,194,90,.3)
+  background: var(--q-color-active)
 }
 
 .tox .tox-tbtn--select {
@@ -3679,11 +3688,11 @@ body.tox-dialog__disable-scroll {
 }
 
 .tox .tox-split-button:hover {
-  box-shadow: 0 0 0 1px rgba(245,194,90,.3) inset
+  box-shadow: 0 0 0 1px var(--q-color-active) inset
 }
 
 .tox .tox-split-button:focus {
-  background: rgba(245,194,90,.3);
+  background: var(--q-color-active);
   box-shadow: none;
   color: #555
 }
@@ -3852,7 +3861,7 @@ body.tox-dialog__disable-scroll {
   border-radius: 3px;
   box-shadow: 0 2px 4px rgba(85,85,85,.3);
   color: rgba(255,255,255,.75);
-  font-size: 12.25px;
+  font-size:12px;
   font-style: normal;
   font-weight: 700;
   padding: 4px 8px;
@@ -3917,7 +3926,7 @@ body.tox-dialog__disable-scroll {
   color: #555;
   display: flex;
   flex: 0 0 auto;
-  font-size: 12.25px;
+  font-size:12px;
   font-style: normal;
   font-weight: 700;
   height: 28px;
@@ -3943,13 +3952,13 @@ body.tox-dialog__disable-scroll {
 }
 
 .tox .tox-tree .tox-trbtn:focus {
-  background: rgba(245,194,90,.3);
+  background: var(--q-color-active);
   border: 0;
   box-shadow: none
 }
 
 .tox .tox-tree .tox-trbtn:hover {
-  background: rgba(245,194,90,.3);
+  background: var(--q-color-active);
   border: 0;
   box-shadow: none;
   color: #555
@@ -4283,7 +4292,8 @@ body.tox-dialog__disable-scroll {
 }
 
 .tox .tox-toolbar,.tox .tox-toolbar__overflow,.tox .tox-toolbar__primary {
-  background: url("data:image/svg+xml;charset=utf8,%3Csvg height='31px' viewBox='0 0 40 31px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='30px' width='100' height='1' fill='%23e5e5eb'/%3E%3C/svg%3E") left 0 top 0 repeat-x #fff!important
+  background: none;
+  /* background: url("data:image/svg+xml;charset=utf8,%3Csvg height='31px' viewBox='0 0 40 31px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='30px' width='100' height='1' fill='%23e5e5eb'/%3E%3C/svg%3E") left 0 top 0 repeat-x #fff!important */
 }
 
 .tox .tox-menubar+.tox-toolbar-overlord {

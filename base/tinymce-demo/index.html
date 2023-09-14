@@ -12,17 +12,15 @@
 
 
   <form>
-
-
     <textarea id="editor">
   </textarea>
-
     <button style="display: none;" name="submitbtn"></button>
   </form>
 
+
+  <div id="content"></div>
+
   <script>
-
-
     function registerSlashCommands(editor) {
       const insertActions = [
         {
@@ -150,6 +148,27 @@
           type: 'separator'
         },
 
+        {
+          text: '占位符(nonbreaking)',
+          icon: 'non-breaking',
+          action: function () {
+            editor.execCommand('mceNonBreaking');
+          }
+        },
+        {
+          text: '生成目录(nonbreaking)',
+          icon: 'toc',
+          action: function () {
+            editor.execCommand('mceInsertToc');
+          }
+        },
+        {
+          text: '插入Iframe(iframe)',
+          icon: 'non-breaking',
+          action: function () {
+            editor.execCommand('mcePageEmbed')
+          }
+        },
         {
           text: '插入图片(image)',
           icon: 'image',
@@ -283,19 +302,20 @@
     }
 
 
-    /**
-     * 基础toolbar 配置
-     * 
-    */
-    const BASE_TOOLBAR = 'undo redo styles fontfamily fontsize'
 
     /**
      *  插件及对应的toolbar配置
      *  {
-     *    [pluginName: string] : object // 插件配置
+     *    [pluginName: string] :  {
+     *       props: object;
+     *       toolbar: string
+     *     } // 插件配置
      *  }
      */
     const PLUGIN_TOOLBAR_CONFIG = {
+      autoresize: {
+
+      },
       // 有序 无序列表
       lists: {
         toolbar: 'numlist bullist'
@@ -306,17 +326,17 @@
       },
       // 表格 
       table: {
+        props:{
+          table_toolbar: 'tablesort advtablerownumbering tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol'
+        },
         toolbar: 'table tableinsertdialog tablecellprops tableprops advtablerownumbering'
       },
       advtable: {
         toolbar: 'advtablerownumbering'
       },
-
-
       // link
       link: {
         props: {
-
           link_context_toolbar: true,
           link_default_target: '_blank', // 链接默认打开状态
         },
@@ -326,7 +346,6 @@
       autolink: {
 
       },
-
       casechange: {
         toolbar: 'casechange'
       },
@@ -396,8 +415,8 @@
       // 快捷工具栏
       quickbars: {
         props: {
-          quickbars_insert_toolbar: "styles fontfamily fontsize",
-          quickbars_selection_toolbar: `styles bold italic underline strikethrough superscript subscript fontfamily fontsize lineheight | bullist numlist checklist | blockquote quicklink removeformat | indent outdent aligncenter alignjustify alignleft alignnone alignright | backcolor forecolor |`,
+          quickbars_insert_toolbar: "styles fontsize emoticons image table",
+          quickbars_selection_toolbar: `styles bold italic underline strikethrough superscript subscript fontsize lineheight blockquote casechange quicklink removeformat indent outdent aligncenter alignjustify alignleft alignnone alignright | backcolor forecolor`,
           contextmenu: 'undo redo | inserttable | cell row column deletetable | help',
         },
       },
@@ -421,27 +440,22 @@
         toolbar: 'restoredraft'
       },
       searchreplace: {
-        props: {
-
-        },
+    
         toolbar: "searchreplace"
       },
       wordcount: {},
-      pagebreak: {
-        toolbar: "pagebreak"
-      },
-      // 导出pdf mceExportDownload
-      export: {
-        toolbar: "export"
-      },
-      formatpainter: {
-        toolbar: 'formatpainter'
-      },
+     
+      // formatpainter: {
+      //   toolbar: 'formatpainter'
+      // },
 
       pageembed: {
         toolbar: "pageembed"
       },
       tableofcontents: {
+        props:{
+          tableofcontents_includeheader: false,
+        },
         toolbar: "tableofcontents"
       }
     }
@@ -481,9 +495,11 @@
       font_size_input_default_unit: 'px',
       // 菜单栏配置 (不显示)
       menubar: false,
+      statusbar: false, 
       // 工具栏配置
-      toolbar_sticky: true,
-      toolbar: BASE_TOOLBAR + ' ' + toolbar,
+      toolbar: false, 
+      font_size_formats: '12px 14px 16px 18px 24px 36px 48px',
+ 
       toolbar_persist: true,
       // 皮肤,icon,样式替换
       content_css: ['custom'],
@@ -491,9 +507,32 @@
       icons: 'jam',
       plugins,
       ...pluginsConfig,
-      height: '90vh',
       setup: (editor) => {
+        console.log(4444, editor)
+        editor.ui.registry.addButton('tablesort', {
+          icon:'filter',
+          tooltip:"Sort",
+          onAction:() => {
+            editor.execCommand('mceAdvancedTableSort' )
+          }
+        })
+        // 注册斜杠指令
         registerSlashCommands(editor)
+        // 初始化
+        editor.on('init', e => {
+          console.log(33333, e )
+        })
+        editor.on('focus', e => {
+          console.log('focus', e );
+        })
+        editor.on('blur', e =>{
+          console.log('blur', e );
+        })
+        editor.on('input', e => {
+          console.log('input', e,  );
+          document.querySelector('#content').innerHTML =  editor.getContent()
+        })
+        // 监听dialog 打开
         editor.on('OpenWindow', (e) => {
           setTimeout(() => {
             const dialog = document.querySelector(".tox-dialog")

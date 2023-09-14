@@ -11,5 +11,6 @@ tinymce.addI18n("zh_CN", {
  "Sort by":"排序方式",
  "Numeric":"数字",
  'Alpha':"字母",
-'Order':"顺序"
+'Order':"顺序",
+"Row numbering":"行编号"
 });

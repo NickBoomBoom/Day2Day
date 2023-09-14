@@ -183,5 +183,6 @@ tinymce.IconManager.add('jam', {
       'warning': '<svg width="16" height="16"><path fill-rule="nonzero" d="m1.3 11 4-7.5a3.1 3.1 0 0 1 5.4 0l4 7.4c.7 1.4.1 3.1-1.3 3.8L12 15H4c-1.6 0-3-1.3-3-2.8 0-.4.1-.9.3-1.2ZM8 4a1 1 0 0 0-1 1v4a1 1 0 1 0 2 0V5c0-.6-.4-1-1-1Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>',
       'zoom-in': '<svg width="16" height="16"><path fill-rule="nonzero" d="M10.4 11.8a6 6 0 1 1 1.4-1.4l3 2.9a1 1 0 0 1-1.5 1.4l-2.9-2.9Zm-.6-2a4 4 0 1 0-5.6-5.6 4 4 0 0 0 5.6 5.6ZM8 6h1a1 1 0 1 1 0 2H8v1a1 1 0 1 1-2 0V8H5a1 1 0 1 1 0-2h1V5a1 1 0 0 1 2 0v1Z"/></svg>',
       'zoom-out': '<svg width="16" height="16"><path fill-rule="nonzero" d="M10.4 11.8a6 6 0 1 1 1.4-1.4l3 2.9a1 1 0 0 1-1.5 1.4l-2.9-2.9Zm-.6-2a4 4 0 1 0-5.6-5.6 4 4 0 0 0 5.6 5.6ZM5 6h4a1 1 0 1 1 0 2H5a1 1 0 1 1 0-2Z"/></svg>',
+      'filter':'<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="16" height="16" fill="currentColor"><path d="M2.08 2l6.482 8.101A2 2 0 0 1 9 11.351V18l2-1.5v-5.15a2 2 0 0 1 .438-1.249L17.92 2H2.081zm0-2h15.84a2 2 0 0 1 1.561 3.25L13 11.35v5.15a2 2 0 0 1-.8 1.6l-2 1.5A2 2 0 0 1 7 18v-6.65L.519 3.25A2 2 0 0 1 2.08 0z"></path></svg>'
   }
 });
