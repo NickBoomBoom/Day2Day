@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
 </head>
+
 <body>
-  
-<button id="btn">
-  zhifubao 
-</button>
-<script>
-  const el = document.querySelector('#btn')
-  el.addEventListener('click',e=>{
-    console.log(1111, e )
-    try {
-      window.location.href="alipay://platformapi/startapp?appId=20000056"
-    } catch (error) {
-console.error(1111, error);      
-    }
-  })
-</script>
+
+  <button id="btn">
+    跳转app
+  </button>
+  <script>
+    const el = document.querySelector('#btn')
+    el.addEventListener('click', e => {
+      console.log(1111, e)
+      try {
+        // TODO: 测试链接
+        window.location.href = "alipay://platformapi/startapp?appId=20000056"
+      } catch (error) {
+        console.error(1111, error);
+      }
+    })
+  </script>
 </body>
+
 </html>
