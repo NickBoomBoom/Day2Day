@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>3D老虎机抽奖游戏</title>
+<style>
+    body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.slot-machine {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.column {
+    width: 150px;
+    height: 300px;
+    margin: 0 20px;
+    border: 1px solid #333;
+    overflow: hidden;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #0077FF;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+/* ...之前的CSS样式... */
+
+.symbol {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    animation: blink 1s alternate infinite; /* 添加闪烁动画 */
+}
+
+@keyframes blink {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+</style>
+</head>
+<body>
+    <div class="slot-machine">
+        <div class="column">
+            <canvas id="slot1"></canvas>
+            <div class="symbol">A</div> <!-- 添加闪烁字符 -->
+        </div>
+        <div class="column">
+            <canvas id="slot2"></canvas>
+            <div class="symbol">B</div> <!-- 添加闪烁字符 -->
+        </div>
+        <div class="column">
+            <canvas id="slot3"></canvas>
+            <div class="symbol">C</div> <!-- 添加闪烁字符 -->
+        </div>
+        <button id="spin-button">抽奖</button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+
+<script>
+    // game.js
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+const loader = new THREE.FontLoader();
+const canvas1 = document.getElementById('slot1');
+const canvas2 = document.getElementById('slot2');
+const canvas3 = document.getElementById('slot3');
+const spinButton = document.getElementById('spin-button');
+
+renderer.setSize(150, 300);
+
+canvas1.appendChild(renderer.domElement);
+canvas2.appendChild(renderer.domElement.cloneNode());
+canvas3.appendChild(renderer.domElement.cloneNode());
+
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+const slot1 = new THREE.Mesh(geometry, material);
+const slot2 = new THREE.Mesh(geometry, material);
+const slot3 = new THREE.Mesh(geometry, material);
+
+scene.add(slot1);
+scene.add(slot2);
+scene.add(slot3);
+
+camera.position.z = 5;
+
+const animate = () => {
+    requestAnimationFrame(animate);
+
+    slot1.rotation.x += 0.01;
+    slot1.rotation.y += 0.01;
+
+    slot2.rotation.x += 0.01;
+    slot2.rotation.y += 0.01;
+
+    slot3.rotation.x += 0.01;
+    slot3.rotation.y += 0.01;
+
+    renderer.render(scene, camera);
+};
+
+animate();
+
+spinButton.addEventListener('click', () => {
+    // 防止多次点击抽奖按钮
+    spinButton.disabled = true;
+    console.log(222)
+
+    // 随机生成抽奖结果，这里假设抽奖结果是一个包含每个轮盘的获奖符号索引的数组
+    const winningSymbols = [];
+    const symbolCount = 5; // 假设有5种符号
+
+    for (let i = 0; i < 3; i++) {
+        const randomSymbolIndex = Math.floor(Math.random() * symbolCount);
+        winningSymbols.push(randomSymbolIndex);
+    }
+
+    // 设置轮盘的旋转目标角度，可以根据您的需求进行调整
+    const targetRotation = 2 * Math.PI * 5; // 5圈
+
+    // 使用TweenMax或其他动画库来控制轮盘的旋转动画
+    // 这里使用TweenMax来示范
+    TweenMax.to(slot1.rotation, 3, { y: targetRotation, onComplete: () => stopSpinning(0, winningSymbols[0]) });
+    TweenMax.to(slot2.rotation, 3, { y: targetRotation, onComplete: () => stopSpinning(1, winningSymbols[1]) });
+    TweenMax.to(slot3.rotation, 3, { y: targetRotation, onComplete: () => stopSpinning(2, winningSymbols[2]) });
+});
+
+// 停止轮盘旋转并展示获奖结果
+function stopSpinning(slotIndex, winningSymbolIndex) {
+    // 在这里添加停止轮盘旋转的逻辑，可以使用TweenMax来实现
+    // 根据获奖结果（winningSymbolIndex）来停止轮盘
+    // 更新轮盘的角度，使其显示获奖符号
+
+    // 例如，可以使用TweenMax来将轮盘的角度旋转到获奖符号的位置
+    const targetRotation = -Math.PI * 2 * winningSymbolIndex; // 假设每个符号占用 1/5 圈
+
+    const targetSlot = slotIndex === 0 ? slot1 : (slotIndex === 1 ? slot2 : slot3);
+
+    TweenMax.to(targetSlot.rotation, 1, { y: targetRotation, onComplete: () => {
+        // 在动画完成后，您可以执行其他展示获奖结果的逻辑
+        // 例如，显示获奖信息、播放音效等等
+        console.log(`轮盘${slotIndex + 1} 停止在符号${winningSymbolIndex + 1} 上`);
+        
+        // 启用抽奖按钮以允许下一轮抽奖
+        spinButton.disabled = false;
+    } });
+}
+
+</script>
+
+</body>
+</html>

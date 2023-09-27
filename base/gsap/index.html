@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旋转和五角星特效</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .square {
+            width: 100px;
+            height: 100px;
+            background-color: red;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .star {
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 50px solid yellow;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="square">
+        <div class="star"></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script>
+        const square = document.querySelector(".square");
+        const star = document.querySelector(".star");
+
+        square.addEventListener("click", () => {
+            // 旋转正方形一圈（360度）并同时显示五角星
+            gsap.to(square, {
+                rotationY: 360,
+                duration: 1,
+                onComplete: () => {
+                    // 动画完成后展示五角星
+                    gsap.to(star, {
+                        width: 50,
+                        height: 50,
+                        opacity: 1,
+                        duration: 1
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
