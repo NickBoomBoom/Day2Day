@@ -1,27 +1,19 @@
-<template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + Vite" />
-</template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
-
-export default defineComponent({
-  name: "App",
-  components: {
-    HelloWorld,
-  },
-});
+<script setup lang="ts">
+import { ref, watch } from 'vue'
+import { Editor } from 'novel-vue'
+import 'novel-vue/dist/style.css'
+const content = ref('')
+watch(content, (v: any) => {
+  console.log(1111, v)
+})
+function handleUpdate(e: any) {
+  console.log(3333, e)
+  console.log(444, e.getJSON())
+}
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<template>
+  <div>
+    <Editor @debouncedUpdate="handleUpdate" className="w-full" />
+  </div>
+</template>
