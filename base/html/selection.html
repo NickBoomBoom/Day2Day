@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Selection Range Demo</title>
+</head>
+
+<body>
+  <p>Select some text and then use the buttons to save and restore the selection range.</p>
+  <p id="myText">This is a sample text. Select a part of this text.</p>
+  <button onclick="saveSelection()">Save Selection</button>
+  <button onclick="clearSelection()">Clear Selection</button>
+  <button onclick="restoreSelection()">Restore Selection</button>
+
+  <input type="text" onkeydown="submit()">
+  <script>
+    var savedRange; // 用于保存选择范围
+
+    function saveSelection() {
+      var selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        savedRange = selection.getRangeAt(0);
+      }
+    }
+
+    function clearSelection() {
+      if (window.getSelection) {
+        window.getSelection().removeAllRanges();
+      } else if (document.selection) {
+        document.selection.empty();
+      }
+    }
+
+    function restoreSelection() {
+      if (savedRange) {
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(savedRange);
+      }
+    }
+
+    function submit() {
+      console.log(3344)
+      restoreSelection()
+    }
+  </script>
+</body>
+
+</html>

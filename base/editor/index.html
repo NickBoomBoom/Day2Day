@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script><!-- Header -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/simple-image@latest"></script><!-- Image -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@latest"></script><!-- Delimiter -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/nested-list@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@latest"></script><!-- Checklist -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script><!-- Quote -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/code@latest"></script><!-- Code -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@latest"></script><!-- Embed -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/table@latest"></script><!-- Table -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/link@latest"></script><!-- Link -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/warning@latest"></script><!-- Warning -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@latest"></script><!-- Marker -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@latest"></script><!-- Inline Code -->
+  <script src="https://cdn.jsdelivr.net/npm/editorjs-alert@latest"></script> <!-- Alert 文块 -->
+  <script src="https://cdn.jsdelivr.net/npm/@editorjs/attaches@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/editorjs-html@3.4.0/build/edjsHTML.browser.js"></script>
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    main {
+      display: flex;
+      height: 100vh;
+
+    }
+
+    main>div {
+      width: 33.333333%;
+    }
+
+    #editorjs {
+      border: 1px solid grey;
+      padding: 0 40px;
+    }
+
+    .html {
+      border: 1px solid grey;
+    }
+
+    .output {
+      border: 1px solid grey;
+    }
+
+    h2 {
+      padding: 0;
+      margin: 0;
+    }
+
+    .wrap {
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+    }
+
+    .wrap>div,
+    .wrap>pre {
+      flex: 1;
+      overflow: auto;
+    }
+
+    pre {
+      background-color: black;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <div class="wrap">
+      <h2>编辑器区</h2>
+      <div id="editorjs"></div>
+    </div>
+
+    <div class="wrap">
+      <h2>
+        输出区
+      </h2>
+
+      <pre class="output">
+
+      </pre>
+    </div>
+
+    <div class="wrap">
+      <h2>
+        html
+      </h2>
+      <div class="html"></div>
+    </div>
+  </main>
+
+  <script>
+
+    const edjsParser = edjsHTML();
+
+
+
+    const editor = new EditorJS({
+      /**
+       * Id of Element that should contain Editor instance
+       */
+      holder: 'editorjs',
+      /**
+      * Tools list
+      */
+      tools: {
+        // paragraph: {
+        //   class: Paragraph,
+        //   inlineToolbar: true,
+        // },
+        alert: {
+          class: Alert,
+          inlineToolbar: true,
+          shortcut: 'CMD+SHIFT+A',
+          config: {
+            defaultType: 'primary',
+            messagePlaceholder: 'Enter something',
+          },
+        },
+        /**
+         * Each Tool is a Plugin. Pass them via 'class' option with necessary settings {@link docs/tools.md}
+         */
+        header: {
+          class: Header,
+          inlineToolbar: ['link'],
+          config: {
+            placeholder: 'Header',
+            levels: [1, 2, 3, 4, 5, 6],
+            defaultLevel: 1
+          },
+          shortcut: 'CMD+SHIFT+H'
+        },
+        /**
+         * Or pass class directly without any configuration
+         */
+        image: {
+          class: SimpleImage,
+          inlineToolbar: ['link'],
+        },
+        list: {
+          class: NestedList,
+          inlineToolbar: true,
+          config: {
+            defaultStyle: 'ordered'
+          },
+        },
+        checklist: {
+          class: Checklist,
+          inlineToolbar: true,
+        },
+        quote: {
+          class: Quote,
+          inlineToolbar: true,
+          config: {
+            quotePlaceholder: 'Enter a quote',
+            captionPlaceholder: 'Quote\'s author',
+          },
+          shortcut: 'CMD+SHIFT+O'
+        },
+        warning: Warning,
+        marker: {
+          class: Marker,
+          shortcut: 'CMD+SHIFT+M'
+        },
+        code: {
+          class: CodeTool,
+          shortcut: 'CMD+SHIFT+C'
+        },
+        delimiter: Delimiter,
+        inlineCode: {
+          class: InlineCode,
+          shortcut: 'CMD+SHIFT+C'
+        },
+        linkTool: LinkTool,
+        embed: Embed,
+        table: {
+          class: Table,
+          inlineToolbar: true,
+          shortcut: 'CMD+ALT+T'
+        },
+        attaches: {
+          class: AttachesTool,
+          config: {
+            endpoint: 'http://localhost:8008/uploadFile'
+          }
+        }
+      },
+      onReady: function (e) {
+        console.log(23333, e)
+        // saveButton.click();
+      },
+      onChange: function (e) {
+        console.log('something changed', e);
+        e.saver.save().then(res => {
+          console.log(111, res)
+
+          let html = edjsParser.parse(res);
+          document.querySelector('.html').innerHTML = html.join('')
+          document.querySelector('.output').innerHTML = JSON.stringify(res, null, 2)
+        })
+      }
+    });
+  </script>
+</body>
+
+</html>
