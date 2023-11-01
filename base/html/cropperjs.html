@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://unpkg.com/cropperjs@next"></script>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+    }
+
+
+    .block {
+      flex: 1;
+      border: 1px solid skyblue;
+    }
+
+    cropper-canvas {
+      height: 500px;
+      width: 800px;
+    }
+
+    .view {
+      height: 40vh;
+      width: 700px;
+    }
+  </style>
+  <script>
+    class CustomImage extends HTMLElement {
+      _id = 'custom_image_' + Date.now()
+      cropperInstance = null
+      connectedCallback() {
+        const content = document.createElement('div')
+        this.cropperInstance = new window.Cropper.default(this.image, {
+          container: content,
+          template: `
+            <cropper-canvas background>
+              <cropper-image></cropper-image>
+              <cropper-shade hidden></cropper-shade>
+              <cropper-handle action="select" plain></cropper-handle>
+              <cropper-selection id="${this._id}" initial-coverage="0.5" movable resizable zoomable>
+                <cropper-handle action="move" theme-color="rgba(255, 255, 255, 0.35)"></cropper-handle>
+                <cropper-handle action="n-resize"></cropper-handle>
+                <cropper-handle action="e-resize"></cropper-handle>
+                <cropper-handle action="s-resize"></cropper-handle>
+                <cropper-handle action="w-resize"></cropper-handle>
+                <cropper-handle action="ne-resize"></cropper-handle>
+                <cropper-handle action="nw-resize"></cropper-handle>
+                <cropper-handle action="se-resize"></cropper-handle>
+                <cropper-handle action="sw-resize"></cropper-handle>
+              </cropper-selection>
+            </cropper-canvas>
+        `
+        })
+        const selection = this.cropperInstance.getCropperSelection()
+        const imageArea = this.cropperInstance.getCropperImage()
+        this.appendChild(content)
+        this.appendChild(this.viewer)
+
+
+        setTimeout(() => {
+          selection.$change(this.x, this.y, this.width, this.height)
+          imageArea.$transform(this.matrix)
+          console.log(111, this.src, this.x, this.y, this.width, this.height, this.matrix)
+        });
+      }
+      get src() {
+        return this.getAttribute('src')
+      }
+
+      get x() {
+        return +this.getAttribute('x')
+      }
+      get y() {
+        return +this.getAttribute('y')
+      }
+      get width() {
+        return +this.getAttribute('width')
+      }
+      get height() {
+        return +this.getAttribute('height')
+      }
+      get matrix() {
+        const res = this.getAttribute('matrix') || ''
+        if (res) {
+          return res.split(',').map(t => +t)
+        }
+        return []
+      }
+
+      get image() {
+        const img = new Image()
+        img.src = this.src
+        return img
+      }
+      get viewer() {
+        const el = document.createElement('cropper-viewer')
+        el.selection = `#${this._id}`
+        el.style.cssText = `
+          width: 300px;
+        `
+        return el
+      }
+    }
+    window.customElements.define('custom-image', CustomImage)
+
+
+  </script>
+
+</head>
+
+<body>
+  <!-- <div class="container">
+    <div class="block">
+      <div>
+        <button onclick="rotate('-90deg')">
+          旋转-90度
+        </button>
+        <button onclick="rotate('90deg')">
+          旋转90度
+        </button>
+        <button onclick="rotate('180deg')">
+          旋转180度
+        </button>
+        <button onclick="rotate('-180deg')">
+          旋转-180度
+        </button>
+        <button onclick="reset()">
+          reset
+        </button>
+      </div>
+      <div class="view">
+      </div>
+    </div>
+    <div class="block" id="show">
+    </div>
+  </div>
+
+
+  <div id="viewer">
+
+  </div> -->
+
+  <custom-image src="https://tu.sioe.cn/gj/qiege/image.jpg" />
+  <custom-image src="https://tu.sioe.cn/gj/qiege/image.jpg" x="118" y="66" width="82" height="287"
+    matrix="0.9668508287292817,0,0,0.9668508287292817,-12,-104.203125" />
+
+
+
+  <script>
+    // const image = new Image()
+    // image.src = 'https://tu.sioe.cn/gj/qiege/image.jpg'
+    // image.alt = 'Picture'
+    // const selectionId = 'test'
+    // const cropper = new window.Cropper.default(image, {
+    //   container: '.view',
+    //   template: `
+    //   <cropper-canvas background>
+    //     <cropper-image></cropper-image>
+    //     <cropper-shade hidden></cropper-shade>
+    //     <cropper-handle action="select" plain></cropper-handle>
+    //     <cropper-selection id="${selectionId}" initial-coverage="0.5" movable resizable zoomable>
+    //       <cropper-handle action="move" theme-color="rgba(255, 255, 255, 0.35)"></cropper-handle>
+    //       <cropper-handle action="n-resize"></cropper-handle>
+    //       <cropper-handle action="e-resize"></cropper-handle>
+    //       <cropper-handle action="s-resize"></cropper-handle>
+    //       <cropper-handle action="w-resize"></cropper-handle>
+    //       <cropper-handle action="ne-resize"></cropper-handle>
+    //       <cropper-handle action="nw-resize"></cropper-handle>
+    //       <cropper-handle action="se-resize"></cropper-handle>
+    //       <cropper-handle action="sw-resize"></cropper-handle>
+    //     </cropper-selection>
+    //   </cropper-canvas>
+    //   `
+    // })
+    // const selection = cropper.getCropperSelection()
+    // const imageArea = cropper.getCropperImage()
+
+
+
+    // const data = {
+    //   box: {},
+    //   transform: [],
+    // }
+
+    // const proxy = new Proxy(data, {
+    //   set(target, prop, receiver) {
+    //     target[prop] = receiver
+    //     console.log(data)
+    //   }
+    // })
+    // selection.onchange = e => {
+    //   proxy.box = e.detail
+    // }
+
+    // imageArea.addEventListener('transform', e => {
+    //   proxy.transform = e.detail.matrix
+    // })
+    // console.log(222, cropper, selection, imageArea)
+    // function rotate(x) {
+    //   imageArea.$rotate(x)
+    // }
+
+    // function reset() {
+    //   imageArea.$resetTransform()
+    //   // imageArea.$center('contain')
+    //   selection.$reset()
+    // }
+
+
+    // const datatmp = {
+    //   "box": {
+    //     "x": 119,
+    //     "y": 66,
+    //     "width": 82,
+    //     "height": 287
+    //   },
+    //   "transform": [
+    //     0.9668508287292817,
+    //     0,
+    //     0,
+    //     0.9668508287292817,
+    //     -12,
+    //     -104.203125
+    //   ]
+    // }
+    // const { x, y, width, height } = datatmp.box
+    // selection.$change(x, y, width, height)
+    // imageArea.$transform(datatmp.transform)
+    // setTimeout(() => {
+
+    //   const showEl = document.querySelector('#show')
+    //   showEl.innerHTML = `<cropper-viewer selection="#${selectionId}" style="width:300px;"/>`
+    // }, 0);
+
+
+  </script>
+
+
+
+</body>
+
+</html>
