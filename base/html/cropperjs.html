@@ -86,7 +86,7 @@
 
     class CustomImage extends HTMLElement {
       _viewId = 'custom_image_' + Date.now()
-      _dialogId = 'dialog-image' + Date.now()
+      _dialogId = 'dialog-image_' + Date.now()
       cropperInstance = null
       dialogCropperInstance = null
       dialog = null
@@ -95,18 +95,16 @@
         super()
         console.log(1111, props)
         this.attachShadow({ mode: 'open' });
-
-
       }
       connectedCallback() {
         console.log('植入中')
 
-        this.createDialogCropper()
+        // this.createDialogCropper()
         this.createViewCropper()
-        this.shadowRoot.appendChild(this.dialog)
+        // this.shadowRoot.appendChild(this.dialog)
         this.shadowRoot.appendChild(this.viewer)
         this.syncAttr(this.cropperInstance)
-        this.syncAttr(this.dialogCropperInstance)
+        // this.syncAttr(this.dialogCropperInstance)
 
 
 
@@ -149,12 +147,11 @@
 
       createViewCropper() {
         const container = document.createElement('div')
-        this.shadowRoot.appendChild(container)
-        // container.style.cssText = `
-        //   width: 0;
-        //   height: 0;
-        //   overflow:hidden;
-        // `
+        container.style.cssText = `
+          width: 0;
+          height: 0;
+          overflow:hidden;
+        `
         this.cropperInstance = new window.Cropper.default(this.image, {
           container,
           template: `
@@ -181,16 +178,15 @@
         this.viewer = document.createElement('div')
         const button = document.createElement('button')
         button.innerHTML = `open`
-        const cropperViewer = document.createElement('cropper-viewer')
-        cropperViewer.selection = `#${this._viewId}`
-        cropperViewer.style.cssText = `
-          width: 300px;
+        this.viewer.innerHTML = `
+          <cropper-viewer selection="#${this._viewId}"></cropper-viewer>
         `
-        this.viewer.appendChild(cropperViewer)
-        this.viewer.appendChild(button)
         button.addEventListener('click', () => {
           this.dialog.$open()
         })
+        this.viewer.appendChild(container)
+        this.viewer.appendChild(button)
+
       }
 
       createDialogCropper() {
@@ -223,7 +219,6 @@
             </div>
           `
         })
-
       }
 
 
@@ -248,11 +243,46 @@
 <body>
 
   <custom-image src="https://tu.sioe.cn/gj/qiege/image.jpg" x="118" y="66" width="82" height="100"
-    matrix="0.9668508287292817,0,0,0.9668508287292817,-12,-104.203125" />
+    matrix="0.9668508287292817,0,0,0.9668508287292817,-12,-104.203125">
+
+  </custom-image>
 
 
 
+  <hr>
 
+  <script>
+    const content = document.createElement('div')
+    const img = new Image()
+    img.src = "https://tu.sioe.cn/gj/qiege/image.jpg"
+    new window.Cropper.default(img, {
+      container: content,
+      template: `
+              <cropper-canvas background>
+                  <cropper-image></cropper-image>
+                  <cropper-shade hidden></cropper-shade>
+                  <cropper-handle action="select" plain></cropper-handle>
+                  <cropper-selection id="test" initial-coverage="0.5" movable resizable zoomable>
+                    <cropper-handle action="move" theme-color="rgba(255, 255, 255, 0.35)"></cropper-handle>
+                    <cropper-handle action="n-resize"></cropper-handle>
+                    <cropper-handle action="e-resize"></cropper-handle>
+                    <cropper-handle action="s-resize"></cropper-handle>
+                    <cropper-handle action="w-resize"></cropper-handle>
+                    <cropper-handle action="ne-resize"></cropper-handle>
+                    <cropper-handle action="nw-resize"></cropper-handle>
+                    <cropper-handle action="se-resize"></cropper-handle>
+                    <cropper-handle action="sw-resize"></cropper-handle>
+                  </cropper-selection>
+                </cropper-canvas>
+                <div>
+                  <cropper-viewer selection="#test"></cropper-viewer>
+                </div>
+          `
+    })
+
+
+    document.body.appendChild(content)
+  </script>
 </body>
 
 </html>
