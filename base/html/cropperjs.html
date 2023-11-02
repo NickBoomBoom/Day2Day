@@ -12,65 +12,104 @@
       margin: 0;
       padding: 0;
     }
-
-    .container {
-      display: flex;
-    }
-
-
-    .block {
-      flex: 1;
-      border: 1px solid skyblue;
-    }
-
-    cropper-canvas {
-      height: 500px;
-      width: 800px;
-    }
-
-    .view {
-      height: 40vh;
-      width: 700px;
-    }
   </style>
   <script>
-    class CustomImage extends HTMLElement {
-      _id = 'custom_image_' + Date.now()
-      cropperInstance = null
-      connectedCallback() {
-        const content = document.createElement('div')
-        this.cropperInstance = new window.Cropper.default(this.image, {
-          container: content,
-          template: `
-            <cropper-canvas background>
-              <cropper-image></cropper-image>
-              <cropper-shade hidden></cropper-shade>
-              <cropper-handle action="select" plain></cropper-handle>
-              <cropper-selection id="${this._id}" initial-coverage="0.5" movable resizable zoomable>
-                <cropper-handle action="move" theme-color="rgba(255, 255, 255, 0.35)"></cropper-handle>
-                <cropper-handle action="n-resize"></cropper-handle>
-                <cropper-handle action="e-resize"></cropper-handle>
-                <cropper-handle action="s-resize"></cropper-handle>
-                <cropper-handle action="w-resize"></cropper-handle>
-                <cropper-handle action="ne-resize"></cropper-handle>
-                <cropper-handle action="nw-resize"></cropper-handle>
-                <cropper-handle action="se-resize"></cropper-handle>
-                <cropper-handle action="sw-resize"></cropper-handle>
-              </cropper-selection>
-            </cropper-canvas>
-        `
-        })
-        const selection = this.cropperInstance.getCropperSelection()
-        const imageArea = this.cropperInstance.getCropperImage()
-        this.appendChild(content)
-        this.appendChild(this.viewer)
+    class PopupDialog extends HTMLElement {
+      constructor() {
+        super();
+        // 创建影子DOM
+        this.attachShadow({ mode: 'open' });
+        // 设置初始样式
+        this.shadowRoot.innerHTML = `
+          <style>
+            .popup-container {
+              display: none;
+              position: fixed;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              width: 100%;
+              height: 100%;
+              background-color: rgba(0, 0, 0, 0.5);
+              justify-content: center;
+              align-items: center;
+              z-index: 9999;
+            }
+            .popup-content {
 
-
-        setTimeout(() => {
-          selection.$change(this.x, this.y, this.width, this.height)
-          imageArea.$transform(this.matrix)
-          console.log(111, this.src, this.x, this.y, this.width, this.height, this.matrix)
+              background-color: white;
+              padding: 20px;
+              border-radius: 5px;
+              box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+          </style>
+          <div class="popup-container">
+            <div class="popup-content">
+              <slot></slot>
+              <button id="close-button">关闭</button>
+            </div>
+          </div>
+        `;
+        // 获取关闭按钮
+        this.closeButton = this.shadowRoot.getElementById('close-button');
+        // 添加事件监听器以关闭弹窗
+        this.closeButton.addEventListener('click', () => {
+          this.$close();
         });
+        this.mask = this.shadowRoot.querySelector('.popup-container')
+        this.mask.addEventListener('click', () => {
+          this.$close()
+        })
+        this.container = this.shadowRoot.querySelector('.popup-content')
+        this.container.addEventListener('click', e => {
+          e.stopPropagation()
+        })
+      }
+
+      connectedCallback() {
+      }
+
+      $open() {
+        const popupContainer = this.shadowRoot.querySelector('.popup-container');
+        popupContainer.style.display = 'flex';
+      }
+
+      $close() {
+        const popupContainer = this.shadowRoot.querySelector('.popup-container');
+        popupContainer.style.display = 'none';
+      }
+    }
+
+    customElements.define('popup-dialog', PopupDialog);
+
+
+    class CustomImage extends HTMLElement {
+      _viewId = 'custom_image_' + Date.now()
+      _dialogId = 'dialog-image' + Date.now()
+      cropperInstance = null
+      dialogCropperInstance = null
+      dialog = null
+      viewer = null
+      constructor(props) {
+        super()
+        console.log(1111, props)
+        this.attachShadow({ mode: 'open' });
+
+
+      }
+      connectedCallback() {
+        console.log('植入中')
+
+        this.createDialogCropper()
+        this.createViewCropper()
+        this.shadowRoot.appendChild(this.dialog)
+        this.shadowRoot.appendChild(this.viewer)
+        this.syncAttr(this.cropperInstance)
+        this.syncAttr(this.dialogCropperInstance)
+
+
+
       }
       get src() {
         return this.getAttribute('src')
@@ -101,14 +140,103 @@
         img.src = this.src
         return img
       }
-      get viewer() {
-        const el = document.createElement('cropper-viewer')
-        el.selection = `#${this._id}`
-        el.style.cssText = `
+
+      get readOnly() {
+        const res = this.getAttribute('readOnly')
+        return res === 'true'
+      }
+
+
+      createViewCropper() {
+        const container = document.createElement('div')
+        this.shadowRoot.appendChild(container)
+        // container.style.cssText = `
+        //   width: 0;
+        //   height: 0;
+        //   overflow:hidden;
+        // `
+        this.cropperInstance = new window.Cropper.default(this.image, {
+          container,
+          template: `
+              <cropper-canvas background>
+                <cropper-image></cropper-image>
+                <cropper-shade hidden></cropper-shade>
+                <cropper-handle action="select" plain></cropper-handle>
+                <cropper-selection id="${this._viewId}" initial-coverage="0.5" movable resizable zoomable>
+                  <cropper-handle action="move" theme-color="rgba(255, 255, 255, 0.35)"></cropper-handle>
+                    <cropper-handle action="n-resize"></cropper-handle>
+                    <cropper-handle action="e-resize"></cropper-handle>
+                    <cropper-handle action="s-resize"></cropper-handle>
+                    <cropper-handle action="w-resize"></cropper-handle>
+                    <cropper-handle action="ne-resize"></cropper-handle>
+                    <cropper-handle action="nw-resize"></cropper-handle>
+                    <cropper-handle action="se-resize"></cropper-handle>
+                    <cropper-handle action="sw-resize"></cropper-handle>
+                </cropper-selection>
+              </cropper-canvas>
+            `
+        })
+
+
+        this.viewer = document.createElement('div')
+        const button = document.createElement('button')
+        button.innerHTML = `open`
+        const cropperViewer = document.createElement('cropper-viewer')
+        cropperViewer.selection = `#${this._viewId}`
+        cropperViewer.style.cssText = `
           width: 300px;
         `
-        return el
+        this.viewer.appendChild(cropperViewer)
+        this.viewer.appendChild(button)
+        button.addEventListener('click', () => {
+          this.dialog.$open()
+        })
       }
+
+      createDialogCropper() {
+        this.dialog = document.createElement('popup-dialog')
+        const container = document.createElement('div')
+        this.dialog.appendChild(container)
+        this.dialogCropperInstance = new window.Cropper.default(this.image, {
+          container,
+          template: `
+            <div style="width: 50vw;height: 40vh">
+              <cropper-canvas background>
+                  <cropper-image></cropper-image>
+                  <cropper-shade hidden></cropper-shade>
+                  <cropper-handle action="select" plain></cropper-handle>
+                  <cropper-selection id="${this._dialogId}" initial-coverage="0.5" movable resizable zoomable>
+                    <cropper-handle action="move" theme-color="rgba(255, 255, 255, 0.35)"></cropper-handle>
+                    <cropper-handle action="n-resize"></cropper-handle>
+                    <cropper-handle action="e-resize"></cropper-handle>
+                    <cropper-handle action="s-resize"></cropper-handle>
+                    <cropper-handle action="w-resize"></cropper-handle>
+                    <cropper-handle action="ne-resize"></cropper-handle>
+                    <cropper-handle action="nw-resize"></cropper-handle>
+                    <cropper-handle action="se-resize"></cropper-handle>
+                    <cropper-handle action="sw-resize"></cropper-handle>
+                  </cropper-selection>
+                </cropper-canvas>
+                <div>
+                  <cropper-viewer selection="#${this._dialogId}"></cropper-viewer>
+                </div>
+            </div>
+          `
+        })
+
+      }
+
+
+      syncAttr(instance) {
+        const selection = instance.getCropperSelection()
+        const imageArea = instance.getCropperImage()
+        console.log(333, selection, imageArea)
+        console.log(1111, this.x, this.y, this.width, this.height, this.matrix)
+        selection.$change(this.x, this.y, this.width, this.height)
+        imageArea.$transform(this.matrix)
+      }
+
+
     }
     window.customElements.define('custom-image', CustomImage)
 
@@ -118,131 +246,10 @@
 </head>
 
 <body>
-  <!-- <div class="container">
-    <div class="block">
-      <div>
-        <button onclick="rotate('-90deg')">
-          旋转-90度
-        </button>
-        <button onclick="rotate('90deg')">
-          旋转90度
-        </button>
-        <button onclick="rotate('180deg')">
-          旋转180度
-        </button>
-        <button onclick="rotate('-180deg')">
-          旋转-180度
-        </button>
-        <button onclick="reset()">
-          reset
-        </button>
-      </div>
-      <div class="view">
-      </div>
-    </div>
-    <div class="block" id="show">
-    </div>
-  </div>
 
-
-  <div id="viewer">
-
-  </div> -->
-
-  <custom-image src="https://tu.sioe.cn/gj/qiege/image.jpg" />
-  <custom-image src="https://tu.sioe.cn/gj/qiege/image.jpg" x="118" y="66" width="82" height="287"
+  <custom-image src="https://tu.sioe.cn/gj/qiege/image.jpg" x="118" y="66" width="82" height="100"
     matrix="0.9668508287292817,0,0,0.9668508287292817,-12,-104.203125" />
 
-
-
-  <script>
-    // const image = new Image()
-    // image.src = 'https://tu.sioe.cn/gj/qiege/image.jpg'
-    // image.alt = 'Picture'
-    // const selectionId = 'test'
-    // const cropper = new window.Cropper.default(image, {
-    //   container: '.view',
-    //   template: `
-    //   <cropper-canvas background>
-    //     <cropper-image></cropper-image>
-    //     <cropper-shade hidden></cropper-shade>
-    //     <cropper-handle action="select" plain></cropper-handle>
-    //     <cropper-selection id="${selectionId}" initial-coverage="0.5" movable resizable zoomable>
-    //       <cropper-handle action="move" theme-color="rgba(255, 255, 255, 0.35)"></cropper-handle>
-    //       <cropper-handle action="n-resize"></cropper-handle>
-    //       <cropper-handle action="e-resize"></cropper-handle>
-    //       <cropper-handle action="s-resize"></cropper-handle>
-    //       <cropper-handle action="w-resize"></cropper-handle>
-    //       <cropper-handle action="ne-resize"></cropper-handle>
-    //       <cropper-handle action="nw-resize"></cropper-handle>
-    //       <cropper-handle action="se-resize"></cropper-handle>
-    //       <cropper-handle action="sw-resize"></cropper-handle>
-    //     </cropper-selection>
-    //   </cropper-canvas>
-    //   `
-    // })
-    // const selection = cropper.getCropperSelection()
-    // const imageArea = cropper.getCropperImage()
-
-
-
-    // const data = {
-    //   box: {},
-    //   transform: [],
-    // }
-
-    // const proxy = new Proxy(data, {
-    //   set(target, prop, receiver) {
-    //     target[prop] = receiver
-    //     console.log(data)
-    //   }
-    // })
-    // selection.onchange = e => {
-    //   proxy.box = e.detail
-    // }
-
-    // imageArea.addEventListener('transform', e => {
-    //   proxy.transform = e.detail.matrix
-    // })
-    // console.log(222, cropper, selection, imageArea)
-    // function rotate(x) {
-    //   imageArea.$rotate(x)
-    // }
-
-    // function reset() {
-    //   imageArea.$resetTransform()
-    //   // imageArea.$center('contain')
-    //   selection.$reset()
-    // }
-
-
-    // const datatmp = {
-    //   "box": {
-    //     "x": 119,
-    //     "y": 66,
-    //     "width": 82,
-    //     "height": 287
-    //   },
-    //   "transform": [
-    //     0.9668508287292817,
-    //     0,
-    //     0,
-    //     0.9668508287292817,
-    //     -12,
-    //     -104.203125
-    //   ]
-    // }
-    // const { x, y, width, height } = datatmp.box
-    // selection.$change(x, y, width, height)
-    // imageArea.$transform(datatmp.transform)
-    // setTimeout(() => {
-
-    //   const showEl = document.querySelector('#show')
-    //   showEl.innerHTML = `<cropper-viewer selection="#${selectionId}" style="width:300px;"/>`
-    // }, 0);
-
-
-  </script>
 
 
 
