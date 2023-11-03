@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.css"
+    integrity="sha512-bs9fAcCAeaDfA4A+NiShWR886eClUcBtqhipoY5DM60Y1V3BbVQlabthUBal5bq8Z8nnxxiyb1wfGX2n76N1Mw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.js"
+    integrity="sha512-Zt7blzhYHCLHjU0c+e4ldn5kGAbwLKTSOTERgqSNyTB50wWSI21z0q6bn/dEIuqf6HiFzKJ6cfj2osRhklb4Og=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .image {
+      display: block;
+      max-width: 100%;
+    }
+
+    /* .cropper-container {
+      width: 70vw;
+      height: 40vh;
+
+    } */
+
+    .groups {
+      display: flex;
+      margin-top: 20px;
+    }
+
+    .groups>* {
+      margin-right: 20px;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div class="preview"></div>
+  <img src="//imgxz.bizhi3.com/cont/20220713/hdthybr0cae.jpg" alt="" class="image">
+
+  <div class="groups">
+    <button onclick="reset()"> 重置 </button>
+    <button onclick="showOrigin()">显示原图</button>
+
+    <div>
+      <label>旋转角度</label>
+      <input type="number" id="rotateInput">
+      <button onclick="rotate()">
+        去旋转
+      </button>
+    </div>
+
+    <button onclick="getData()">
+      获取裁剪数据
+    </button>
+    <button onclick="setMode('move')">
+      setDragMode 图片拖拽 move
+    </button>
+    <button onclick="setMode('crop')">
+      setDragMode 裁剪模式 crop
+    </button>
+
+  </div>
+
+  <script>
+    // const img = "https://tu.sioe.cn/gj/qiege/image.jpg"
+    const image = document.querySelector('.image')
+    const cropper = new window.Cropper(image, {
+      dragMode: "move",
+      aspectRatio: 16 / 9,
+      checkCrossOrigin: false,
+      checkOrientation: false,
+      viewMode: 1,
+      // preview: '.preview',
+      crop(event) {
+        console.log(event.detail.x);
+        console.log(event.detail.y);
+        console.log(event.detail.width);
+        console.log(event.detail.height);
+        console.log(event.detail.rotate);
+        console.log(event.detail.scaleX);
+        console.log(event.detail.scaleY);
+      },
+    });
+
+
+    function reset() {
+      cropper.reset()
+    }
+
+    function showOrigin() {
+      console.log('显示原图,裁剪数据全部归0')
+    }
+    function rotate() {
+      const input = document.querySelector('#rotateInput')
+      const v = input.value
+      console.log(v)
+      cropper.rotate(v)
+    }
+
+    function getData() {
+      const res = cropper.getData()
+      console.log(res)
+    }
+
+    function setMode(mode) {
+      cropper.setDragMode(mode)
+    }
+  </script>
+
+</body>
+
+</html>
