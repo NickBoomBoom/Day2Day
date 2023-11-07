@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.css"
+    integrity="sha512-bs9fAcCAeaDfA4A+NiShWR886eClUcBtqhipoY5DM60Y1V3BbVQlabthUBal5bq8Z8nnxxiyb1wfGX2n76N1Mw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.js"
+    integrity="sha512-Zt7blzhYHCLHjU0c+e4ldn5kGAbwLKTSOTERgqSNyTB50wWSI21z0q6bn/dEIuqf6HiFzKJ6cfj2osRhklb4Og=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="./popup.js"></script>
+  <script>
+    class ImageEditor extends HTMLElement {
+      dialog = null
+      preview = null
+      previewImage = null
+      cropperInstance = null
+
+      _isRendered = false
+
+      _data = {
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+        rotate: 0,
+        scaleX: 1,
+        scaleY: 1
+      }
+      constructor() {
+        super()
+        this.attachShadow({ mode: 'open' })
+        fetch('https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.css').then(res => res.text()).then(res => {
+          const node = document.createElement('style');
+          node.innerHTML = `
+            ${res}
+          `;
+          this.shadowRoot.appendChild(node);
+        })
+      }
+
+
+      static get observedAttributes() {
+        return ['x', 'y', 'readOnly', 'width', 'height', 'scaleX', 'scaleY', 'rotate'];
+      }
+
+      get src() {
+        return this.getAttribute('src')
+      }
+      get x() {
+        return +this.getAttribute('x') || 0
+      }
+      get y() {
+        return +this.getAttribute('y') || 0
+      }
+      get width() {
+        return +this.getAttribute('width')
+      }
+      get height() {
+        return +this.getAttribute('height')
+      }
+      get scaleX() {
+        return +this.getAttribute('scaleX')
+      }
+      get scaleY() {
+        return +this.getAttribute('scaleY')
+      }
+      get rotate() {
+        return +this.getAttribute('rotate')
+      }
+
+      get readOnly() {
+        const res = this.getAttribute('readOnly')
+        return res === 'true'
+      }
+
+      get data() {
+        return {
+          x: this.x,
+          y: this.y,
+          width: this.width,
+          height: this.height,
+          rotate: this.rotate,
+          scaleX: this.scaleX,
+          scaleY: this.scaleY
+        }
+      }
+
+      connectedCallback() {
+        console.log(11111, this.src, this.x, this.y, this.width, this.height, this.scaleX, this.scaleY, this.rotate, this.readOnly)
+        this.renderPreview()
+        this.renderDialog()
+        this._isRendered = true
+      }
+
+
+
+
+      attributeChangedCallback(name, oldValue, newValue) {
+        console.warn('Custom square element attributes changed.', name, oldValue, newValue);
+        this._isRendered && this.updateStyles()
+      }
+
+      disconnectedCallback() {
+        console.log('Custom square element removed from page.');
+      }
+
+      adoptedCallback() {
+        console.log('Custom square element moved to new page.');
+      }
+
+      $downloadCutImg() {
+
+      }
+      renderPreview() {
+        this.preview = document.createElement('div')
+        this.previewImage = document.createElement('img')
+        this.previewImage.src = this.src
+        this.preview.appendChild(this.previewImage)
+        this.shadowRoot.appendChild(this.preview)
+        this.updateStyles()
+        this.preview.addEventListener('click', e => {
+          !this.readOnly && this.dialog.$open()
+        })
+      }
+      renderDialog() {
+        this.dialog = document.createElement('popup-dialog')
+        const el = document.createElement('img')
+        el.src = this.src
+        this.dialog.appendChild(el)
+        this.shadowRoot.appendChild(this.dialog)
+
+        this.cropperInstance = new window.Cropper(el, {
+          dragMode: "move",
+          viewMode: 1,
+          minContainerWidth: document.body.clientWidth * .6,
+          minContainerHeight: document.body.clientWidth * .4,
+          crop: (event) => {
+            this._data = event.detail
+          },
+          ready: (e) => {
+            this.cropperInstance.setData(this.data)
+          }
+        });
+        const btnGroups = document.createElement('div')
+        btnGroups.innerHTML = `
+          <button data-type="reset"> 重置 </button>
+          <button data-type="rotate"> 旋转 </button>
+          <button data-type="origin"> 显示原图 </button>
+        `
+        this.dialog.appendChild(btnGroups)
+        this.dialog.addEventListener('confirm', e => {
+          this.updateAttrs()
+        })
+      }
+
+      updateAttrs() {
+        const res = this.cropperInstance.getData()
+        for (const key in res) {
+          this.setAttribute(key, res[key])
+        }
+        this.dialog.$close()
+      }
+
+      updateStyles() {
+        const { width: parentWidth, height: parentHeight } = this.parentElement.getBoundingClientRect()
+        const previewScale = this.width > parentWidth ? parentWidth / this.width : 1
+        this.preview.style.cssText = `
+          width:${this.width}px;
+          height:${this.height}px;
+          overflow: hidden;
+          zoom: ${previewScale};
+          cursor: ${this.readOnly ? 'unset' : 'pointer'}
+        `
+        this.previewImage.style.cssText = `
+          transform: translate(${-this.x}px, ${-this.y}px) scale(${this.scaleX},${this.scaleY}) rotate(${this.rotate}deg);
+          user-select: none;
+          -webkit-user-drag: none;
+        `
+      }
+    }
+
+
+    window.customElements.define('image-editor', ImageEditor)
+
+  </script>
+  <style>
+    .outer {
+      width: 300px;
+      background-color: grey;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- matrix( scaleX(), skewY(), skewX(), scaleY(), translateX(), translateY() ) -->
+  <!-- <div class="outer">
+    <image-editor src="./image.jpg" x="122" y="82" width="118" height="400" scaleX="1" scaleY="1" rotate="0"
+      readOnly></image-editor>
+  </div> -->
+  <div class="outer">
+    <image-editor src="./image.jpg" x="222" y="82" width="400" height="400" scaleX="1" scaleY="1" rotate="0"
+      readOnly></image-editor>
+  </div>
+
+</body>
+
+</html>

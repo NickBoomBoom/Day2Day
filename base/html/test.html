@@ -6,26 +6,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <style>
-    html {
-      background-color: black;
+    html,
+    body {
+      width: 100vw;
+      height: 100vh;
+
     }
 
-    img {
-      display: block;
+    .hover:hover {
+      transform: scale(1.2);
+    }
+
+    .hover:hover>.hover-span {
+      transform: scale(0.8);
     }
 
     div {
-      width: 100vw;
-      height: 200px;
-      background-color: red;
+      display: inline-block;
+      position: relative;
+      width: 5em;
+      background-color: grey;
+    }
+
+    .hover-span {
+      /* position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap; */
+    }
+
+    span {
+      font-size: 20px;
+      color: red;
     }
   </style>
 </head>
 
 <body>
+  <div>
+    <span>
+      测试文字
+    </span>
+  </div>
+  <br>
 
-  <img src="./footer-red-m.png" alt="">
-  <div></div>
+  <div class="hover">
+    <span class="hover-span">
+      测试文字
+    </span>
+  </div>
 </body>
 
 </html>
