@@ -132,7 +132,7 @@
         el.src = this.src
         this.dialog.appendChild(el)
         this.shadowRoot.appendChild(this.dialog)
-
+        this.getDialogStyle()
         this.cropperInstance = new window.Cropper(el, {
           dragMode: "move",
           viewMode: 1,
@@ -180,6 +180,11 @@
           user-select: none;
           -webkit-user-drag: none;
         `
+      }
+
+      getDialogStyle() {
+        const w = document.body.clientWidth
+        console.log(w)
       }
     }
 
