@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>css3d翻转</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .item {
+      width: 200px;
+      height: 200px;
+      perspective: 500px;
+    }
+
+    .box {
+      background: #abb9c5;
+      width: 100%;
+      height: 100%;
+      transition: all 1s;
+      transform-style: preserve-3d;
+      position: relative;
+    }
+
+    .item:hover .box {
+      transform: rotateY(180deg);
+    }
+
+    .font,
+    .back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      line-height: 200px;
+
+      backface-visibility: hidden;
+    }
+
+    .back {
+      transform: rotateY(180deg);
+    }
+  </style>
+</head>
+
+<body>
+  <!--item 可以触发翻转的区域-->
+  <div class="item">
+    <!--box 可以翻转的容器-->
+    <div class="box">
+      <!--font 默认显示的正面-->
+      <div class="font">正面</div>
+      <!--back 背面-->
+      <div class="back">背面</div>
+    </div>
+  </div>
+</body>
+
+</html>
