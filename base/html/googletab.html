@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tab Curve Example</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+
+    .tab {
+      width: 200px;
+      height: 40px;
+      background-color: #ffffff;
+      border: 1px solid #cccccc;
+      position: relative;
+      margin: 0 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab::before,
+    .tab::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #ffffff;
+      border: 1px solid #cccccc;
+      z-index: -1;
+    }
+
+    .tab::before {
+      left: -11px;
+      bottom: -11px;
+      clip-path: polygon(0 100%, 100% 100%, 100% 50%, 50% 0, 0 0);
+    }
+
+    .tab::after {
+      right: -11px;
+      bottom: -11px;
+      clip-path: polygon(0 100%, 100% 100%, 100% 0, 50% 0, 0 50%);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="tab"></div>
+  <div class="tab"></div>
+
+  <svg data-v-a39c196e="" class="w-full h-full">
+    <defs>
+      <symbol id="geometry-left" viewBox="0 0 214 36">
+        <path d="M17 0h197v36H0v-2c4.5 0 9-3.5 9-8V8c0-4.5 3.5-8 8-8z"></path>
+      </symbol>
+      <symbol id="geometry-right" viewBox="0 0 214 36">
+        <use xlink:href="#geometry-left"></use>
+      </symbol>
+      <clipPath>
+        <rect width="100%" height="100%" x="0"></rect>
+      </clipPath>
+    </defs><svg width="51%" height="100%">
+      <use xlink:href="#geometry-left" width="214" height="36" fill="currentColor"></use>
+    </svg>
+    <g transform="scale(-1, 1)"><svg width="51%" height="100%" x="-100%" y="0">
+        <use xlink:href="#geometry-right" width="214" height="36" fill="currentColor"></use>
+      </svg></g>
+  </svg>
+</body>
+
+</html>
