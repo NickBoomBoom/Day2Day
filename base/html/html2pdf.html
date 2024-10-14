@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML to PDF</title>
+  <style>
+    /* 保证每一张 A4 页面完全符合 A4 尺寸，且不会溢出 */
+    .a4-page {
+      width: 210mm;
+      height: 296mm;
+      box-sizing: border-box;
+      padding: 18.5mm;
+      margin: 0;
+      background-color: skyblue;
+      page-break-after: always;
+      page-break-inside: avoid;
+      /* 可视化边框，仅为演示 */
+    }
+
+    .a4-page:nth-child(odd) {
+      background-color: greenyellow;
+    }
+
+
+
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="content">
+    <div class="a4-page">
+      <div>第一页</div>
+      <p>这是 PDF 的第一页内容。</p>
+    </div>
+
+    <div class="a4-page">
+      <div>第二页</div>
+      <p>这是 PDF 的第二页内容。</p>
+    </div>
+
+    <div class="a4-page">
+      <div>第三页</div>
+      <p>这是 PDF 的第三页内容。</p>
+    </div>
+
+    <div class="a4-page">
+      <div>第四页</div>
+      <p>这是 PDF 的第四页内容。</p>
+    </div>
+
+    <div class="a4-page">
+      <div>第五页</div>
+      <p>这是 PDF 的第五页内容。</p>
+    </div>
+  </div>
+
+  <button id="download">下载 PDF</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+  <script>
+    document.getElementById('download').addEventListener('click', async () => {
+      const element = document.getElementById('content');
+      const pdf = await html2pdf()
+        .from(element)
+        .set({
+          // margin: [18.5, 18.5, 18.5, 18.5],  // 设置上下左右 18.5mm 的边距
+          filename: 'output.pdf',
+          html2canvas: {
+            scale: 2,
+          },  // 提高 PDF 的分辨率
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        }).save();
+      // }).output('arraybuffer');
+      console.log(444, pdf)
+    });
+  </script>
+</body>
+
+</html>

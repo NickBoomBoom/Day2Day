@@ -3,35 +3,173 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>WebSocket Test</title>
+  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script> <!-- Socket.IO 客户端 -->
 </head>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  main {
+    display: flex;
+    height: 100vh;
+  }
+
+  .box {
+    flex: 1;
+    padding: 10px;
+    height: 100%;
+    overflow: auto;
+  }
+
+  .box:first-child {
+    border-right: 2px solid;
+  }
+</style>
 
 <body>
 
+  <main>
+    <div class="box">
+      <h1>用户侧</h1>
+      <div>
+        <label for="to_role">TO Role: </label>
+        <select id="to_role">
+          <option value="assistant">产品小助理</option>
+          <option value="knowledge">知识特派员</option>
+          <option value="navigator">平静的领航员</option>
+          <option value="feedback">吐槽专用</option>
+        </select>
+      </div>
+      <div>
+        <label for="message">Message: </label>
+        <input type="text" id="message" placeholder="Type a message..." />
+        <button onclick="sendToServer()">Send</button>
+      </div>
+
+      <div>
+        <h3>Messages from Server:</h3>
+        <ul id="messages"></ul>
+      </div>
+    </div>
+    <div class="box">
+      <h1>管理侧</h1>
+
+      <div>
+        <h3>当前数据:</h3>
+        <ul id="list"></ul>
+
+        <div>
+          <label for="to_user_id">发送给用户:</label>
+          <input type="text" id="to_user_id" placeholder="用户id">
+          <input type="text" id="to_user_msg" placeholder="信息">
+          <button onclick="sendToUser()">Send</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
   <script>
 
-    const instance = new WebSocket('ws://192.168.100.10:5000/scan')
+    const userId = 32;
+    let userSocket = null
 
-    instance.onopen = (e) => {
-      console.log('open')
-    }
-    instance.onmessage = (e) => {
-      console.log('message:', e)
+    initUser()
 
-      console.log('data', JSON.parse(e.data))
+    function initUser() {
+      userSocket = io('http://localhost:3000/chat', {
+        query: { userId, tag: 'user' }  // 在连接时传递 userId
+      });
+
+      // 连接成功
+      userSocket.on('connect', () => {
+        console.log(`用户侧连接成功: ${userId}`);
+      });
+
+      // 处理服务器发来的消息
+      userSocket.on('message', (data) => {
+        insertLi('messages', 'server', data)
+      });
+
+      // 连接错误
+      userSocket.on('connect_error', (error) => {
+        console.error('用户侧连接报错:', error);
+      });
+
+
     }
 
-    instance.onclose = (e) => {
-      console.log('close')
+
+    function insertLi(id, from, data) {
+      const messagesList = document.getElementById(id);
+      const newMessage = document.createElement('li');
+      newMessage.innerHTML = `
+        <b>${from}:</b>
+        <pre>${JSON.stringify(data, null, 2)}</pre>
+      `
+      messagesList.appendChild(newMessage);
     }
 
-    instance.onerror = (e) => {
-      console.error('error', e)
+
+    function sendToServer() {
+      const message = document.getElementById('message').value;
+      const toRole = document.getElementById('to_role').value;
+      if (message && toRole) {
+        const data = {
+          userId, message, toRole, tag: 'user'
+        }
+        userSocket.emit('message', data);  // 发送消息到指定用户
+        document.getElementById('message').value = '';  // 清空输入框
+        insertLi('messages', 'user', data)
+      }
     }
+
+
+
+    let adminSocket = null
+    initAdmin()
+
+    function initAdmin() {
+      adminSocket = io('http://localhost:3000/chat', {
+        query: { userId: 333, tag: 'admin' }  // 在连接时传递 userId
+      });
+
+      // 连接成功
+      adminSocket.on('connect', () => {
+        console.log(`管理侧连接成功: admin`);
+      });
+
+      // 处理服务器发来的消息
+      adminSocket.on('message', (data) => {
+        console.log(111, data)
+        insertLi('list', 'server', data)
+      });
+
+      // 连接错误
+      adminSocket.on('connect_error', (error) => {
+        console.error('管理侧连接报错:', error);
+      });
+
+    }
+
+
+    function sendToUser() {
+      const id = document.querySelector('#to_user_id').value
+      const msg = document.querySelector('#to_user_msg').value
+      adminSocket.emit('message', {
+        userId: +id,
+        fromRole: "assistant",
+        tag: 'admin',
+        toRole: 'user',
+        message: msg
+      })
+    }
+
   </script>
-
 </body>
 
 </html>
