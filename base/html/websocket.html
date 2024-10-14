@@ -161,10 +161,13 @@
       const id = document.querySelector('#to_user_id').value
       const msg = document.querySelector('#to_user_msg').value
       adminSocket.emit('message', {
-        userId: +id,
-        fromRole: "assistant",
-        tag: 'admin',
+        userId: 333,
+        toId: id,
         toRole: 'user',
+
+        fromRole: "assistant",
+        fromId: 333,
+        tag: 'admin',
         message: msg
       })
     }
