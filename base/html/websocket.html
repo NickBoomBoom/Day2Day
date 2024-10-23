@@ -1,176 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebSocket Test</title>
-  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script> <!-- Socket.IO 客户端 -->
-</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebSocket Test</title>
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+<script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/vue/3.2.31/vue.global.min.js"
+  type="application/javascript"></script>
 <style>
   * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
   }
 
-  main {
-    display: flex;
+  #app {
     height: 100vh;
-  }
-
-  .box {
-    flex: 1;
     padding: 10px;
-    height: 100%;
-    overflow: auto;
+    display: flex;
+    overflow: hidden;
+    flex-direction: column;
   }
 
-  .box:first-child {
-    border-right: 2px solid;
+  header {
+    height: 25px;
+  }
+
+  h1 {
+    margin-bottom: 10px;
+  }
+
+  hr {
+    margin: 10px auto;
+  }
+
+  input,
+  select {
+    min-width: 10em;
+    height: 30px;
+    margin-bottom: 10px;
+  }
+
+  button {
+    height: 30px;
+    margin-bottom: 10px;
+    padding: 0 10px;
+    margin-left: 10px;
+  }
+
+  .list {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+  }
+
+  .item {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid black;
+    padding: 0 14px;
+  }
+
+  .item:last-child {
+    border: none;
+  }
+
+  .item>ul {
+    flex: 1;
+    overflow: auto;
+    border: 1px dashed gainsboro;
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+  .admin {
+    margin-left: auto;
+  }
+
+  label {
+    width: 5em;
+    display: inline-block;
   }
 </style>
 
 <body>
+  <div id="app">
+    <header>
+      <b>添加用户id: </b>
+      <input type="number" v-model="userId" />
+      <button @click="handleAdd">添加</button>
+    </header>
+    <hr>
+    <div class="list">
+      <template v-for="(item, index) in users">
+        <div class="item">
+          <h1>用户侧 - {{item.userId}} (
+            <span :style="{
+              color: item.isConnected ? 'green': 'red'
+            }">
+              {{item.isConnected?'连接成功':'连接失败'}}
+            </span>
+            )
+          </h1>
 
-  <main>
-    <div class="box">
-      <h1>用户侧</h1>
-      <div>
-        <label for="to_role">TO Role: </label>
-        <select id="to_role">
-          <option value="assistant">产品小助理</option>
-          <option value="knowledge">知识特派员</option>
-          <option value="navigator">平静的领航员</option>
-          <option value="feedback">吐槽专用</option>
-        </select>
-      </div>
-      <div>
-        <label for="message">Message: </label>
-        <input type="text" id="message" placeholder="Type a message..." />
-        <button onclick="sendToServer()">Send</button>
-      </div>
+          <div>
+            <label>对话类型: </label>
+            <select v-model="item.role">
+              <option v-for="(role, roleKey) in roles" :value="roleKey">{{roleKey}}:{{role}}</option>
+            </select>
+          </div>
+          <div>
+            <label>信息: </label>
+            <input type="text" v-model="item.message" placeholder="信息" />
+            <button @click="sendToServer(item, index)">发送</button>
+          </div>
 
-      <div>
-        <h3>Messages from Server:</h3>
-        <ul id="messages"></ul>
-      </div>
-    </div>
-    <div class="box">
-      <h1>管理侧</h1>
+          <h3>当前数据:</h3>
+          <ul :id="`user-message-${index}`"></ul>
 
-      <div>
-        <h3>当前数据:</h3>
-        <ul id="list"></ul>
+        </div>
+      </template>
+
+      <div class="item admin">
+        <h1>管理侧 - {{adminId}} (
+          <span :style="{
+            color: adminIsConnected ? 'green': 'red'
+          }">
+            {{adminIsConnected?'连接成功':'连接失败'}}
+          </span>
+          )
+        </h1>
+        <h4>发送给用户:</h4>
+        <div>
+          <label>User Id:</label>
+          <select v-model="adminValues.userId ">
+            <option v-for="(item, index) in users">{{item.userId}}</option>
+          </select>
+        </div>
+        <div>
+          <label>对话类型:</label>
+          <select v-model="adminValues.role">
+            <option v-for="(role, roleKey) in roles" :value="roleKey">{{roleKey}}:{{role}}</option>
+          </select>
+        </div>
 
         <div>
-          <label for="to_user_id">发送给用户:</label>
-          <input type="text" id="to_user_id" placeholder="用户id">
-          <input type="text" id="to_user_msg" placeholder="信息">
-          <button onclick="sendToUser()">Send</button>
+          <label>信息:</label>
+          <input v-model="adminValues.message" type="text" placeholder="信息">
         </div>
+        <button @click="sendToUser">发送</button>
+        <h3>当前数据:</h3>
+        <ul id="admin-ul"></ul>
       </div>
-    </div>
 
-  </main>
+    </div>
+  </div>
+
 
   <script>
+    const SOCKET_URL = 'https://admin-api2.betterparenting.online/chat'
+    // const SOCKET_URL = 'http://localhost:3000/chat'
+    const app = Vue.createApp({
+      data() {
+        return {
+          userId: undefined,
+          users: [],
+          roles: {
+            'assistant': '产品小助理',
+            'knowledge': '知识特派员',
+            'navigator': '平静的领航员',
+            'feedback': '吐槽专用',
+          },
 
-    const userId = 32;
-    let userSocket = null
+          adminId: 6,
+          adminSocket: null,
+          adminIsConnected: false,
+          adminValues: {
+            userId: undefined,
+            role: undefined,
+            message: undefined
+          }
+        };
+      },
+      mounted() {
+        this.adminSocket = io(SOCKET_URL, {
+          query: { userId: this.adminId, tag: 'admin' }  // 在连接时传递 userId
+        })
 
-    initUser()
+        this.adminSocket.on('connect', () => {
+          console.log(`管理侧连接成功: admin`);
+          this.adminIsConnected = true
+        });
 
-    function initUser() {
-      userSocket = io('http://localhost:3000/chat', {
-        query: { userId, tag: 'user' }  // 在连接时传递 userId
-      });
+        // 处理服务器发来的消息
+        this.adminSocket.on('message', (data) => {
+          console.log('管理侧接收到信息', data)
+          this.insertLi('admin-ul', 'user', data)
+        });
 
-      // 连接成功
-      userSocket.on('connect', () => {
-        console.log(`用户侧连接成功: ${userId}`);
-      });
+        // 连接错误
+        this.adminSocket.on('connect_error', (error) => {
+          console.error('管理侧连接报错:', error);
+        });
 
-      // 处理服务器发来的消息
-      userSocket.on('message', (data) => {
-        insertLi('messages', 'server', data)
-      });
+        // 发送消息后的回执
+        this.adminSocket.on('ack', (res => {
+          console.log('发送回执', res)
+        }))
+      },
+      methods: {
+        handleAdd() {
+          if (!this.userId) {
+            return
+          }
+          if (this.users.some(t => t.userId == this.userId)) {
+            alert('该用户已添加')
+            return
+          }
+          const socket = io(SOCKET_URL, {
+            query: { userId: this.userId, tag: 'user' }  // 在连接时传递 userId
+          })
+          const len = this.users.push({
+            userId: +this.userId,
+            socket,
+            role: undefined,
+            message: undefined,
+            isConnected: false
+          })
 
-      // 连接错误
-      userSocket.on('connect_error', (error) => {
-        console.error('用户侧连接报错:', error);
-      });
+          const index = len - 1
 
+          socket.on('connect', () => {
+            console.log(`用户侧连接成功: ${index} ${this.userId}`);
+            this.users[index].isConnected = true
+          });
 
-    }
+          // 处理服务器发来的消息
+          socket.on('message', (data) => {
+            this.insertLi(`user-message-${index}`, 'server', data)
+          });
 
+          // 连接错误
+          socket.on('connect_error', (error) => {
+            console.error(`用户侧连接报错${index}:`, error);
+          });
 
-    function insertLi(id, from, data) {
-      const messagesList = document.getElementById(id);
-      const newMessage = document.createElement('li');
-      newMessage.innerHTML = `
-        <b>${from}:</b>
-        <pre>${JSON.stringify(data, null, 2)}</pre>
-      `
-      messagesList.appendChild(newMessage);
-    }
+          // 发送消息后的回执
+          socket.on('ack', (res => {
+            console.log('发送回执', res)
+          }))
+        },
 
+        sendToServer(item, index) {
+          const { userId, role, message } = item
+          const data = {
+            userId, role, message
+          }
+          item.socket.emit('message', data);  // 发送消息到指定用户
+          this.insertLi(`user-message-${index}`, 'user', data)
+        },
 
-    function sendToServer() {
-      const message = document.getElementById('message').value;
-      const toRole = document.getElementById('to_role').value;
-      if (message && toRole) {
-        const data = {
-          userId, message, toRole, tag: 'user'
+        sendToUser() {
+          const { userId, message, role } = this.adminValues
+
+          if (userId && message && role) {
+            this.adminSocket.emit('message', {
+              userId: +userId, message, role,
+              fromAdminId: this.adminId
+            })
+          }
+        },
+
+        insertLi(id, from, data) {
+          const messagesList = document.getElementById(id);
+          const newMessage = document.createElement('li');
+          newMessage.innerHTML = `
+            <b>${from}:</b>
+            <pre>${JSON.stringify(data, null, 2)}</pre>
+          `
+          messagesList.appendChild(newMessage);
         }
-        userSocket.emit('message', data);  // 发送消息到指定用户
-        document.getElementById('message').value = '';  // 清空输入框
-        insertLi('messages', 'user', data)
       }
-    }
+    });
+
+    // 挂载 Vue 实例
+    app.mount('#app');
 
 
-
-    let adminSocket = null
-    initAdmin()
-
-    function initAdmin() {
-      adminSocket = io('http://localhost:3000/chat', {
-        query: { userId: 333, tag: 'admin' }  // 在连接时传递 userId
-      });
-
-      // 连接成功
-      adminSocket.on('connect', () => {
-        console.log(`管理侧连接成功: admin`);
-      });
-
-      // 处理服务器发来的消息
-      adminSocket.on('message', (data) => {
-        console.log(111, data)
-        insertLi('list', 'server', data)
-      });
-
-      // 连接错误
-      adminSocket.on('connect_error', (error) => {
-        console.error('管理侧连接报错:', error);
-      });
-
-    }
-
-
-    function sendToUser() {
-      const id = document.querySelector('#to_user_id').value
-      const msg = document.querySelector('#to_user_msg').value
-      adminSocket.emit('message', {
-        userId: 333,
-        toId: id,
-        toRole: 'user',
-
-        fromRole: "assistant",
-        fromId: 333,
-        tag: 'admin',
-        message: msg
-      })
-    }
 
   </script>
 </body>
