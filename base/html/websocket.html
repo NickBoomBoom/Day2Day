@@ -161,6 +161,8 @@
   <script>
     const SOCKET_URL = 'https://admin-api2.betterparenting.online'
     // const SOCKET_URL = 'http://localhost:3000'
+    // const SOCKET_URL = 'https://admin-test.betterparenting.online'
+    // const SOCKET_URL = ''
     const app = Vue.createApp({
       data() {
         return {
@@ -206,7 +208,8 @@
 
         // 发送消息后的回执
         this.adminSocket.on('ack', (res => {
-          console.log('发送回执', res)
+          console.log('接收回执', res)
+
         }))
       },
       methods: {
@@ -248,14 +251,17 @@
 
           // 发送消息后的回执
           socket.on('ack', (res => {
-            console.log('发送回执', res)
+            console.log('管理侧接收回执', res)
           }))
         },
 
         sendToServer(item, index) {
           const { userId, role, message } = item
           const data = {
-            userId, role, message
+            event: 'to_admin',
+            data: {
+              userId, role, message
+            }
           }
           item.socket.emit('message', data);  // 发送消息到指定用户
           this.insertLi(`user-message-${index}`, 'user', data)
@@ -266,8 +272,11 @@
 
           if (userId && message && role) {
             this.adminSocket.emit('message', {
-              userId: +userId, message, role,
-              fromAdminId: this.adminId
+              event: "to_user",
+              data: {
+                userId: +userId, message, role,
+                fromAdminId: this.adminId
+              }
             })
           }
         },
