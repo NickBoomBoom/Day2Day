@@ -116,6 +116,12 @@
             <button @click="sendToServer(item, index)">发送</button>
           </div>
 
+          <div>
+            <button @click="setReaded(item)">
+              设置已读
+            </button>
+          </div>
+
           <h3>当前数据:</h3>
           <ul :id="`user-message-${index}`"></ul>
 
@@ -159,9 +165,10 @@
 
 
   <script>
-    const SOCKET_URL = 'https://admin-api2.betterparenting.online'
+    // const SOCKET_URL = 'https://admin-api2.betterparenting.online'
     // const SOCKET_URL = 'http://localhost:3000'
-    // const SOCKET_URL = 'https://admin-test.betterparenting.online'
+    const SOCKET_URL = 'https://admin-test.betterparenting.online'
+    // const SOCKET_URL = 'https://api2.betterparenting.online'
     // const SOCKET_URL = ''
     const app = Vue.createApp({
       data() {
@@ -260,13 +267,34 @@
           const data = {
             event: 'to_admin',
             data: {
-              userId, role, message
+              userId, role, message,
+              uuid: Math.random() * 1000000 + ''
             }
           }
           item.socket.emit('message', data);  // 发送消息到指定用户
           this.insertLi(`user-message-${index}`, 'user', data)
         },
 
+        setReaded(item) {
+          console.log(333, item)
+          item.socket.emit('message', {
+            event: 'set_readed_by_user',
+            data: {
+              uid: item.userId,
+              lastId: 3767, 
+              role: "knowledge"
+            }
+          })
+          item.socket.on('ack', res=>{
+            const {success , event , data} = res 
+            if (success) {
+              switch(event)  {
+                case 'set_readed': 
+                 console.log('设置已读成功,会返回readedIds userId') 
+              }
+            } 
+          })
+        },
         sendToUser() {
           const { userId, message, role } = this.adminValues
 
