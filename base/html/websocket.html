@@ -117,10 +117,13 @@
           </div>
 
           <div>
+            设置已读Last id:
+            <input type="number" v-model="item.lastId" />
             <button @click="setReaded(item)">
               设置已读
             </button>
           </div>
+
 
           <h3>当前数据:</h3>
           <ul :id="`user-message-${index}`"></ul>
@@ -166,8 +169,8 @@
 
   <script>
     // const SOCKET_URL = 'https://admin-api2.betterparenting.online'
-    // const SOCKET_URL = 'http://localhost:3000'
-    const SOCKET_URL = 'https://admin-test.betterparenting.online'
+    const SOCKET_URL = 'http://localhost:3000'
+    // const SOCKET_URL = 'https://admin-test.betterparenting.online'
     // const SOCKET_URL = 'https://api2.betterparenting.online'
     // const SOCKET_URL = ''
     const app = Vue.createApp({
@@ -194,6 +197,7 @@
       },
       mounted() {
         this.adminSocket = io(SOCKET_URL, {
+          // path: '/admin2/socket.io',
           query: { userId: this.adminId, tag: 'admin' }  // 在连接时传递 userId
         })
 
@@ -229,6 +233,7 @@
             return
           }
           const socket = io(SOCKET_URL, {
+            // path: '/admin2/socket.io',
             query: { userId: this.userId, tag: 'user' }  // 在连接时传递 userId
           })
           const len = this.users.push({
@@ -236,7 +241,8 @@
             socket,
             role: undefined,
             message: undefined,
-            isConnected: false
+            isConnected: false,
+            lastId: undefined
           })
 
           const index = len - 1
@@ -281,18 +287,18 @@
             event: 'set_readed_by_user',
             data: {
               uid: item.userId,
-              lastId: 3767, 
-              role: "knowledge"
+              lastId: item.lastId?+item.lastId: null,
+              role: item.role
             }
           })
-          item.socket.on('ack', res=>{
-            const {success , event , data} = res 
+          item.socket.on('ack', res => {
+            const { success, event, data } = res
             if (success) {
-              switch(event)  {
-                case 'set_readed': 
-                 console.log('设置已读成功,会返回readedIds userId') 
+              switch (event) {
+                case 'set_readed':
+                  console.log('设置已读成功,会返回readedIds userId')
               }
-            } 
+            }
           })
         },
         sendToUser() {
@@ -303,7 +309,9 @@
               event: "to_user",
               data: {
                 userId: +userId, message, role,
-                fromAdminId: this.adminId
+                fromAdminId: this.adminId,
+                uuid: Math.random() * 1000000 + ''
+
               }
             })
           }
