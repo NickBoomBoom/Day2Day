@@ -173,6 +173,8 @@
     // const SOCKET_URL = 'https://admin-test.betterparenting.online'
     // const SOCKET_URL = 'https://api2.betterparenting.online'
     // const SOCKET_URL = ''
+    // const PATH = '/admin2/socket.io'
+    const PATH = '/socket.io'
     const app = Vue.createApp({
       data() {
         return {
@@ -197,7 +199,7 @@
       },
       mounted() {
         this.adminSocket = io(SOCKET_URL, {
-          // path: '/admin2/socket.io',
+          path: PATH,
           query: { userId: this.adminId, tag: 'admin' }  // 在连接时传递 userId
         })
 
@@ -233,7 +235,7 @@
             return
           }
           const socket = io(SOCKET_URL, {
-            // path: '/admin2/socket.io',
+            path: PATH,
             query: { userId: this.userId, tag: 'user' }  // 在连接时传递 userId
           })
           const len = this.users.push({
@@ -287,7 +289,7 @@
             event: 'set_readed_by_user',
             data: {
               uid: item.userId,
-              lastId: item.lastId?+item.lastId: null,
+              lastId: item.lastId ? +item.lastId : null,
               role: item.role
             }
           })

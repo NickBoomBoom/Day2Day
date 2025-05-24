@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-
-<body>
-  <iframe src="https://bp-app-pic.oss-cn-shanghai.aliyuncs.com/admin/ac/pdf/YLDJK1V00_V01.pdf" frameborder="0"></iframe>
-</body>
-
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+ 
+  </body>
+  <script>
+    const el = document.createElement('iframe')
+    el.src  = "http://localhost:4433/lisener.html?title=测试&b=好的"
+    el.onload= function (e) {
+      console.log(33333, e );
+    }
+    document.body.appendChild(el )
+  </script>
 </html>
