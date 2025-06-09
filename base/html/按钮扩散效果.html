@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ripple Effect</title>
+  <style>
+    body {
+      background-color: skyblue;
+    }
+
+    .btn {
+
+      margin: 100px auto;
+      border: 1px solid gray;
+      width: 100px;
+      height: 70px;
+      border-radius: 10px;
+      background-color: grey;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .btn .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.7);
+      transform: scale(0);
+      animation: ripple 0.4s linear;
+      pointer-events: none;
+    }
+
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="btn" id="ripple-btn">点击扩散</div>
+
+  <script>
+    const btn = document.getElementById('ripple-btn');
+
+    btn.addEventListener('click', function (e) {
+      // 创建涟漪元素
+      const ripple = document.createElement('span');
+      ripple.classList.add('ripple');
+
+      // 设置涟漪位置（点击位置）
+      const rect = this.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const x = e.clientX - rect.left - size / 2;
+      const y = e.clientY - rect.top - size / 2;
+
+      ripple.style.width = ripple.style.height = `${size}px`;
+      ripple.style.left = `${x}px`;
+      ripple.style.top = `${y}px`;
+
+      // 添加到按钮中
+      this.appendChild(ripple);
+
+      // 动画结束后移除涟漪元素
+      ripple.addEventListener('animationend', () => {
+        ripple.remove();
+      }, {
+        once: true
+      });
+    });
+  </script>
+</body>
+
+</html>

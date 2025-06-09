@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 
     <head>
@@ -60,5 +60,89 @@
             })
         </script>
     </body>
+
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        ul {
+            margin: 200px auto;
+            width: 200px;
+            list-style-type: none;
+        }
+
+        li {
+            margin: 5px;
+            text-align: center;
+            width: 200px;
+            height: 30px;
+            background: skyblue;
+        }
+
+        .list .moving {
+            background: transparent;
+            color: transparent;
+            border: 1px dashed #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <ul class="list">
+        <li draggable="true">1</li>
+        <li draggable="true">2</li>
+        <li draggable="true">3</li>
+        <li draggable="true">4</li>
+        <li draggable="true">5</li>
+    </ul>
+
+    <script>
+        let list = document.querySelector('.list')
+        let currentLi
+        list.addEventListener('dragstart', (e) => {
+            e.dataTransfer.effectAllowed = 'move'
+            currentLi = e.target
+            setTimeout(() => {
+                currentLi.classList.add('moving')
+            })
+        })
+
+        list.addEventListener('dragenter', (e) => {
+            e.preventDefault()
+            if (e.target === currentLi || e.target === list) {
+                return
+            }
+            let liArray = Array.from(list.childNodes)
+            let currentIndex = liArray.indexOf(currentLi)
+            let targetindex = liArray.indexOf(e.target)
+
+            if (currentIndex < targetindex) {
+
+                list.insertBefore(currentLi, e.target.nextElementSibling)
+            } else {
+
+                list.insertBefore(currentLi, e.target)
+            }
+        })
+        list.addEventListener('dragover', (e) => {
+            e.preventDefault()
+        })
+        list.addEventListener('dragend', (e) => {
+            currentLi.classList.remove('moving')
+        })
+    </script>
+</body>
 
 </html>

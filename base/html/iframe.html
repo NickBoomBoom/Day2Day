@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
- 
-  </body>
-  <script>
-    const el = document.createElement('iframe')
-    el.src  = "http://localhost:4433/lisener.html?title=测试&b=好的"
-    el.onload= function (e) {
-      console.log(33333, e );
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    iframe {
+      width: 100vw;
+      height: 100vh;
     }
-    document.body.appendChild(el )
-  </script>
+  </style>
+</head>
+
+<body>
+  <iframe src="https://www.kimi.com/" frameborder="0"></iframe>
+  <iframe src="https://chat.deepseek.com/" frameborder="0"></iframe>
+  <iframe src="https://www.doubao.com/chat/" frameborder="0"></iframe>
+</body>
+
 </html>
