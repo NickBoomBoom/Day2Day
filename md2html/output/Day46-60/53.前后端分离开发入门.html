@@ -1,0 +1,140 @@
+<h2>前后端分离开发入门</h2>
+<p>在传统的Web应用开发中，大多数的程序员会将浏览器作为前后端的分界线。将浏览器中为用户进行页面展示的部分称之为前端，而将运行在服务器为前端提供业务逻辑和数据准备的所有代码统称为后端。所谓前后端分离的开发，就是前后端工程师约定好数据交互接口，并行的进行开发和测试，后端只提供数据，不负责将数据渲染到页面上，前端通过HTTP请求获取数据并负责将数据渲染到页面上，这个工作是交给浏览器中的JavaScript代码来完成。</p>
+<p>使用前后端分离开发有诸多的好处，下面我们简要的说下这些好处：</p>
+<ol>
+<li><strong>提升开发效率</strong>。前后端分离以后，可以实现前后端代码的解耦，只要前后端沟通约定好应用所需接口以及接口参数，便可以开始并行开发，无需等待对方的开发工作结束。在这种情况下，前后端工程师都可以只专注于自己的开发工作，有助于打造出更好的团队。除此之外，在前后端分离的开发模式下，即使需求发生变更，只要接口与数据格式不变，后端开发人员就不需要修改代码，只要前端进行变动即可。</li>
+<li><strong>增强代码的可维护性</strong>。前后端分离后，应用的代码不再是前后端混合，只有在运行期才会有调用依赖关系，这样的话维护代码的工作将变得轻松愉快很多，再不会牵一发而动全身。当你的代码变得简明且整洁时，代码的可读性和可维护性都会有质的提升。</li>
+<li><strong>支持多终端和服务化架构</strong>。前后端分离后，同一套数据接口可以为不同的终端提供服务，更有助于打造多终端应用；此外，由于后端提供的接口之间可以通过HTTP(S)进行调用，有助于打造服务化架构（包括微服务）。</li>
+</ol>
+<p>接下来我们就用前后端分离的方式来改写之前的投票应用。</p>
+<h3>返回JSON格式的数据</h3>
+<p>刚才说过，在前后端分离的开发模式下，后端需要为前端提供数据接口，这些接口通常返回JSON格式的数据。在Django项目中，我们可以先将对象处理成字典，然后就可以利用Django封装的<code>JsonResponse</code>向浏览器返回JSON格式的数据，具体的做法如下所示。</p>
+<pre><code class="language-Python">def show_subjects(request):
+    queryset = Subject.objects.all()
+    subjects = []
+    for subject in queryset:
+        subjects.append({
+            'no': subject.no,
+            'name': subject.name,
+            'intro': subject.intro,
+            'isHot': subject.is_hot
+        })
+    return JsonResponse(subjects, safe=False)
+</code></pre>
+<p>上面的代码中，我们通过循环遍历查询学科得到的<code>QuerySet</code>对象，将每个学科的数据处理成一个字典，在将字典保存在名为<code>subjects</code>的列表容器中，最后利用<code>JsonResponse</code>完成对列表的序列化，向浏览器返回JSON格式的数据。由于<code>JsonResponse</code>序列化的是一个列表而不是字典，所以需要指定<code>safe</code>参数的值为<code>False</code>才能完成对<code>subjects</code>的序列化，否则会产生<code>TypeError</code>异常。</p>
+<p>可能大家已经发现了，自己写代码将一个对象转成字典是比较麻烦的，如果对象的属性很多而且某些属性又关联到一个比较复杂的对象时，情况会变得更加糟糕。为此我们可以使用一个名为<code>bpmappers</code>的三方库来简化将对象转成字典的操作，这个三方库本身也提供了对Django框架的支持。</p>
+<p>安装三方库<code>bpmappers</code>。</p>
+<pre><code class="language-Shell">pip install bpmappers
+</code></pre>
+<p>编写映射器（实现对象到字典转换）。</p>
+<pre><code class="language-Python">from bpmappers.djangomodel import ModelMapper
+
+from poll2.models import Subject
+
+
+class SubjectMapper(ModelMapper):
+   
+    class Meta:
+        model = Subject
+</code></pre>
+<p>修改视图函数。</p>
+<pre><code class="language-Python">def show_subjects(request):
+    queryset = Subject.objects.all()
+    subjects = []
+    for subject in queryset:
+        subjects.append(SubjectMapper(subject).as_dict())
+    return JsonResponse(subjects, safe=False)
+</code></pre>
+<p>配置URL映射。</p>
+<pre><code class="language-Python">urlpatterns = [
+    
+    path('api/subjects/', show_subjects),
+    
+]
+</code></pre>
+<p>然后访问该接口，可以得到如下所示的JSON格式数据。</p>
+<pre><code class="language-JSON">[
+    {
+        "no": 1,
+        "name": "Python全栈+人工智能",
+        "intro": "Python是一种计算机程序设计语言。是一种面向对象的动态类型语言，最初被设计用于编写自动化脚本(shell)，随着版本的不断更新和语言新功能的添加，越来越多被用于独立的、大型项目的开发。",
+        "is_hot": true
+    },
+    // 此处省略下面的内容
+]
+</code></pre>
+<p>如果不希望在JSON数据中显示学科的成立时间，我们可以在映射器中排除<code>create_date</code>属性；如果希望将是否为热门学科对应的键取名为<code>isHot</code>（默认的名字是<code>is_hot</code>），也可以通过修改映射器来做到。具体的做法如下所示：</p>
+<pre><code class="language-Python">from bpmappers import RawField
+from bpmappers.djangomodel import ModelMapper
+
+from poll2.models import Subject
+
+
+class SubjectMapper(ModelMapper):
+    isHot = RawField('is_hot')
+
+    class Meta:
+        model = Subject
+        exclude = ('is_hot', )
+</code></pre>
+<p>再次查看学科接口返回的JSON数据。</p>
+<pre><code class="language-JSON">[
+    {
+        "no": 101,
+        "name": "Python全栈+人工智能",
+        "intro": "Python是一种计算机程序设计语言。是一种面向对象的动态类型语言，最初被设计用于编写自动化脚本(shell)，随着版本的不断更新和语言新功能的添加，越来越多被用于独立的、大型项目的开发。",
+        "isHot": true
+    },
+    // 此处省略下面的内容
+]
+</code></pre>
+<p>关于<code>bpmappers</code>详细的使用指南，请参考它的<a href="https://bpmappers.readthedocs.io/en/stable/">官方文档</a>，这个官方文档是用日语书写的，可以使用浏览器的翻译功能将它翻译成你熟悉的语言即可。</p>
+<h3>使用Vue.js渲染页面</h3>
+<p>接下来我们通过前端框架Vue.js来实现页面的渲染。如果希望全面的了解和学习Vue.js，建议阅读它的<a href="https://cn.vuejs.org/v2/guide/">官方教程</a>或者在<a href="https://www.youtube.com/">YouTube</a>上搜索Vue.js的新手教程（Vue.js Crash Course）进行学习。</p>
+<p>重新改写subjects.html页面，使用Vue.js来渲染页面。</p>
+<pre><code class="language-HTML">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;学科信息&lt;/title&gt;
+    &lt;style&gt;
+		/* 此处省略层叠样式表 */
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="container"&gt;
+        &lt;h1&gt;扣丁学堂所有学科&lt;/h1&gt;
+        &lt;hr&gt;
+        &lt;div id="main"&gt;
+            &lt;dl v-for="subject in subjects"&gt;
+                &lt;dt&gt;
+                    &lt;a :href="'/static/html/teachers.html?sno=' + subject.no"&gt;
+                        {{ subject.name }}
+                    &lt;/a&gt;
+                    &lt;img v-if="subject.is_hot" src="/static/images/hot-icon-small.png"&gt;
+                &lt;/dt&gt;
+                &lt;dd&gt;{{ subject.intro }}&lt;/dd&gt;
+            &lt;/dl&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.11/vue.min.js"&gt;&lt;/script&gt;
+    &lt;script&gt;
+        let app = new Vue({
+            el: '#main',
+            data: {
+                subjects: []
+            },
+            created() {
+                fetch('/api/subjects/')
+                    .then(resp =&gt; resp.json())
+                    .then(json =&gt; {
+                        this.subjects = json
+                    })
+            }
+        })
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>前后端分离的开发需要将前端页面作为静态资源进行部署，项目实际上线的时候，我们会对整个Web应用进行动静分离，静态资源通过Nginx或Apache服务器进行部署，生成动态内容的Python程序部署在uWSGI或者Gunicorn服务器上，对动态内容的请求由Nginx或Apache路由到uWSGI或Gunicorn服务器上。</p>
+<p>在开发阶段，我们通常会使用Django自带的测试服务器，如果要尝试前后端分离，可以先将静态页面放在之前创建的放静态资源的目录下，具体的做法可以参考<a href="https://gitee.com/jackfrued/django19062">项目完整代码</a>。</p>
