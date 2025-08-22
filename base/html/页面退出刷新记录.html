@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <script src="../js/jquery3.7.1.js"></script>
+
+  <script>
+
+    class MediaPlayer extends HTMLElement {
+      constructor() {
+        super();
+        // 创建 shadow DOM
+        this.attachShadow({ mode: 'open' });
+
+        // 获取 type 属性（audio 或 video）
+        const type = this.getAttribute('type') || 'video';
+        const src = this.getAttribute('src') || '';
+
+        // 创建媒体元素
+        this.media = document.createElement(type);
+        this.media.src = src;
+        this.media.controls = true;
+
+        // 样式
+        const style = document.createElement('style');
+        style.textContent = `
+      :host {
+        display: block;
+        max-width: 100%;
+      }
+      video, audio {
+        width: 100%;
+      }
+    `;
+
+        // 将元素附加到 shadow DOM
+        this.shadowRoot.append(style, this.media);
+      }
+
+      // 属性变化监听
+      static get observedAttributes() {
+        return ['src'];
+      }
+
+      attributeChangedCallback(name, oldValue, newValue) {
+        if (name === 'src' && this.media) {
+          this.media.src = newValue;
+        }
+      }
+
+      // 对外暴露方法
+      play() {
+        this.media.play();
+      }
+
+      pause() {
+        this.media.pause();
+      }
+    }
+
+    // 注册自定义元素
+    customElements.define('media-player', MediaPlayer);
+
+  </script>
+</head>
+
+<body>
+
+
+  <audio controls src="http://downsc.chinaz.net/files/download/sound1/201206/1638.mp3">
+  </audio>
+
+  <video controls width="250" height="100" src="https://media.w3.org/2010/05/sintel/trailer.mp4">
+
+  </video>
+  <media-player type="video" src="https://media.w3.org/2010/05/sintel/trailer.mp4"></media-player>
+  <media-player type="audio" src="http://downsc.chinaz.net/files/download/sound1/201206/1638.mp3"></media-player>
+
+
+  <iframe style="border: 1px solid red" width="100" height="100" src="http://127.0.0.1:3000" frameborder="0"></iframe>
+
+  <main id="content" style="border:1px solid black;border-radius: 10px; padding:10px;">
+  </main>
+  <script>
+    function trackOnUnload(url, data) {
+      const jsonData = JSON.stringify(data);
+
+      function sendByBeacon() {
+        try {
+          const blob = new Blob([jsonData], { type: "application/json" });
+          return navigator.sendBeacon(url, blob);
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function sendByFetch() {
+        try {
+          return fetch(url, {
+            method: "POST",
+            body: jsonData,
+            headers: { "Content-Type": "application/json" },
+            keepalive: true,
+          });
+        } catch (e) {
+          return false;
+        }
+      }
+
+
+      if (!sendByBeacon()) {
+        sendByFetch();
+      }
+    }
+
+    // // 注册 beforeunload 事件
+    // window.addEventListener('beforeunload', () => {
+    //   trackOnUnload('http://localhost:3000/api/track', {
+    //     message: '页面关闭或刷新',
+    //     timestamp: Date.now()
+    //   });
+    //   // event.preventDefault(); // 兼容某些浏览器
+    //   // event.returnValue = ''; // 触发浏览器默认确认弹窗
+    // });
+    // const MS = 5 * 1000 * 60
+
+    // window.addEventListener('mousemove', function (e) {
+    //   console.log('正在移动')
+    // });
+
+    // window.addEventListener('keydown', function (e) {
+    //   console.log('正在key')
+    // });
+
+    window.addEventListener('beforeunload', function (e) {
+      console.log('beforeunload')
+
+      // e.preventDefault(); // 标准写法，部分浏览器需要
+      // e.returnValue = ''
+    });
+
+    window.addEventListener('unload', function (e) {
+      console.log('unload')
+    });
+    window.addEventListener('pagehide', function (e) {
+      console.log('pagehide')
+    });
+    // window.addEventListener('load', function (e) {
+    //   console.log('load')
+    //   // trackOnUnload('http://127.0.0.1:3000/api/track', {
+    //   //   message: '页面关闭或刷新',
+    //   //   timestamp: Date.now()
+    //   // });
+    // })
+
+    console.log("开始监听");
+
+    class UserActivityDetector {
+      constructor(
+        timeout = 5000,
+        attrs = {
+          customMediaTag: []
+        },
+        callback = {
+          active: () => {
+          },
+        }
+      ) {
+        this.timeout = timeout; // 超时时间，默认 5 秒
+        this.callback = callback; // 状态变化回调
+        this.attrs = attrs;
+        this._active = true; // 初始状态
+        this.timer = null;
+        this.events = ["mousemove", "keydown", "scroll", "touchstart"];
+        this.handleActivity = this.handleActivity.bind(this);
+        this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
+        this.preDate = Date.now();
+        this.start();
+
+      }
+
+
+      get active() {
+        return this._active
+      }
+
+
+      set active(value) {
+        console.log('change', value)
+        if (value) {
+          this.preDate = Date.now();
+        } else {
+          this.callback.active(Date.now() - this.preDate)
+        }
+        this._active = value;
+
+      }
+
+
+      collectMediaElements(root = document) {
+        const mediaElements = [];
+
+        root.querySelectorAll('video, audio').forEach(mediaElement => {
+          mediaElements.push(mediaElement)
+        })
+
+        this.attrs.customMediaTag.forEach(tagName => {
+          root.querySelectorAll(tagName).forEach(t => {
+            if (t.shadowRoot) {
+              t.shadowRoot.querySelectorAll('video, audio').forEach(element => {
+                mediaElements.push(element)
+              });
+            }
+          })
+        })
+
+        return mediaElements;
+      }
+
+      isMediaPlaying() {
+        const res = this.collectMediaElements();
+        console.log(3333, res)
+        for (let i = 0; i < res.length; i++) {
+          const t = res[i];
+          if (!t.paused) {
+            return true
+          }
+        }
+
+        return false
+      }
+      handleActivity() {
+        if (document.hidden) {
+          return;
+        }
+
+        if (!this.active) {
+          this.active = true;
+        }
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+          this.setInactive();
+        }, this.timeout);
+      }
+
+      handleVisibilityChange() {
+        console.error("visibilitychange", document.hidden);
+        if (document.hidden) {
+          this.setInactive();
+        } else {
+          this.handleActivity(); // 页面回来时重新计时
+        }
+      }
+
+      setInactive() {
+        const isMediaPlaying = this.isMediaPlaying();
+        if (isMediaPlaying) {
+          console.log('media playing')
+          this.active = true
+        } else {
+          this.active = false;
+
+        }
+      }
+
+      start() {
+        this.events.forEach((event) =>
+          window.addEventListener(event, this.handleActivity)
+        );
+        document.addEventListener(
+          "visibilitychange",
+          this.handleVisibilityChange
+        );
+        this.handleActivity(); // 初始化检测
+      }
+
+      stop() {
+        this.events.forEach((event) =>
+          window.removeEventListener(event, this.handleActivity)
+        );
+        document.removeEventListener(
+          "visibilitychange",
+          this.handleVisibilityChange
+        );
+        clearTimeout(this.timer);
+      }
+
+    }
+
+
+    // ✅ 使用示例
+    const detector = new UserActivityDetector(5000,
+      {
+        customMediaTag: ['media-player'],
+
+      },
+      {
+        active: (ms) => {
+          trackOnUnload("http://127.0.0.1:3000/api/track", {
+            message: "耗时" + ms,
+          });
+
+        },
+
+      });
+
+    // 定时打印状态
+    setInterval(() => {
+      console.log("当前用户活跃状态：", detector.active);
+    }, 3000);
+  </script>
+</body>
+
+</html>
