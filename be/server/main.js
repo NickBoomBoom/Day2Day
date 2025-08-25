@@ -14,7 +14,7 @@ app.use(cors({
 app.use(bodyParser.json());
 
 app.post('/api/track', (req, res) => {
-  console.log('收到页面关闭/刷新数据:', req.body);
+  console.log('收到', req.body);
   res.json({ status: 'success', received: req.body });
 });
 
