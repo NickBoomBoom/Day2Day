@@ -2,7 +2,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const crypto = require('crypto');
 const app = express();
 const PORT = 3000;
 
@@ -13,12 +12,13 @@ app.use(cors({
 })); // 允许所有跨域请求
 app.use(bodyParser.json());
 
-app.post('/api/track', (req, res) => {
-  console.log('收到', req.body.data);
+app.post('/api/track', async (req, res) => {
+  console.log('收到', req.body);
 
-  const result = decryptWithPrivateKey(req.body.data)
-  console.log(111, result)
+  const { encryptedKey, iv, data } = req.body
+  const result = await decryptWithPrivateKey(encryptedKey, iv, data)
   res.json({ status: 'success', received: req.body });
+  console.log('解析:', result.action, result.duration, result.createdAt)
 });
 
 app.get('/', (req, res) => {
@@ -30,7 +30,26 @@ app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
 
-const PRAVITE = `-----BEGIN PRIVATE KEY-----
+
+
+
+
+
+function base64ToBuf(b64) {
+  const bin = Buffer.from(b64, "base64");
+  return new Uint8Array(bin).buffer;
+}
+
+function bufToBase64(buf) {
+  return Buffer.from(new Uint8Array(buf)).toString("base64");
+}
+
+
+const { webcrypto } = require('crypto');
+const { subtle } = webcrypto;
+
+// 私钥 PEM
+const PRIVATE_KEY = `-----BEGIN PRIVATE KEY-----
 MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDsQjNZSru0oKFu
 IghgD9Ibw3BvawbmFDVVMRZ26Fs+lZC8Df+1e5GDJV6KgVXyU5Zh2VtIp8sAQYI2
 vkh+l7qB7fP3pVVrcVOUfYurWeWDkGCPmhEUoiJcoA7uxywsVJelC657HOzVbaWz
@@ -58,15 +77,45 @@ OaKR0nhfulhNzn5f88QiEkD5KgoVhZIS8jCsF309aamARp8jsOEyDzwBvs6rQ/K+
 yrQxJn77R7q3dYhJabnxM2hxDVkI9D+23tAUVwvkUOH6CbR6VfPH5GypDZhchYYu
 RMRmJbJXGRcyNpV6eV1ApO8=
 -----END PRIVATE KEY-----`
-function decryptWithPrivateKey(encryptedBase64, privateKeyPem = PRAVITE) {
-  const buffer = Buffer.from(encryptedBase64, 'base64');
-  const decrypted = crypto.privateDecrypt(
-    {
-      key: privateKeyPem,
-      padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-      oaepHash: 'sha256',
-    },
-    buffer
+
+function pemToArrayBuffer(pem) {
+  const b64 = pem.replace(/-----(BEGIN|END) PRIVATE KEY-----/g, "").replace(/\s+/g, "");
+  const bin = Buffer.from(b64, "base64");
+  return new Uint8Array(bin).buffer;
+}
+
+async function decryptWithPrivateKey(encryptedKey, iv, encryptedData, pem = PRIVATE_KEY) {
+  // 导入私钥
+  const privateKey = await subtle.importKey(
+    "pkcs8",
+    pemToArrayBuffer(pem),
+    { name: "RSA-OAEP", hash: "SHA-256" },
+    false,
+    ["decrypt"]
   );
-  return JSON.parse(decrypted.toString('utf8'));
+
+  // 用私钥解密 AES key
+  const rawAesKey = await subtle.decrypt(
+    { name: "RSA-OAEP" },
+    privateKey,
+    base64ToBuf(encryptedKey)
+  );
+
+  // 还原 AES 密钥对象
+  const aesKey = await subtle.importKey(
+    "raw",
+    rawAesKey,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["decrypt"]
+  );
+
+  // 用 AES-GCM 解密数据
+  const decrypted = await subtle.decrypt(
+    { name: "AES-GCM", iv: new Uint8Array(base64ToBuf(iv)) },
+    aesKey,
+    base64ToBuf(encryptedData)
+  );
+
+  return JSON.parse(new TextDecoder().decode(decrypted))
 }
