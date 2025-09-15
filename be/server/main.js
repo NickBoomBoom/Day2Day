@@ -13,7 +13,7 @@ app.use(cors({
 app.use(bodyParser.json());
 
 app.post('/api/track', async (req, res) => {
-  console.log('收到', req.body);
+  // console.log('收到', req.body);
 
   const { encryptedKey, iv, data } = req.body
   const result = await decryptWithPrivateKey(encryptedKey, iv, data)
