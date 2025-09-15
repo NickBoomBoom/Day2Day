@@ -1,0 +1,191 @@
+<h2>函数应用实战</h2>
+<h3>例子1：随机验证码</h3>
+<p>设计一个生成随机验证码的函数，验证码由数字和英文大小写字母构成，长度可以通过参数设置。</p>
+<pre><code class="language-python">import random
+import string
+
+ALL_CHARS = string.digits + string.ascii_letters
+
+
+def generate_code(*, code_len=4):
+    """
+    生成指定长度的验证码
+    :param code_len: 验证码的长度(默认4个字符)
+    :return: 由大小写英文字母和数字构成的随机验证码字符串
+    """
+    return ''.join(random.choices(ALL_CHARS, k=code_len))
+</code></pre>
+<blockquote>
+<p><strong>说明1</strong>：<code>string</code>模块的<code>digits</code>代表0到9的数字构成的字符串<code>'0123456789'</code>，<code>string</code>模块的<code>ascii_letters</code>代表大小写英文字母构成的字符串<code>'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'</code>。</p>
+<p><strong>说明2</strong>：<code>random</code>模块的<code>sample</code>和<code>choices</code>函数都可以实现随机抽样，<code>sample</code>实现无放回抽样，这意味着抽样取出的元素是不重复的；<code>choices</code>实现有放回抽样，这意味着可能会重复选中某些元素。这两个函数的第一个参数代表抽样的总体，而参数<code>k</code>代表样本容量，需要说明的是<code>choices</code>函数的参数<code>k</code>是一个命名关键字参数，在传参时必须指定参数名。</p>
+</blockquote>
+<p>可以用下面的代码生成5组随机验证码来测试上面的函数。</p>
+<pre><code class="language-python">for _ in range(5):
+    print(generate_code()) 
+</code></pre>
+<p>输出：</p>
+<pre><code>59tZ
+QKU5
+izq8
+IBBb
+jIfX
+</code></pre>
+<p>或者</p>
+<pre><code class="language-python">for _ in range(5):
+    print(generate_code(code_len=6))
+</code></pre>
+<p>输出：</p>
+<pre><code>FxJucw
+HS4H9G
+0yyXfz
+x7fohf
+ReO22w
+</code></pre>
+<blockquote>
+<p><strong>说明</strong>：我们设计的<code>generate_code</code>函数的参数是命名关键字参数，由于它有默认值，可以不给它传值，使用默认值4。如果需要给函数传入参数，必须指定参数名<code>code_len</code>。</p>
+</blockquote>
+<h3>例子2：判断素数</h3>
+<p>设计一个判断给定的大于1的正整数是不是质数的函数。质数是只能被1和自身整除的正整数（大于1），如果一个大于 1 的正整数 $\small{N}$ 是质数，那就意味着在 2 到 $\small{N-1}$ 之间都没有它的因子。</p>
+<pre><code class="language-python">def is_prime(num: int) -&gt; bool:
+    """
+    判断一个正整数是不是质数
+    :param num: 大于1的正整数
+    :return: 如果num是质数返回True，否则返回False
+    """
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
+</code></pre>
+<blockquote>
+<p><strong>说明1</strong>：上面<code>is_prime</code>函数的参数<code>num</code>后面的<code>: int</code>用来标注参数的类型，虽然它对代码的执行结果不产生任何影响，但是很好的增强了代码的可读性。同理，参数列表后面的<code>-&gt; bool</code>用来标注函数返回值的类型，它也不会对代码的执行结果产生影响，但是却让我们清楚的知道，调用函数会得到一个布尔值，要么是<code>True</code>，要么是<code>False</code>。</p>
+<p><strong>说明2</strong>：上面的循环并不需要从 2 循环到 $\small{N-1}$ ，因为如果循环进行到 $\small{\sqrt{N}}$ 时，还没有找到$\small{N}$的因子，那么 $\small{\sqrt{N}}$ 之后也不会出现 $\small{N}$ 的因子，大家可以自己想一想这是为什么。</p>
+</blockquote>
+<h3>例子3：最大公约数和最小公倍数</h3>
+<p>设计计算两个正整数最大公约数和最小公倍数的函数。 $\small{x}$ 和 $\small{y}$ 的最大公约数是能够同时整除 $\small{x}$ 和 $\small{y}$ 的最大整数，如果 $\small{x}$ 和 $\small{y}$ 互质，那么它们的最大公约数为 1； $\small{x}$ 和 $\small{y}$ 的最小公倍数是能够同时被 $\small{x}$ 和 $\small{y}$ 整除的最小正整数，如果 $\small{x}$ 和 $\small{y}$ 互质，那么它们的最小公倍数为 $\small{x \times y}$ 。需要提醒大家注意的是，计算最大公约数和最小公倍数是两个不同的功能，应该设计成两个函数，而不是把两个功能放到同一个函数中。</p>
+<pre><code class="language-python">def lcm(x: int, y: int) -&gt; int:
+    """求最小公倍数"""
+    return x * y // gcd(x, y)
+
+
+def gcd(x: int, y: int) -&gt; int:
+    """求最大公约数"""
+    while y % x != 0:
+        x, y = y % x, x
+    return x
+</code></pre>
+<blockquote>
+<p><strong>说明</strong>：函数之间可以相互调用，上面求最小公倍数的<code>lcm</code>函数调用了求最大公约数的<code>gcd</code>函数，通过 $\frac{x \times y}{ gcd(x, y)}$ 来计算最小公倍数。</p>
+</blockquote>
+<h3>例子4：数据统计</h3>
+<p>假设样本数据保存一个列表中，设计计算样本数据描述性统计信息的函数。描述性统计信息通常包括：算术平均值、中位数、极差（最大值和最小值的差）、方差、标准差、变异系数等，计算公式如下所示。</p>
+<p>样本均值（sample mean）：</p>
+<p>$$<br>
+\bar{x} = \frac{\sum_{i=1}^{n}x_{i}}{n} = \frac{x_{1}+x_{2}+\cdots +x_{n}}{n}<br>
+$$</p>
+<p>样本方差（sample variance）：</p>
+<p>$$<br>
+s^2 = \frac {\sum_{i=1}^{n}(x_i - \bar{x})^2} {n-1}<br>
+$$</p>
+<p>样本标准差（sample standard deviation）：</p>
+<p>$$<br>
+s = \sqrt{\frac{\sum_{i=1}^{n}(x_i - \bar{x})^2}{n-1}}<br>
+$$</p>
+<p>变异系数（coefficient of sample variation）：</p>
+<p>$$<br>
+CV = \frac{s}{\bar{x}}<br>
+$$</p>
+<pre><code class="language-python">def ptp(data):
+    """极差（全距）"""
+    return max(data) - min(data)
+
+
+def mean(data):
+    """算术平均"""
+    return sum(data) / len(data)
+
+
+def median(data):
+    """中位数"""
+    temp, size = sorted(data), len(data)
+    if size % 2 != 0:
+        return temp[size // 2]
+    else:
+        return mean(temp[size // 2 - 1:size // 2 + 1])
+
+
+def var(data, ddof=1):
+    """方差"""
+    x_bar = mean(data)
+    temp = [(num - x_bar) ** 2 for num in data]
+    return sum(temp) / (len(temp) - ddof)
+
+
+def std(data, ddof=1):
+    """标准差"""
+    return var(data, ddof) ** 0.5
+
+
+def cv(data, ddof=1):
+    """变异系数"""
+    return std(data, ddof) / mean(data)
+
+
+def describe(data):
+    """输出描述性统计信息"""
+    print(f'均值: {mean(data)}')
+    print(f'中位数: {median(data)}')
+    print(f'极差: {ptp(data)}')
+    print(f'方差: {var(data)}')
+    print(f'标准差: {std(data)}')
+    print(f'变异系数: {cv(data)}')
+</code></pre>
+<blockquote>
+<p><strong>说明1</strong>：中位数是将数据按照升序或降序排列后位于中间的数，它描述了数据的中等水平。中位数的计算分两种情况：当数据体量$n$为奇数时，中位数是位于 $\frac{n + 1}{2}$ 位置的元素；当数据体量 $\small{n}$ 为偶数时，中位数是位于 $\frac{n}{2}$ 和 $\frac{n}{2} + 1$ 两个位置元素的均值。</p>
+<p><strong>说明2</strong>：计算方差和标准差的函数中有一个名为<code>ddof</code>的参数，它代表了可以调整的自由度，默认值为 1。在计算样本方差和样本标准差时，需要进行自由度校正；如果要计算总体方差和总体标准差，可以将<code>ddof</code>参数赋值为 0，即不需要进行自由度校正。</p>
+<p><strong>说明3</strong>：<code>describe</code>函数将上面封装好的统计函数组装到一起，用于输出数据的描述性统计信息。事实上，Python 标准库中有一个名为<code>statistics</code>的模块，它已经把获取描述性统计信息的函数封装好了，有兴趣的读者可以自行了解。</p>
+</blockquote>
+<h3>例子5：双色球随机选号</h3>
+<p>我们用函数重构之前讲过的双色球随机选号的例子（《第09课：常用数据结构之列表-2》），将生成随机号码和输出一组号码的功能分别封装到两个函数中，然后通过调用函数实现机选<code>N</code>注号码的功能。</p>
+<pre><code class="language-python">"""
+双色球随机选号程序
+
+Author: 骆昊
+Version: 1.3
+"""
+import random
+
+RED_BALLS = [i for i in range(1, 34)]
+BLUE_BALLS = [i for i in range(1, 17)]
+
+
+def choose():
+    """
+    生成一组随机号码
+    :return: 保存随机号码的列表
+    """
+    selected_balls = random.sample(RED_BALLS, 6)
+    selected_balls.sort()
+    selected_balls.append(random.choice(BLUE_BALLS))
+    return selected_balls
+
+
+def display(balls):
+    """
+    格式输出一组号码
+    :param balls: 保存随机号码的列表
+    """
+    for ball in balls[:-1]:
+        print(f'\033[031m{ball:0&gt;2d}\033[0m', end=' ')
+    print(f'\033[034m{balls[-1]:0&gt;2d}\033[0m')
+
+
+n = int(input('生成几注号码: '))
+for _ in range(n):
+    display(choose())
+</code></pre>
+<blockquote>
+<p><strong>说明</strong>：大家看看<code>display(choose())</code>这行代码，这里我们先通过<code>choose</code>函数获得一组随机号码，然后把<code>choose</code>函数的返回值作为<code>display</code>函数的参数，通过<code>display</code>函数将选中的随机号码显示出来。重构之后的代码逻辑非常清晰，代码的可读性更强了。如果有人为你封装了这两个函数，你仅仅是函数的调用者，其实你根本不用关心<code>choose</code>函数和<code>display</code>函数的内部实现，你只需要知道调用<code>choose</code>函数可以生成一组随机号码，而调用<code>display</code>函数传入一个列表，就可以输出这组号码。将来我们使用各种各样的 Python 三方库时，我们也根本不关注它们的底层实现，我们需要知道的仅仅是调用哪个函数可以解决问题。</p>
+</blockquote>
+<h3>总结</h3>
+<p>在写代码尤其是开发商业项目的时候，一定要有意识的<strong>将相对独立且重复使用的功能封装成函数</strong>，这样不管是自己还是团队的其他成员都可以通过调用函数的方式来使用这些功能，减少工作中那些重复且乏味的劳动。</p>

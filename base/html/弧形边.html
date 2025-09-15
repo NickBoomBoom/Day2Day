@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .tab {
+        width: 150px;
+        height: 40px;
+        margin: 50px auto;
+        background: #ed6a5e;
+        border-radius: 20px 20px 0 0;
+        position: relative;
+        /* 设置变形原点 */
+        transform-origin: center bottom;
+        /* 景深 40px 旋转 30deg */
+        transform: perspective(40px) rotateX(30deg);
+      }
+      .item {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: perspective(0) translate(-50%, -50%);
+        font-size: 20px;
+      }
+
+      .tab::before,
+      .tab::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        bottom: 0;
+      }
+      .tab::before {
+        left: -20px;
+        /* 设置径向渐变 */
+        background: radial-gradient(
+          circle at 0 0,
+          transparent 20px,
+          #ed6a5e 100px
+        );
+      }
+      .tab::after {
+        right: -20px;
+        /* 设置径向渐变 */
+        background: radial-gradient(
+          circle at 0px 0,
+          transparent 20px,
+          #ed6a5e 100px
+        );
+      }
+    </style>
+  </head>
+  <body>
+    <div class="tab">
+      <div class="item">进行中</div>
+    </div>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -43,4 +43,160 @@
   </script>
 </body>
 
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV to JSON Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .file-input {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CSV to JSON Converter</h1>
+        
+        <div class="file-input">
+            <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" />
+            <button onclick="handleFile()">Convert File</button>
+        </div>
+        
+        <div>
+            <h3>Or paste CSV text:</h3>
+            <textarea id="csvInput" placeholder="Paste CSV data here..."></textarea>
+            <button onclick="convertText()">Convert Text</button>
+        </div>
+        
+        <div>
+            <h3>JSON Output:</h3>
+            <textarea id="jsonOutput" readonly placeholder="JSON output will appear here..."></textarea>
+            <button onclick="copyToClipboard()">Copy JSON</button>
+            <button onclick="downloadJSON()">Download JSON</button>
+        </div>
+    </div>
+
+    <script>
+        function csvToJson(csv) {
+            const lines = csv.split('\n');
+            const result = [];
+            const headers = lines[0].split(',').map(h => h.trim());
+            
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                
+                const obj = {};
+                const currentline = lines[i].split(',');
+                
+                for (let j = 0; j < headers.length; j++) {
+                    let value = currentline[j] ? currentline[j].trim() : '';
+                    // Try to parse the value as JSON to handle escaped characters
+                    try {
+                        value = JSON.parse(value);
+                    } catch (e) {
+                        // If not valid JSON, keep the original value
+                    }
+                    obj[headers[j]] = value;
+                }
+                
+                result.push(obj);
+            }
+            
+            return JSON.stringify(result, null, 2);
+        }
+
+        function handleFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select a file first');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = e.target.result;
+                const workbook = XLSX.read(data, { type: 'binary' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const csv = XLSX.utils.sheet_to_csv(firstSheet);
+                document.getElementById('csvInput').value = csv;
+                convertText();
+            };
+            reader.readAsBinaryString(file);
+        }
+
+        function convertText() {
+            const csvInput = document.getElementById('csvInput').value.trim();
+            if (!csvInput) {
+                alert('Please enter or upload CSV data');
+                return;
+            }
+            
+            try {
+                const json = csvToJson(csvInput);
+                document.getElementById('jsonOutput').value = json;
+            } catch (e) {
+                alert('Error converting CSV to JSON: ' + e.message);
+            }
+        }
+
+        function copyToClipboard() {
+            const jsonOutput = document.getElementById('jsonOutput');
+            jsonOutput.select();
+            document.execCommand('copy');
+            alert('JSON copied to clipboard!');
+        }
+
+        function downloadJSON() {
+            const jsonOutput = document.getElementById('jsonOutput').value;
+            if (!jsonOutput) {
+                alert('No JSON data to download');
+                return;
+            }
+            
+            const blob = new Blob([jsonOutput], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'converted.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
 </html>

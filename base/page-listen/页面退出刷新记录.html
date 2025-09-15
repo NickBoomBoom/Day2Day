@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="../js/jquery3.7.1.js"></script>
+
+  <script>
+
+    class MediaPlayer extends HTMLElement {
+      constructor() {
+        super();
+        // 创建 shadow DOM
+        this.attachShadow({ mode: 'open' });
+
+        // 获取 type 属性（audio 或 video）
+        const type = this.getAttribute('type') || 'video';
+        const src = this.getAttribute('src') || '';
+
+        // 创建媒体元素
+        this.media = document.createElement(type);
+        this.media.src = src;
+        this.media.controls = true;
+
+        // 样式
+        const style = document.createElement('style');
+        style.textContent = `
+      :host {
+        display: block;
+        max-width: 100%;
+      }
+      video, audio {
+        width: 100%;
+        height: 100%;
+      }
+    `;
+
+        // 将元素附加到 shadow DOM
+        this.shadowRoot.append(style, this.media);
+      }
+
+      // 属性变化监听
+      static get observedAttributes() {
+        return ['src'];
+      }
+
+      attributeChangedCallback(name, oldValue, newValue) {
+        if (name === 'src' && this.media) {
+          this.media.src = newValue;
+        }
+      }
+
+      // 对外暴露方法
+      play() {
+        this.media.play();
+      }
+
+      pause() {
+        this.media.pause();
+      }
+    }
+
+    // 注册自定义元素
+    customElements.define('media-player', MediaPlayer);
+
+  </script>
+
+  <style>
+    #content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      /* height: 200px;
+      overflow: auto; */
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="content">
+
+    <input type="text" style="border: 2px solid grey; height: 20px; border-radius: 10px;" />
+
+    <audio controls src="http://downsc.chinaz.net/files/download/sound1/201206/1638.mp3">
+    </audio>
+
+    <div style="border: 1px solid skyblue; padding: 10px; border-radius: 10px;color:green;">我是内部区域,用来测试点击时是否包含在某个固定 dom
+      中</div>
+    <video controls width="250" height="100" src="https://media.w3.org/2010/05/sintel/trailer.mp4">
+
+    </video>
+
+    <hr />
+
+    <media-player style="height: 100px;width:300px;" type="audio"
+      src="http://downsc.chinaz.net/files/download/sound1/201206/1638.mp3"></media-player>
+
+    <media-player type="video" style="height: 100px;width: 250px;"
+      src="https://media.w3.org/2010/05/sintel/trailer.mp4"></media-player>
+
+
+    <iframe style="border: 1px solid red" width="200" height="400" src="http://127.0.0.1:3000" frameborder="0"></iframe>
+
+
+    <main id="content" style="border:1px solid black;border-radius: 10px; padding:10px;">
+    </main>
+  </div>
+
+  <script>
+    function trackOnUnload(url, data) {
+      const jsonData = JSON.stringify(data);
+
+      function sendByBeacon() {
+        try {
+          const blob = new Blob([jsonData], { type: "application/json" });
+          return navigator.sendBeacon(url, blob);
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function sendByFetch() {
+        try {
+          return fetch(url, {
+            method: "POST",
+            body: jsonData,
+            headers: { "Content-Type": "application/json" },
+            keepalive: true,
+          });
+        } catch (e) {
+          return false;
+        }
+      }
+
+
+      if (!sendByBeacon()) {
+        sendByFetch();
+      }
+    }
+    // window.addEventListener('beforeunload', () => {
+    //   trackOnUnload('http://localhost:3000/api/track', {
+    //     message: '页面关闭或刷新',
+    //     timestamp: Date.now()
+    //   });
+    //   // event.preventDefault(); // 兼容某些浏览器
+    //   // event.returnValue = ''; // 触发浏览器默认确认弹窗
+    // }); 
+
+    const SEND_TYPES = {
+      START: "start",
+      STOP: "stop",
+      CONTINUE: 'continue'
+
+    }
+
+    const RECIVE_TYPES = {
+      REPORT: 'report'
+    }
+
+    class UserActivityDetector {
+      constructor(
+        attrs = {
+          customMediaTag: [],
+          reportTimeInterval: 5 * 1000,
+          checkTimeInterval: 2 * 1000,
+        },
+        callback = {
+          report: async (data) => {
+            console.log(data)
+          }
+        }
+      ) {
+        this.attrs = attrs;
+        this.callback = callback;
+        this.check = this.check.bind(this);
+        this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
+        this.checkIninted = this.checkIninted.bind(this)
+        this.init()
+      }
+
+      active = false
+      worker = null
+      inited = false;
+      timer = null;
+      events = ["mousemove", "click", 'wheel', "keydown", "scroll", "touchstart"];
+
+      preActionDate = null;
+
+      init() {
+        this.events.forEach((event) =>
+          window.addEventListener(event, this.checkIninted)
+        );
+      }
+
+      checkIninted(e) {
+        console.log('checkIninted', this.inited)
+        if (!this.inited) {
+          this.inited = true
+          this.worker = new Worker("./worker.js");
+          this.startWorker({
+            action: `初始化,用户开始操作页面,记录间隔:${this.attrs.reportTimeInterval}ms`,
+          })
+          this.mount()
+        } else {
+          this.events.forEach((event) =>
+            window.removeEventListener(event, this.checkIninted)
+          );
+        }
+      }
+
+      mount() {
+        this.worker.onmessage = (e) => {
+          const { type, data } = e.data
+          switch (type) {
+            case RECIVE_TYPES.REPORT:
+              this.callback.report(data).then(() => {
+                console.log('report success')
+              }).catch(error => {
+                this.callback.report(data)
+              })
+              break;
+            default:
+              break;
+          }
+        };
+        this.events.forEach((event) =>
+          window.addEventListener(event, this.check)
+        );
+        document.addEventListener(
+          "visibilitychange",
+          this.handleVisibilityChange
+        );
+      }
+
+
+      startWorker(data) {
+        this.active = true
+        this.worker.postMessage({
+          type: SEND_TYPES.START,
+          data: {
+            timeout: this.attrs.reportTimeInterval,
+            ...data,
+          }
+        })
+      }
+
+      stopWorker(data) {
+        this.active = false
+
+        this.worker.postMessage({
+          type: SEND_TYPES.STOP,
+          data: {
+            preActionDate: this.preActionDate || Date.now(),
+            ...data
+          }
+        })
+      }
+
+      contiuneWorker(data) {
+        if (this.active) {
+          this.worker.postMessage({
+            type: SEND_TYPES.CONTINUE,
+            data: {
+              ...data
+            }
+          })
+        } else {
+          this.startWorker({
+            ...data,
+            action: `用户停止后再次操作页面,开始记录,记录间隔:${this.attrs.reportTimeInterval}ms`,
+          })
+        }
+        this.active = true
+
+      }
+
+      collectMediaElements(root = document) {
+        const mediaElements = [];
+
+        root.querySelectorAll('video, audio').forEach(mediaElement => {
+          mediaElements.push(mediaElement)
+        })
+
+        this.attrs.customMediaTag.forEach(tagName => {
+          root.querySelectorAll(tagName).forEach(t => {
+            if (t.shadowRoot) {
+              t.shadowRoot.querySelectorAll('video, audio').forEach(element => {
+                mediaElements.push(element)
+              });
+            }
+          })
+        })
+
+        return mediaElements;
+      }
+
+      isMediaPlaying() {
+        const res = this.collectMediaElements();
+        for (let i = 0; i < res.length; i++) {
+          const t = res[i];
+          if (!t.paused) {
+            return true
+          }
+        }
+
+        return false
+      }
+
+
+      record(e) {
+        const event = Object.prototype.toString.call(Reflect.getPrototypeOf(e)).slice(8, -1)
+        console.log(1111, event)
+      }
+      check(e) {
+        this.contiuneWorker({
+          action: '继续操作页面',
+        })
+        this.preActionDate = Date.now()
+        console.log('check', this.preActionDate)
+        clearTimeout(this.timer)
+        this.timer = setTimeout(() => {
+          const isMediaPlaying = this.isMediaPlaying();
+          if (isMediaPlaying) {
+            console.log('media playing')
+          } else {
+            this.stopWorker({
+              action: '用户停止操作页面,无点击,无滚动,无键盘输入,无媒体资源播放',
+            })
+          }
+        }, this.attrs.checkTimeInterval);
+
+      }
+
+      handleVisibilityChange(e) {
+        console.error("visibilitychange", e, document.hidden);
+        if (document.hidden) {
+          this.stopWorker({
+            action: '页面被隐藏',
+          })
+        } else {
+          this.startWorker({
+            action: `页面重新显示,开始上报,记录间隔:${this.attrs.reportTimeInterval}ms`,
+          })
+        }
+      }
+
+      unmount() {
+        this.events.forEach((event) =>
+          window.removeEventListener(event, this.check)
+        );
+        document.removeEventListener(
+          "visibilitychange",
+          this.handleVisibilityChange
+        );
+        this.worker.terminate()
+        clearTimeout(this.timer);
+      }
+
+    }
+
+
+    const detector = new UserActivityDetector(
+      {
+        customMediaTag: ['media-player'],
+        reportTimeInterval: 5 * 1000,
+        checkTimeInterval: 3 * 1000
+      },
+      {
+        report: async (data) => {
+          console.log(data)
+          trackOnUnload('http://localhost:3000/api/track', data);
+        }
+      }
+    );
+
+
+  </script>
+</body>
+
+</html>

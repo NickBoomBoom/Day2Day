@@ -1,0 +1,137 @@
+<h2>常用数据结构之元组</h2>
+<p>前面的两节课，我们为大家讲解了 Python 中的列表，它是一种容器型的数据类型，通过列表类型的变量，我们可以保存多个数据并通过循环实现对数据的批量操作。当然，Python 中还有其他容器型的数据类型，接下来我们就为大家讲解另一种容器型的数据类型，它的名字叫元组（tuple）。</p>
+<h3>元组的定义和运算</h3>
+<p>在 Python 语言中，元组也是多个元素按照一定顺序构成的序列。元组和列表的不同之处在于，<strong>元组是不可变类型</strong>，这就意味着元组类型的变量一旦定义，其中的元素不能再添加或删除，而且元素的值也不能修改。如果试图修改元组中的元素，将引发<code>TypeError</code>错误，导致程序崩溃。定义元组通常使用形如<code>(x, y, z)</code>的字面量语法，元组类型支持的运算符跟列表是一样的，我们可以看看下面的代码。</p>
+<pre><code class="language-python"># 定义一个三元组
+t1 = (35, 12, 98)
+# 定义一个四元组
+t2 = ('骆昊', 45, True, '四川成都')
+
+# 查看变量的类型
+print(type(t1))  # &lt;class 'tuple'&gt;
+print(type(t2))  # &lt;class 'tuple'&gt;
+
+# 查看元组中元素的数量
+print(len(t1))  # 3
+print(len(t2))  # 4
+
+# 索引运算
+print(t1[0])    # 35
+print(t1[2])    # 98
+print(t2[-1])   # 四川成都
+
+# 切片运算
+print(t2[:2])   # ('骆昊', 43)
+print(t2[::3])  # ('骆昊', '四川成都')
+
+# 循环遍历元组中的元素
+for elem in t1:
+    print(elem)
+
+# 成员运算
+print(12 in t1)         # True
+print(99 in t1)         # False
+print('Hao' not in t2)  # True
+
+# 拼接运算
+t3 = t1 + t2
+print(t3)  # (35, 12, 98, '骆昊', 43, True, '四川成都')
+
+# 比较运算
+print(t1 == t3)            # False
+print(t1 &gt;= t3)            # False
+print(t1 &lt;= (35, 11, 99))  # False
+</code></pre>
+<p>一个元组中如果有两个元素，我们就称之为二元组；一个元组中如果五个元素，我们就称之为五元组。需要提醒大家注意的是，<code>()</code>表示空元组，但是如果元组中只有一个元素，需要加上一个逗号，否则<code>()</code>就不是代表元组的字面量语法，而是改变运算优先级的圆括号，所以<code>('hello', )</code>和<code>(100, )</code>才是一元组，而<code>('hello')</code>和<code>(100)</code>只是字符串和整数。我们可以通过下面的代码来加以验证。</p>
+<pre><code class="language-python">a = ()
+print(type(a))  # &lt;class 'tuple'&gt;
+b = ('hello')
+print(type(b))  # &lt;class 'str'&gt;
+c = (100)
+print(type(c))  # &lt;class 'int'&gt;
+d = ('hello', )
+print(type(d))  # &lt;class 'tuple'&gt;
+e = (100, )
+print(type(e))  # &lt;class 'tuple'&gt;
+</code></pre>
+<h3>打包和解包操作</h3>
+<p>当我们把多个用逗号分隔的值赋给一个变量时，多个值会打包成一个元组类型；当我们把一个元组赋值给多个变量时，元组会解包成多个值然后分别赋给对应的变量，如下面的代码所示。</p>
+<pre><code class="language-python"># 打包操作
+a = 1, 10, 100
+print(type(a))  # &lt;class 'tuple'&gt;
+print(a)        # (1, 10, 100)
+# 解包操作
+i, j, k = a
+print(i, j, k)  # 1 10 100
+</code></pre>
+<p>在解包时，如果解包出来的元素个数和变量个数不对应，会引发<code>ValueError</code>异常，错误信息为：<code>too many values to unpack</code>（解包的值太多）或<code>not enough values to unpack</code>（解包的值不足）。</p>
+<pre><code class="language-python">a = 1, 10, 100, 1000
+# i, j, k = a             # ValueError: too many values to unpack (expected 3)
+# i, j, k, l, m, n = a    # ValueError: not enough values to unpack (expected 6, got 4)
+</code></pre>
+<p>有一种解决变量个数少于元素的个数方法，就是使用星号表达式。通过星号表达式，我们可以让一个变量接收多个值，代码如下所示。需要注意两点：首先，用星号表达式修饰的变量会变成一个列表，列表中有0个或多个元素；其次，在解包语法中，星号表达式只能出现一次。</p>
+<pre><code class="language-python">a = 1, 10, 100, 1000
+i, j, *k = a
+print(i, j, k)        # 1 10 [100, 1000]
+i, *j, k = a
+print(i, j, k)        # 1 [10, 100] 1000
+*i, j, k = a
+print(i, j, k)        # [1, 10] 100 1000
+*i, j = a
+print(i, j)           # [1, 10, 100] 1000
+i, *j = a
+print(i, j)           # 1 [10, 100, 1000]
+i, j, k, *l = a
+print(i, j, k, l)     # 1 10 100 [1000]
+i, j, k, l, *m = a
+print(i, j, k, l, m)  # 1 10 100 1000 []
+</code></pre>
+<p>需要说明一点，解包语法对所有的序列都成立，这就意味着我们之前讲的列表、<code>range</code>函数构造的范围序列甚至字符串都可以使用解包语法。大家可以尝试运行下面的代码，看看会出现怎样的结果。</p>
+<pre><code class="language-python">a, b, *c = range(1, 10)
+print(a, b, c)
+a, b, c = [1, 10, 100]
+print(a, b, c)
+a, *b, c = 'hello'
+print(a, b, c)
+</code></pre>
+<h3>交换变量的值</h3>
+<p>交换变量的值是写代码时经常用到的一个操作，但是在很多编程语言中，交换两个变量的值都需要借助一个中间变量才能做到，如果不用中间变量就需要使用比较晦涩的位运算来实现。在 Python 中，交换两个变量<code>a</code>和<code>b</code>的值只需要使用如下所示的代码。</p>
+<pre><code class="language-python">a, b = b, a
+</code></pre>
+<p>同理，如果要将三个变量<code>a</code>、<code>b</code>、<code>c</code>的值互换，即<code>b</code>的值赋给<code>a</code>，<code>c</code>的值赋给<code>b</code>，<code>a</code>的值赋给<code>c</code>，也可以如法炮制。</p>
+<pre><code class="language-python">a, b, c = b, c, a
+</code></pre>
+<p>需要说明的是，上面的操作并没有用到打包和解包语法，Python 的字节码指令中有<code>ROT_TWO</code>和<code>ROT_THREE</code>这样的指令可以直接实现这个操作，效率是非常高的。但是如果有多于三个变量的值要依次互换，这个时候是没有直接可用的字节码指令的，需要通过打包解包的方式来完成变量之间值的交换。</p>
+<h3>元组和列表的比较</h3>
+<p>这里还有一个非常值得探讨的问题，Python 中已经有了列表类型，为什么还需要元组这样的类型呢？这个问题对于初学者来说似乎有点困难，不过没有关系，我们先抛出观点，大家可以一边学习一边慢慢体会。</p>
+<ol>
+<li>
+<p>元组是不可变类型，<strong>不可变类型更适合多线程环境</strong>，因为它降低了并发访问变量的同步化开销。关于这一点，我们会在后面讲解并发编程的时候跟大家一起探讨。</p>
+</li>
+<li>
+<p>元组是不可变类型，通常<strong>不可变类型在创建时间上优于对应的可变类型</strong>。我们可以使用<code>timeit</code>模块的<code>timeit</code>函数来看看创建保存相同元素的元组和列表各自花费的时间，<code>timeit</code>函数的<code>number</code>参数表示代码执行的次数。下面的代码中，我们分别创建了保存<code>1</code>到<code>9</code>的整数的列表和元组，每个操作执行<code>10000000</code>次，统计运行时间。</p>
+<pre><code class="language-python">import timeit
+
+print('%.3f 秒' % timeit.timeit('[1, 2, 3, 4, 5, 6, 7, 8, 9]', number=10000000))
+print('%.3f 秒' % timeit.timeit('(1, 2, 3, 4, 5, 6, 7, 8, 9)', number=10000000))
+</code></pre>
+<p>输出：</p>
+<pre><code>0.635 秒
+0.078 秒
+</code></pre>
+<blockquote>
+<p><strong>说明</strong>：上面代码的执行结果因软硬件系统而异，在我目前使用的电脑上，执行<code>10000000</code>次创建列表的操作时间是<code>0.635</code>秒，而执行<code>10000000</code>次创建元组的操作时间是<code>0.078</code>秒，显然创建元组更快且二者时间上有数量级的差别。大家可以在自己的电脑上执行这段代码，把你的执行结果放到评论区，看看谁的电脑更厉害。</p>
+</blockquote>
+</li>
+</ol>
+<p>当然，Python 中的元组和列表类型是可以相互转换的，我们可以通过下面的代码来完成该操作。</p>
+<pre><code class="language-python">infos = ('骆昊', 43, True, '四川成都')
+# 将元组转换成列表
+print(list(infos))  # ['骆昊', 43, True, '四川成都']
+
+frts = ['apple', 'banana', 'orange']
+# 将列表转换成元组
+print(tuple(frts))  # ('apple', 'banana', 'orange')
+</code></pre>
+<h3>总结</h3>
+<p><strong>列表和元组都是容器型的数据类型</strong>，即一个变量可以保存多个数据，而且它们都是按一定顺序组织元素的有序容器。<strong>列表是可变数据类型</strong>，<strong>元组是不可变数据类型</strong>，所以列表可以添加元素、删除元素、清空元素、排序反转，但这些操作对元组来说是不成立的。列表和元组都可以支持<strong>拼接运算</strong>、<strong>成员运算</strong>、<strong>索引运算</strong>、<strong>切片运算</strong>等操作，后面我们要讲到的字符串类型也支持这些运算，因为字符串就是字符按一定顺序构成的序列，在这一点上三者并没有什么区别。我们<strong>推荐大家使用列表的生成式语法来创建列表</strong>，它不仅好用而且效率很高，是 Python 语言中非常有特色的语法。</p>

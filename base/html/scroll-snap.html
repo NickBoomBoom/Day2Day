@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>scroll-snap + 内部滚动</title>
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    /* 外层视口：整屏吸附 */
+    .viewport {
+      height: 100vh;
+      /* 一屏高 */
+      overflow-y: auto;
+      /* 允许纵向滚动 */
+      scroll-snap-type: y mandatory;
+      /* 纵向吸附，强制对齐 */
+      scroll-behavior: smooth;
+      /* 平滑滚动（可选） */
+      overscroll-behavior-y: none;
+      /* 防止继续把滚动串到 <body> 的回弹（iOS 上更稳） */
+    }
+
+    /* 每一屏 */
+    .panel {
+      height: 100vh;
+      /* 每屏占满视口 */
+      scroll-snap-align: start;
+      /* 吸附到顶部 */
+      scroll-snap-stop: always;
+      /* 防止一次惯性跳过多屏 */
+      overflow: hidden;
+      /* 隐掉内部容器的滚动条溢出 */
+      display: grid;
+      /* 用 grid 让内部容器自然铺满 */
+    }
+
+    /* 每屏内部可滚动区域 */
+    .panel__inner {
+      /* 关键：内部自己滚 */
+      overflow: auto;
+      /* 保持与外层的滚动链：到边界时把滚动传给外层触发整屏吸附 */
+      overscroll-behavior: auto;
+      /* 默认为 auto，这里强调一下语义 */
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+      align-content: start;
+      /* 内容从上往下排 */
+    }
+
+    /* 演示用样式 */
+    .panel:nth-child(1) {
+      background: #f5f7ff;
+    }
+
+    .panel:nth-child(2) {
+      background: #f7fff5;
+    }
+
+    .panel:nth-child(3) {
+      background: #fff7f5;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+      padding: 16px 20px;
+      line-height: 1.6;
+    }
+
+    h1,
+    h2,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .filler {
+      height: 800px;
+      /* 制造内部需要滚动的高度 */
+      background: repeating-linear-gradient(-45deg, #eee, #eee 16px, #e2e2e2 16px, #e2e2e2 32px);
+      border-radius: 10px;
+    }
+
+    /* 可选：为更明确的滚动体验，隐藏非必要滚动条（按需） */
+    .panel__inner::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .panel__inner::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, .2);
+      border-radius: 999px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="viewport">
+
+    <section class="panel">
+      <div class="panel__inner">
+        <h1>第 1 屏（内部可滚）</h1>
+        <div class="card">
+          <h2>说明</h2>
+          <p>向下滚动先只滚这块内容；滚到底，再继续滚动，整屏吸附到第 2 屏。</p>
+        </div>
+        <div class="filler"></div>
+        <div class="card">
+          <p>到达底部后继续滚动→跳到下一屏。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel__inner">
+        <h1>第 2 屏（内部也可滚）</h1>
+        <div class="card">
+          <p>同理，先滚内部，再到边界时切屏。</p>
+        </div>
+        <div class="filler"></div>
+        <div class="card">
+          <p>继续滚动→进入第 3 屏。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel__inner">
+        <h1>第 3 屏（内部可滚）</h1>
+        <div class="card">
+          <p>向上滚到顶部后，继续向上滚会返回上一屏。</p>
+        </div>
+        <div class="filler"></div>
+        <div class="card">
+          <p>END</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</body>
+
+</html>

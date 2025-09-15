@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      async function init() {
+        const res = await fetch("./data.json");
+        const result = await res.json();
+        console.log(111, result);
+
+        result.forEach((t) => {
+          t.teachingResource = parse(t.teachingResource);
+        });
+
+        console.log(result);
+      }
+
+      function parse(html, parser) {
+        parser = new DOMParser();
+
+        html = html
+          .replaceAll(
+            `<span style="color:rgb(0,0,0);font-family:Wingdings;font-size:11.0000pt;font-weight:normal;mso-bidi-font-family:宋体;mso-fareast-font-family:宋体;mso-font-kerning:1.0000pt;mso-list:Ignore;">l&nbsp;</span>`,
+            `<span> ● </span>`
+          )
+          .replace(/<o:p>(?:\s|&nbsp;|&#160;)*<\/o:p>/gi, "");
+
+        const doc = parser.parseFromString(html, "text/html");
+
+        const escapeHTML = (str) => {
+          if (!str) return str;
+          return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+        };
+
+        const findTag = (tag, el) => {
+          for (let i = 0; i < el.children.length; i++) {
+            const t = el.children[i];
+            const target = t.querySelectorAll(tag);
+            if (target.length) return t;
+          }
+          return null;
+        };
+
+        const findParent = (el) => {
+          const p = el.parentNode;
+          if (!p || [1, 9].includes(p.nodeType)) return null;
+          return p.children.length === 1 ? p : findParent(p);
+        };
+
+        function unwrapAllDivs(node) {
+          Array.from(node.children).forEach((child) => {
+            unwrapAllDivs(child);
+          });
+          if (node.tagName === "DIV") {
+            const parent = node.parentElement;
+            if (!parent) return;
+            while (node.firstChild) {
+              parent.insertBefore(node.firstChild, node);
+            }
+            node.remove();
+          }
+        }
+
+        doc.querySelectorAll("p>meta, h3>meta").forEach((t) => {
+          t.parentNode.remove();
+        });
+
+        doc.querySelectorAll("[data-panel-group-id]").forEach((wrapper) => {
+          const parent = wrapper.parentNode;
+          const buttons = wrapper.querySelectorAll("button>span>svg");
+          buttons.forEach((t) => {
+            t.parentNode.parentNode.remove();
+          });
+          if (!parent) return;
+          unwrapAllDivs(wrapper);
+          while (wrapper.firstChild) {
+            parent.insertBefore(wrapper.firstChild, wrapper);
+          }
+          wrapper.remove();
+        });
+
+        const LI_SELECTORS = [
+          "ol > li > ul",
+          "ol > li > ol",
+          "ul > li > ol",
+          "ul > li > ul",
+        ];
+
+        LI_SELECTORS.forEach((selector) => {
+          doc.querySelectorAll(selector).forEach((nestedList) => {
+            const parentLi = nestedList.parentNode;
+            const parentList = parentLi?.parentNode;
+            if (parentLi && parentList) {
+              parentList.insertBefore(
+                nestedList.cloneNode(true),
+                parentLi.nextSibling
+              );
+              nestedList.remove();
+            }
+          });
+        });
+
+        doc.querySelectorAll(".MsoNormal").forEach((p) => {
+          if (!p.innerText) p.remove();
+        });
+
+        doc.querySelectorAll("ul>li").forEach((t) => {
+          const el = findTag("video", t);
+          if (el) {
+            t.parentNode.insertBefore(el.cloneNode(true), t.nextSibling);
+            el.remove();
+          }
+        });
+
+        doc
+          .querySelectorAll('[style*="mso-element:para-border-div"]')
+          .forEach((t) => {
+            const pre = document.createElement("pre");
+            const code = document.createElement("code");
+            const str = [];
+            t.querySelectorAll("p").forEach((p) => {
+              str.push(p.innerText);
+            });
+            code.innerHTML = str.join("\n");
+            pre.appendChild(code);
+            t.replaceWith(pre);
+          });
+
+        doc.querySelectorAll('[style*="border:1px dashed"]').forEach((t) => {
+          const pre = document.createElement("pre");
+          const code = document.createElement("code");
+          code.innerHTML = t.innerHTML.replaceAll("<br>", "\n");
+          pre.appendChild(code);
+          t.replaceWith(pre);
+        });
+
+        doc.querySelectorAll("pre").forEach((t) => {
+          const c = t.querySelector("code");
+          t.removeAttribute("style");
+          t.removeAttribute("spellcheck");
+          t.removeAttribute("lang");
+          t.removeAttribute("cid");
+          t.removeAttribute("mdtype");
+          if (!c) {
+            const rawText = t.innerText;
+            const escaped = escapeHTML(rawText);
+            t.innerHTML = `<code>${escaped}</code>`;
+          }
+        });
+
+        doc.querySelectorAll("[style]").forEach((el) => {
+          const style = el.getAttribute("style");
+          const cleanedStyle = style
+            .split(";")
+            .map((s) => s.trim())
+            .filter((s) => {
+              return (
+                s &&
+                !s.startsWith("mso-") &&
+                !s.startsWith("--tw-") &&
+                !s.startsWith("--el-")
+              );
+            })
+            .join("; ");
+          if (cleanedStyle) {
+            el.setAttribute("style", cleanedStyle);
+          } else {
+            el.removeAttribute("style");
+          }
+        });
+
+        doc.querySelectorAll('[align="center"]').forEach((el) => {
+          el.style.textAlign = "center";
+          el.removeAttribute("align");
+
+          const tables = el.querySelectorAll("table");
+          const videos = el.querySelectorAll("video");
+          if (tables.length || videos.length) {
+            while (el.firstChild) el.parentNode.insertBefore(el.firstChild, el);
+            el.remove();
+          }
+        });
+
+        doc.querySelectorAll(".editorVideoStyle").forEach((el) => {
+          while (el.firstChild) {
+            el.parentNode.insertBefore(el.firstChild, el);
+          }
+          el.remove();
+        });
+
+        const shouldRemoveClass = (cls) => {
+          return (
+            cls.startsWith("WordSection") ||
+            /^Section\d*$/.test(cls) ||
+            cls === "raw-html-embed"
+          );
+        };
+
+        doc.querySelectorAll("[class]").forEach((el) => {
+          const classList = Array.from(el.classList);
+          if (classList.some((cls) => shouldRemoveClass(cls))) {
+            const parent = el.parentNode;
+            while (el.firstChild) {
+              parent.insertBefore(el.firstChild, el);
+            }
+            parent.removeChild(el);
+          } else {
+            el.removeAttribute("class");
+          }
+        });
+
+        doc.querySelectorAll("figure").forEach((figure) => {
+          const parent = figure.parentNode;
+          Array.from(figure.childNodes).forEach((child) =>
+            parent.insertBefore(child, figure)
+          );
+          parent.removeChild(figure);
+        });
+
+        doc.querySelectorAll("table").forEach((t) => {
+          t.style.width = "100%";
+          t.setAttribute("width", "100%");
+          const p = findParent(t);
+          if (p) p.replaceWith(t);
+        });
+
+        doc.querySelectorAll("div>table").forEach((t) => {
+          const div = t.parentNode;
+          const p = document.createElement("p");
+          p.innerHTML = div.innerHTML;
+          div.replaceWith(p);
+        });
+
+        function cleanSrc(url) {
+          if (!url) return url;
+          return url.split("?")[0];
+        }
+
+        doc.querySelectorAll("video, audio").forEach((t) => {
+          const isVideo = t.tagName === "VIDEO";
+          const srcList = [];
+          t.querySelectorAll("source").forEach((source) => {
+            const src = source.getAttribute("src");
+            if (src) srcList.push(src);
+          });
+
+          const directSrc = t.getAttribute("src");
+          if (directSrc) {
+            t.setAttribute("src", cleanSrc(directSrc));
+          } else {
+            const newSrc = srcList.find((s) => !s.includes("_transcode"));
+            t.setAttribute("src", cleanSrc(newSrc));
+          }
+
+          t.innerHTML = "";
+          t.removeAttribute("data-setup");
+
+          const wrapper = document.createElement("div");
+          wrapper.setAttribute("data-w-e-type", isVideo ? "video" : "audio");
+          if (isVideo) wrapper.setAttribute("data-w-e-is-void", "");
+          wrapper.appendChild(t.cloneNode(true));
+
+          const p = findParent(t) || t;
+          p.replaceWith(wrapper);
+        });
+
+        doc.querySelectorAll("cp-image-swiper").forEach((t) => {
+          const div = document.createElement("div");
+          div.setAttribute("data-w-e-type", "shadow-dom");
+          div.appendChild(t.cloneNode(true));
+          t.replaceWith(div);
+        });
+
+        doc.querySelectorAll("img").forEach((t) => {
+          const src = t.getAttribute("src");
+          t.setAttribute("src", cleanSrc(src));
+          const p = findParent(t);
+          const wrapper = document.createElement("p");
+          wrapper.style.textAlign = (p && p.getAttribute("align")) || "center";
+          wrapper.appendChild(t.cloneNode(true));
+          (p || t).replaceWith(wrapper);
+        });
+
+        doc.querySelectorAll("font").forEach((t) => {
+          const p = t.parentNode;
+          while (t.firstChild) p.insertBefore(t.firstChild, t);
+          t.remove();
+        });
+
+        doc.querySelectorAll("p").forEach((outerP) => {
+          Array.from(outerP.children)
+            .filter((child) => child.tagName === "P")
+            .forEach((nestedP) => {
+              outerP.parentNode.insertBefore(nestedP, outerP);
+            });
+        });
+
+        const cleanedHtml = doc.body.innerHTML
+          .replace(/>\s+</g, "><")
+          .replace(/^\s+|\s+$/g, "");
+
+        console.log("before", html, html.length);
+        console.warn("after", cleanedHtml);
+
+        return cleanedHtml;
+      }
+
+      init();
+    </script>
+  </body>
+</html>

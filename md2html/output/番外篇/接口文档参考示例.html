@@ -1,0 +1,826 @@
+<h2>接口文档参考示例</h2>
+<ol start="0">
+<li>
+<p>用户登录 - <strong>POST</strong> <code>/api/login/</code></p>
+<p>开发者：骆昊</p>
+<p>版本号：v1</p>
+<p>最后修改时间：</p>
+<p>接口说明：登录成功后，会生成或更新用户令牌（token）。</p>
+<p>使用帮助：测试数据库中预设了四个可供使用的账号，如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th>用户名</th>
+<th>用户口令</th>
+<th>角色</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>jackfrued</td>
+<td>123456</td>
+<td>管理员</td>
+</tr>
+<tr>
+<td>wangdachui</td>
+<td>123123</td>
+<td>普通用户</td>
+</tr>
+<tr>
+<td>hellokitty</td>
+<td>123123</td>
+<td>房地产经理人</td>
+</tr>
+<tr>
+<td>wuzetian</td>
+<td>123456</td>
+<td>房东</td>
+</tr>
+</tbody>
+</table>
+<p>请求参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>类型</th>
+<th>是否必填</th>
+<th>参数位置</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>username</td>
+<td>字符串</td>
+<td>是</td>
+<td>消息体</td>
+<td>用户名</td>
+</tr>
+<tr>
+<td>password</td>
+<td>字符串</td>
+<td>是</td>
+<td>消息体</td>
+<td>用户口令</td>
+</tr>
+</tbody>
+</table>
+<p>响应信息：</p>
+<ul>
+<li>
+<p>登录成功：</p>
+<pre><code class="language-JSON">{
+    "code": 30000,
+    "message": "用户登录成功",
+    "token": "f83e0f624e2311e9af1f00163e02b646"
+}
+</code></pre>
+</li>
+<li>
+<p>登录失败：</p>
+<pre><code class="language-JSON">{
+    "code": 30001,
+    "message": "用户名或密码错误"
+}
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>发送短信验证码 - <strong>GET</strong> <code>/api/mobile_code/{国内手机号}/</code></p>
+<p>开发者：骆昊</p>
+<p>版本号：v1</p>
+<p>接口说明：给指定手机号发送短信验证码的接口，手机号必须是国内手机号，作为路径参数写到URL中。接口显示短信发送成功时，指定的手机号并不会收到短息，因为使用的三方短信平台赠送的测试短信已经用完了。</p>
+<p>使用帮助：国内手机号暂不支持国际区号。</p>
+<p>请求参数：暂无。</p>
+<p>响应信息：</p>
+<ul>
+<li>
+<p>请求成功：</p>
+<pre><code class="language-JSON">{
+    "code": 10001,
+    "msg": "短信验证码发送成功"
+}
+</code></pre>
+</li>
+<li>
+<p>两次请求间隔小于60秒：</p>
+<pre><code class="language-JSON">{
+    "code": 10002,
+    "msg": "请不要在60秒以内重复发送手机验证码"
+}
+</code></pre>
+</li>
+<li>
+<p>手机号无效：</p>
+<pre><code class="language-JSON">{
+    "code": 10003,
+    "msg": "请提供有效的手机号"
+}
+</code></pre>
+</li>
+<li>
+<p>短信服务平台故障：</p>
+<pre><code class="language-JSON">{
+    "code": 10004,
+    "msg": "短信服务暂时无法使用"
+}
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>获取所有省级行政单位 - <strong>GET</strong> <code>/api/districts/</code></p>
+<p>开发者：骆昊</p>
+<p>版本号：v1</p>
+<p>接口说明：暂无。</p>
+<p>使用帮助：暂无。</p>
+<p>请求参数：暂无。</p>
+<p>响应信息：</p>
+<pre><code class="language-JSON">[
+    {
+        "distid": 110000,
+        "name": "北京市"
+    },
+    {
+        "distid": 120000,
+        "name": "天津市"
+    }
+]
+</code></pre>
+</li>
+<li>
+<p>获取指定行政单位详情及其管辖的行政单位 - <strong>GET</strong> <code>/api/districts/{行政单位编号}/</code></p>
+<p>开发者：骆昊</p>
+<p>版本号：v1</p>
+<p>接口说明：通过URL参数指定行政单位编号，如果行政单位编号为省级行政单位编号，则返回该省以及该省所辖市级行政单位的信息；如果行政单位编号为市级行政单位编号，则返回该市以及该市所辖区县的信息；如果行政单位编号为区县一级行政单位编号，则返回该区县的信息，下级行政单位<code>cities</code>属性值为<code>[]</code>。</p>
+<p>使用帮助：数据库中除四川省外其他行政单位的“intro”数据都没有录入，该字段可能为空字符串。</p>
+<p>请求参数：暂无。</p>
+<p>响应信息：</p>
+<pre><code class="language-JSON">{
+    "distid": 510000,
+    "name": "四川省",
+    "intro": "位于中国西南地区内陆，东连重庆，南邻云南、贵州，西接西藏，北界陕西、甘肃、青海，四川省总面积48.6万平方千米，省会成都。截至2018年底，四川省下辖18个省辖市，3个自治州，17个县级市，108个县，4个自治县，54个市辖区。",
+    "cities": [
+        {
+            "distid": 510100,
+            "name": "成都市"
+        },
+        {
+            "distid": 510300,
+            "name": "自贡市"
+        },
+        {
+            "distid": 510400,
+            "name": "攀枝花市"
+        }
+    ]
+}
+</code></pre>
+</li>
+<li>
+<p>获取热门城市 - <strong>GET</strong> <code>/api/hotcities/</code></p>
+<p>开发者：骆昊</p>
+<p>版本号：v1</p>
+<p>接口说明：暂无。</p>
+<p>使用帮助：暂无。</p>
+<p>请求参数：暂无。</p>
+<p>响应信息：</p>
+<pre><code class="language-JSON">[
+    {
+        "distid": 110100,
+        "name": "北京市"
+    },
+    {
+        "distid": 120100,
+        "name": "天津市"
+    },
+    {
+        "distid": 130100,
+        "name": "石家庄"
+    }
+]
+</code></pre>
+</li>
+<li>
+<p>分页获取房地产经理人信息 - <strong>GET</strong> <code>/api/agents/</code></p>
+<p>开发者：骆昊</p>
+<p>版本号：v1</p>
+<p>接口说明：经理人姓名按照前缀模糊匹配的方式进行处理；经理人服务星级是指经理人服务星级不得低于该星级；经理人是否持证只有0（未持证上岗）和1（持证上岗）两个选项。三个参数代表的筛选条件之间是而且的关系。返回结果为分页之后的房地产经理人信息。</p>
+<p>使用帮助：暂无。</p>
+<p>请求参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>类型</th>
+<th>是否必填</th>
+<th>参数位置</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>字符串</td>
+<td>否</td>
+<td>查询参数</td>
+<td>经理人姓名</td>
+</tr>
+<tr>
+<td>key</td>
+<td>字符串</td>
+<td>否</td>
+<td>查询参数</td>
+<td>经理人服务星级</td>
+</tr>
+<tr>
+<td>cert</td>
+<td>字符串</td>
+<td>否</td>
+<td>查询参数</td>
+<td>经理人是否持证</td>
+</tr>
+<tr>
+<td>page</td>
+<td>整数</td>
+<td>否</td>
+<td>查询参数</td>
+<td>页码，默认值为1</td>
+</tr>
+<tr>
+<td>size</td>
+<td>整数</td>
+<td>否</td>
+<td>查询参数</td>
+<td>页面大小，默认值为5，最大值不超过50</td>
+</tr>
+</tbody>
+</table>
+<p>响应信息：</p>
+<pre><code class="language-JSON">{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "agentid": 6,
+            "estates": [
+                {
+                    "estateid": 11,
+                    "name": "灵芝新村",
+                    "hot": 20
+                }
+            ],
+            "name": "肖利丽",
+            "tel": "13040813886",
+            "servstar": 4,
+            "realstar": 4,
+            "profstar": 4,
+            "certificated": false
+        }
+    ]
+}
+</code></pre>
+</li>
+<li>
+<p>新增房地产经理人 - <strong>POST</strong> <code>/api/agents/</code></p>
+<p>开发者：骆昊</p>
+<p>版本号：v1</p>
+<p>接口说明：暂无。</p>
+<p>使用帮助：需要登录且拥有管理员权限，用户身份令牌在请求头中提供。</p>
+<p>请求参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>类型</th>
+<th>是否必填</th>
+<th>参数位置</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>字符串</td>
+<td>是</td>
+<td>消息体</td>
+<td>经理人姓名</td>
+</tr>
+<tr>
+<td>tel</td>
+<td>字符串</td>
+<td>是</td>
+<td>消息体</td>
+<td>经理人手机</td>
+</tr>
+<tr>
+<td>servstar</td>
+<td>整数</td>
+<td>否</td>
+<td>消息体</td>
+<td>默认值0</td>
+</tr>
+<tr>
+<td>realstar</td>
+<td>整数</td>
+<td>否</td>
+<td>消息体</td>
+<td>默认值0</td>
+</tr>
+<tr>
+<td>profstar</td>
+<td>整数</td>
+<td>否</td>
+<td>消息体</td>
+<td>默认值0</td>
+</tr>
+<tr>
+<td>certificated</td>
+<td>整数</td>
+<td>否</td>
+<td>消息体</td>
+<td>默认值0</td>
+</tr>
+<tr>
+<td>token</td>
+<td>字符串</td>
+<td>是</td>
+<td>请求头</td>
+<td>用户身份认证令牌</td>
+</tr>
+</tbody>
+</table>
+<p>响应信息：</p>
+<ul>
+<li>
+<p>新增成功 - 状态码<strong>201</strong>：</p>
+<pre><code class="language-JSON">{
+    "agentid": 8,
+    "estates": [],
+    "name": "孙小美",
+    "tel": "13800991234",
+    "servstar": 0,
+    "realstar": 0,
+    "profstar": 0,
+    "certificated": false
+}
+</code></pre>
+</li>
+<li>
+<p>未提供身份认证信息 - 状态码<strong>401</strong>：</p>
+<pre><code class="language-JSON">{
+    "detail": "不正确的身份认证信息。"
+}
+</code></pre>
+</li>
+<li>
+<p>当前用户没有操作权限 - 状态码<strong>403</strong>：</p>
+<pre><code class="language-JSON">{
+    "detail": "您没有执行该操作的权限。"
+}
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p>编辑房地产经理人信息 - <strong>PUT</strong> <code>/api/agents/{房地产经理人编号}/</code></p>
+<p>开发者：骆昊</p>
+<p>版本号：v1</p>
+<p>接口说明：暂无。</p>
+<p>使用帮助：需要登录且拥有管理员权限，用户身份令牌在请求头中提供。</p>
+<p>请求参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>类型</th>
+<th>是否必填</th>
+<th>参数位置</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>字符串</td>
+<td>是</td>
+<td>消息体</td>
+<td>经理人姓名</td>
+</tr>
+<tr>
+<td>tel</td>
+<td>字符串</td>
+<td>是</td>
+<td>消息体</td>
+<td>经理人手机</td>
+</tr>
+<tr>
+<td>servstar</td>
+<td>整数</td>
+<td>否</td>
+<td>消息体</td>
+<td>默认值0</td>
+</tr>
+<tr>
+<td>realstar</td>
+<td>整数</td>
+<td>否</td>
+<td>消息体</td>
+<td>默认值0</td>
+</tr>
+<tr>
+<td>profstar</td>
+<td>整数</td>
+<td>否</td>
+<td>消息体</td>
+<td>默认值0</td>
+</tr>
+<tr>
+<td>certificated</td>
+<td>整数</td>
+<td>否</td>
+<td>消息体</td>
+<td>默认值0</td>
+</tr>
+<tr>
+<td>token</td>
+<td>字符串</td>
+<td>是</td>
+<td>请求头</td>
+<td>用户身份认证令牌</td>
+</tr>
+</tbody>
+</table>
+<p>响应信息：</p>
+<ul>
+<li>更新成功 - 状态码<strong>200</strong>：</li>
+</ul>
+<pre><code class="language-JSON">{
+    "agentid": 1,
+    "estates": [
+        {
+            "estateid": 1,
+            "name": "今日家园",
+            "hot": 20
+        },
+        {
+            "estateid": 2,
+            "name": "翡翠园",
+            "hot": 30
+        },
+        {
+            "estateid": 3,
+            "name": "万科城市花园",
+            "hot": 22
+        }
+    ],
+    "name": "袁晓梦",
+    "tel": "158173555285",
+    "servstar": 5,
+    "realstar": 4,
+    "profstar": 3,
+    "certificated": true
+}
+</code></pre>
+<ul>
+<li>未提供身份认证信息 - 状态码<strong>403</strong> - 与新增类同</li>
+<li>当前用户没有操作权限 - 状态码<strong>403</strong> - 与新增类同</li>
+</ul>
+</li>
+<li>
+<p>删除房地产经理人 - <strong>DELETE</strong> <code>/api/agents/{房地产经理人编号}/</code></p>
+<p>开发者：骆昊</p>
+<p>版本号：v1</p>
+<p>接口说明：暂无。</p>
+<p>使用说明：暂无。</p>
+<p>请求参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>类型</th>
+<th>是否必填</th>
+<th>参数位置</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>token</td>
+<td>字符串</td>
+<td>是</td>
+<td>请求头</td>
+<td>用户身份认证令牌</td>
+</tr>
+</tbody>
+</table>
+<p>响应信息：</p>
+<ul>
+<li>删除成功 - 状态码<strong>204</strong></li>
+<li>未提供身份认证信息 - 状态码<strong>403</strong> - 与新增类同</li>
+<li>当前用户没有操作权限 - 状态码<strong>403</strong> - 与新增类同</li>
+</ul>
+</li>
+<li>
+<p>分页获取楼盘信息 - <strong>GET</strong> <code>/api/estates/</code></p>
+<p>开发者：骆昊</p>
+<p>版本号：v1</p>
+<p>接口说明：经理人姓名按照前缀模糊匹配的方式进行处理；经理人服务星级是指经理人服务星级不得低于该星级；经理人是否持证只有0（未持证上岗）和1（持证上岗）两个选项。三个参数代表的筛选条件之间是而且的关系。返回结果为分页之后的房地产经理人信息。</p>
+<p>使用帮助：暂无。</p>
+<p>请求参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>类型</th>
+<th>是否必填</th>
+<th>参数位置</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>字符串</td>
+<td>否</td>
+<td>查询参数</td>
+<td>楼盘名（模糊匹配）</td>
+</tr>
+<tr>
+<td>dist</td>
+<td>字符串</td>
+<td>否</td>
+<td>查询参数</td>
+<td>楼盘所在地区编号</td>
+</tr>
+<tr>
+<td>page</td>
+<td>整数</td>
+<td>否</td>
+<td>查询参数</td>
+<td>页码，默认值为1</td>
+</tr>
+<tr>
+<td>size</td>
+<td>整数</td>
+<td>否</td>
+<td>查询参数</td>
+<td>页面大小，默认值为5，最大值不超过50</td>
+</tr>
+</tbody>
+</table>
+<p>响应信息：</p>
+<pre><code class="language-JSON">{
+    "count": 16,
+    "next": "https://120.77.222.217/api/estates/?page=2",
+    "previous": null,
+    "results": [
+        {
+            "estateid": 6,
+            "district": {
+                "distid": 440303,
+                "name": "罗湖区"
+            },
+            "agents": [
+                {
+                    "agentid": 2,
+                    "name": "杨伟",
+                    "tel": "13352939550",
+                    "servstar": 3
+                },
+                {
+                    "agentid": 4,
+                    "name": "郭志鹏",
+                    "tel": "13686810707",
+                    "servstar": 4
+                }
+            ],
+            "name": "幸福里",
+            "hot": 300,
+            "intro": ""
+        }
+    ]
+}
+</code></pre>
+</li>
+<li>
+<p>新增楼盘 - <strong>POST</strong> <code>/api/estates/</code></p>
+</li>
+</ol>
+<p>开发者：骆昊</p>
+<p>版本号：v1</p>
+<p>接口说明：暂无。</p>
+<p>使用帮助：需要登录且拥有管理员权限，用户身份令牌在请求头中提供。</p>
+<p>请求参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>类型</th>
+<th>是否必填</th>
+<th>参数位置</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>字符串</td>
+<td>是</td>
+<td>消息体</td>
+<td>楼盘名称</td>
+</tr>
+<tr>
+<td>hot</td>
+<td>整数</td>
+<td>否</td>
+<td>消息体</td>
+<td>楼盘热度，默认值0</td>
+</tr>
+<tr>
+<td>intro</td>
+<td>字符串</td>
+<td>否</td>
+<td>消息体</td>
+<td>楼盘介绍，默认值空字符串</td>
+</tr>
+<tr>
+<td>distid</td>
+<td>整数</td>
+<td>是</td>
+<td>消息体</td>
+<td>楼盘所在地区编号</td>
+</tr>
+<tr>
+<td>token</td>
+<td>字符串</td>
+<td>是</td>
+<td>请求头</td>
+<td>用户身份认证令牌</td>
+</tr>
+</tbody>
+</table>
+<p>响应信息：</p>
+<ul>
+<li>
+<p>新增成功 - 状态码<strong>201</strong>：</p>
+<pre><code class="language-JSON">{
+    "estateid": 17,
+    "district": 510107,
+    "name": "世纪锦苑",
+    "hot": 100,
+    "intro": ""
+}
+</code></pre>
+</li>
+<li>
+<p>未提供身份认证信息 - 状态码<strong>403</strong>：</p>
+<pre><code class="language-JSON">{
+    "detail": "请提供有效的身份认证信息"
+}
+</code></pre>
+</li>
+<li>
+<p>当前用户没有操作权限 - 状态码<strong>403</strong>：</p>
+<pre><code class="language-JSON">{
+    "detail": "You do not have permission to perform this action."
+}
+</code></pre>
+</li>
+</ul>
+<ol start="11">
+<li>
+<p>编辑楼盘信息 - <strong>PUT</strong> <code>/api/estates/{楼盘编号}</code></p>
+</li>
+<li>
+<p>删除楼盘信 - <strong>DELETE</strong> <code>/api/estates/{楼盘编号}</code></p>
+</li>
+<li>
+<p>获取所有户型信息 - <strong>GET</strong> <code>/api/housetypes/</code></p>
+</li>
+<li>
+<p>新增户型 - <strong>POST</strong> <code>/api/housetypes/</code></p>
+</li>
+<li>
+<p>编辑户型信息 - <strong>PUT</strong> <code>/api/housetypes/{户型编号}</code></p>
+</li>
+<li>
+<p>删除户型 - <strong>DELETE</strong> <code>/api/housetypes/{户型编号}</code></p>
+</li>
+<li>
+<p>分页获取房源信息 - <strong>GET</strong> <code>/api/houseinfos/</code></p>
+<p>开发者：骆昊</p>
+<p>版本号：v1</p>
+<p>接口说明：暂无。</p>
+<p>使用帮助：暂无。</p>
+<p>请求参数：</p>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>类型</th>
+<th>是否必填</th>
+<th>参数位置</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>字符串</td>
+<td>否</td>
+<td>查询参数</td>
+<td>房源标题关键词</td>
+</tr>
+<tr>
+<td>dist</td>
+<td>整数</td>
+<td>否</td>
+<td>查询参数</td>
+<td>楼盘所在地区编号</td>
+</tr>
+<tr>
+<td>min_price</td>
+<td>整数</td>
+<td>否</td>
+<td>查询参数</td>
+<td>价格区间下限</td>
+</tr>
+<tr>
+<td>max_price</td>
+<td>整数</td>
+<td>否</td>
+<td>查询参数</td>
+<td>价格区间上限</td>
+</tr>
+<tr>
+<td>type</td>
+<td>整数</td>
+<td>否</td>
+<td>查询参数</td>
+<td>户型编号</td>
+</tr>
+<tr>
+<td>page</td>
+<td>整数</td>
+<td>否</td>
+<td>查询参数</td>
+<td>页码，默认值为1</td>
+</tr>
+<tr>
+<td>size</td>
+<td>整数</td>
+<td>否</td>
+<td>查询参数</td>
+<td>页面大小，默认值为5，最大值不超过50</td>
+</tr>
+</tbody>
+</table>
+<p>响应信息：</p>
+<pre><code class="language-JSON">{
+    "count": 7,
+    "next": "http://localhost:8000/api/houseinfos/?dist=440303&amp;page=2",
+    "previous": null,
+    "results": [
+
+    ]
+}
+</code></pre>
+</li>
+<li>
+<p>查看房源详情 - <strong>GET</strong> <code>/api/houseinfos/{房源编号}</code></p>
+</li>
+<li>
+<p>新增房源 - <strong>POST</strong> <code>/api/houseinfos/</code></p>
+</li>
+<li>
+<p>编辑房源信息 - <strong>PUT</strong> <code>/api/houseinfos/{房源编号}</code></p>
+</li>
+<li>
+<p>删除房源 - <strong>DELETE</strong> <code>/api/houseinfos/{房源编号}</code></p>
+</li>
+<li>
+<p>随机获取指定数量的房源标签 - <strong>GET</strong> <code>/api/tags/</code></p>
+</li>
+<li>
+<p>分页查看房源标签 - <strong>GET</strong> <code>/api/tags/</code></p>
+</li>
+<li>
+<p>新增房源标签 - <strong>POST</strong> <code>/api/tags/</code></p>
+</li>
+<li>
+<p>删除房源标签 - <strong>DELETE</strong>  <code>/api/tags/{房源编号}</code></p>
+</li>
+<li>
+<p>查看房源的图片 - <strong>GET</strong> <code>/api/houseinfos/{房源编号}/photos/</code></p>
+</li>
+<li>
+<p>为房源添加图片 - <strong>POST</strong> <code>/api/houseinfos/{房源编号}/photos/</code></p>
+</li>
+<li>
+<p>删除房源图片 - <strong>DELETE</strong> <code>/api/houseinfos/{房源编号}/photos/{图片编号}</code></p>
+</li>
+</ol>

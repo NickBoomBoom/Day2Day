@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>前端录屏示例</title>
+  <style>
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      padding: 40px;
+      background: #f7f7f7;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin-right: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    video {
+      display: block;
+      margin-top: 20px;
+      width: 100%;
+      max-width: 800px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      background: black;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>🎥 前端录屏演示</h1>
+  <button id="start">开始录屏</button>
+  <button id="stop" disabled>停止录屏</button>
+  <video id="preview" autoplay controls></video>
+
+  <script>
+    let mediaRecorder;
+    let recordedChunks = [];
+
+    const startBtn = document.getElementById("start");
+    const stopBtn = document.getElementById("stop");
+    const video = document.getElementById("preview");
+
+    startBtn.addEventListener("click", async () => {
+      try {
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+          audio: true // 某些浏览器可能不支持系统音频录制
+        });
+
+        video.srcObject = stream;
+        recordedChunks = [];
+
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+          }
+        };
+
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(recordedChunks, { type: "video/webm" });
+          const url = URL.createObjectURL(blob);
+          video.srcObject = null;
+          video.src = url;
+
+          // 自动下载
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "屏幕录制.webm";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        };
+
+        mediaRecorder.start();
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+      } catch (err) {
+        alert("获取屏幕失败：" + err);
+        console.error("录屏错误：", err);
+      }
+    });
+
+    stopBtn.addEventListener("click", () => {
+      mediaRecorder.stop();
+
+      // 停止所有轨道，释放摄像头/麦克风等资源
+      const tracks = video.srcObject?.getTracks();
+      if (tracks) {
+        tracks.forEach(track => track.stop());
+      }
+
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
+    });
+  </script>
+</body>
+
+</html>
