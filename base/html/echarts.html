@@ -1,46 +1,137 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script crossorigin="anonymous" integrity="sha384-DX1FVVXdGcNR016Jj6c5WuxYmyUvkb2/0ZMXKwbXaXs8j9tPs3e4RUjNg4tViEj4"
-      src="//lib.baomitu.com/echarts/4.7.0/echarts-en.common.js"></script>
-    <script crossorigin="anonymous" integrity="sha384-wLfIkfIxi6vSj7i/2sXqMVL6hzGrsradF75ByE5/9K5vfxWLkihrzxoj8g1crlkW"
-      src="//lib.baomitu.com/echarts-gl/1.1.2/echarts-gl.js"></script>
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <title>学生学习数据可视化</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+</head>
 
-  <body>
-    <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
-    <div id="main" style="width: 600px;height:400px;"></div>
-    <script type="text/javascript">
-      // 基于准备好的dom，初始化echarts实例
-      var myChart = echarts.init(document.getElementById('main'));
-console.log(echarts)
-      // 指定图表的配置项和数据
-      var option = {
-        title: {
-          text: 'ECharts 入门示例'
+<body>
+  <div id="main" style="width: 100%;height:600px;"></div>
+  <script>
+    // 模拟学生数据
+    const students = [
+      { name: 'A', score: 85, attempts: 3, aiAssist: 1, time: 30, submitted: true },
+      { name: 'B', score: 60, attempts: 5, aiAssist: 2, time: 45, submitted: false },
+      { name: 'C', score: 90, attempts: 2, aiAssist: 0, time: 25, submitted: true },
+      { name: 'D', score: 70, attempts: 4, aiAssist: 1, time: 35, submitted: false },
+      { name: 'E', score: 95, attempts: 3, aiAssist: 3, time: 20, submitted: true },
+    ];
+
+    // 气泡图数据处理
+    const submittedData = students
+      .filter(s => s.submitted)
+      .map(s => [s.attempts, s.score, s.aiAssist, s.time, s.name]);
+    const notSubmittedData = students
+      .filter(s => !s.submitted)
+      .map(s => [s.attempts, s.score, s.aiAssist, s.time, s.name]);
+
+    // 平均值计算函数
+    function average(arr) {
+      if (!arr.length) return 0;
+      return arr.reduce((a, b) => a + b, 0) / arr.length;
+    }
+    const metrics = ['尝试次数', 'AI辅助次数', '用时', '分数'];
+    const avgData = ['Submitted', 'Not Submitted'].map(group => {
+      const groupStudents = group === 'Submitted'
+        ? students.filter(s => s.submitted)
+        : students.filter(s => !s.submitted);
+      return [
+        average(groupStudents.map(s => s.attempts)),
+        average(groupStudents.map(s => s.aiAssist)),
+        average(groupStudents.map(s => s.time)),
+        average(groupStudents.map(s => s.score))
+      ];
+    });
+
+    const chart = echarts.init(document.getElementById('main'));
+
+    const option = {
+      title: [
+        { text: '学生评测气泡图', left: '5%', top: '5%' },
+        { text: '分组平均值柱状图', left: '55%', top: '5%' }
+      ],
+      tooltip: {
+        trigger: 'item',
+        formatter: function (params) {
+          if (params.seriesType === 'scatter') {
+            return `${params.data[4]}<br/>尝试次数: ${params.data[0]}<br/>分数: ${params.data[1]}<br/>AI辅助: ${params.data[2]}<br/>用时: ${params.data[3]} 分钟`;
+          }
+        }
+      },
+      grid: [
+        { left: '5%', top: '10%', width: '40%', height: '80%' },
+        { left: '55%', top: '10%', width: '40%', height: '80%' }
+      ],
+      xAxis: [
+        { name: '尝试次数', gridIndex: 0 },
+        { type: 'category', name: '指标', gridIndex: 1, data: metrics }
+      ],
+      yAxis: [
+        { name: '分数', gridIndex: 0 },
+        { type: 'value', gridIndex: 1 }
+      ],
+      series: [
+        {
+          name: '已提交',
+          type: 'scatter',
+          xAxisIndex: 0,
+          yAxisIndex: 0,
+          symbolSize: (data) => data[2] * 10 + 10,
+          data: submittedData,
+          itemStyle: { color: '#4caf50' }
         },
-        tooltip: {},
-        legend: {
-          data: ['销量']
+        {
+          name: '未提交',
+          type: 'scatter',
+          xAxisIndex: 0,
+          yAxisIndex: 0,
+          symbolSize: (data) => data[2] * 10 + 10,
+          data: notSubmittedData,
+          itemStyle: { color: '#f44336' }
         },
-        xAxis: {
-          data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
-        },
-        yAxis: {},
-        series: [{
-          name: '销量',
+        {
+          name: '已提交平均值',
           type: 'bar',
-          data: [5, 20, 36, 10, 10, 20]
-        }]
-      };
+          xAxisIndex: 1,
+          yAxisIndex: 1,
+          data: avgData[0],
+          itemStyle: { color: '#4caf50' }
+        },
+        {
+          name: '未提交平均值',
+          type: 'bar',
+          xAxisIndex: 1,
+          yAxisIndex: 1,
+          data: avgData[1],
+          itemStyle: { color: '#f44336' }
+        }
+      ]
+    };
 
-      // 使用刚指定的配置项和数据显示图表。
-      myChart.setOption(option);
-    </script>
-  </body>
+    chart.setOption(option);
+
+    // 交互联动：点击气泡，柱状图显示该组学生平均值
+    chart.on('click', function (params) {
+      if (params.seriesType === 'scatter') {
+        const isSubmitted = params.seriesName === '已提交';
+        const groupStudents = students.filter(s => s.submitted === isSubmitted);
+        const newAvg = [
+          average(groupStudents.map(s => s.attempts)),
+          average(groupStudents.map(s => s.aiAssist)),
+          average(groupStudents.map(s => s.time)),
+          average(groupStudents.map(s => s.score))
+        ];
+        chart.setOption({
+          series: [
+            { data: isSubmitted ? newAvg : avgData[0] },
+            { data: !isSubmitted ? newAvg : avgData[1] }
+          ]
+        });
+      }
+    });
+  </script>
+</body>
 
 </html>
