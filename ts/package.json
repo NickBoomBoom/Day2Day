@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "gen": "ts-node ./index.ts"
+    "gen": "ts-node ./index.ts",
+    "sql": "ts-node ./sql.ts"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +25,8 @@
   },
   "dependencies": {
     "@types/cheerio": "^0.22.31",
+    "alasql": "^4.13.0",
+    "decimal.js": "^10.6.0",
     "lodash": "^4.17.21"
   }
 }
