@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/exceljs": "^1.3.2",
     "@types/jsdom": "^21.1.0",
     "@types/lodash": "^4.17.16",
     "@types/node": "^18.14.0",
@@ -27,6 +28,7 @@
     "@types/cheerio": "^0.22.31",
     "alasql": "^4.13.0",
     "decimal.js": "^10.6.0",
+    "exceljs": "^4.4.0",
     "lodash": "^4.17.21"
   }
 }
