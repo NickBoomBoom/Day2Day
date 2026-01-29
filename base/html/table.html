@@ -1,0 +1,1328 @@
+<h3 style="text-align: left">
+  <span style="font-size: 19px"
+    >文生图（Text-to-Image, T2I）—— AI“画”出文字描述</span
+  >
+</h3>
+<h3 style="text-align: left">
+  <span style="font-size: 16px">一、任务目标</span>
+</h3>
+<p style="text-align: left">
+  <span style="font-size: 16px"
+    >（一）能够根据创作需求，构建精细的提示词。</span
+  >
+</p>
+<p style="text-align: left">
+  <span style="font-size: 16px"
+    >（二）能够掌握提示词的编写规则和技巧，精准控制生成图像内容。</span
+  >
+</p>
+<p style="text-align: left">
+  <span style="font-size: 16px"
+    >（三）能够使用AI助手辅助生成提示词，进行参数设置。</span
+  >
+</p>
+<h1 style="text-align: left">
+  <span style="font-size: 16px">二、任务描述</span>
+</h1>
+<p>
+  <span style="font-size: 16px"
+    >本任务主要学习AI绘图提示词的编写方法和技巧，实现对图像内容、画质、环境风格的精确控制。通过编写提示词绘制二次元人物画像，同时使用提示词技巧对画面效果进行调整，提升图片质量，预期效果如图所示。</span
+  >
+</p>
+<p style="text-align: left"><br /></p>
+<p style="text-align: left">
+  <img
+    src="/minio-img/test/editor/file/f069f714c61661acd15e2398854194c2.png"
+    alt="/minio-img/test/editor/file/f069f714c61661acd15e2398854194c2.png"
+    data-href="1769409600406.png"
+    width=""
+    height=""
+    style="width: 337.97px; height: 337.97px"
+  /><img
+    src="/minio-img/test/editor/file/15e7642a9411968d16494c607f375eb4.png"
+    alt="/minio-img/test/editor/file/15e7642a9411968d16494c607f375eb4.png"
+    data-href="1769409745779.png"
+    width=""
+    height=""
+    style="width: 339.96px; height: 339.96px"
+  />
+</p>
+<p style="text-align: left">
+  <img
+    src="/minio-img/test/editor/file/f140920b868e15d60451d073abd2e18f.png"
+    alt="/minio-img/test/editor/file/f140920b868e15d60451d073abd2e18f.png"
+    data-href="1769409925394.png"
+    width=""
+    height=""
+    style="width: 340.95px; height: 340.95px"
+  /><img
+    src="/minio-img/test/editor/file/d62784154f06715b6d8d11c296d74b33.png"
+    alt="/minio-img/test/editor/file/d62784154f06715b6d8d11c296d74b33.png"
+    data-href="1769410255761.png"
+    width=""
+    height=""
+    style="width: 341.98px; height: 341.98px"
+  />
+</p>
+<h1 style="text-align: left">
+  <span style="font-size: 16px">三、任务实践</span>
+</h1>
+<h2 style="text-align: left">
+  <span style="font-size: 16px">（一）知识准备</span>
+</h2>
+<h3 style="text-align: left">
+  <span style="font-size: 16px">1. 提示词写法</span>
+</h3>
+<p>
+  <span style="font-size: 16px"
+    >AI绘图模型在创作图像时会参考提示词，并生成与提示词相匹配的图像内容。提示词有两种写法，CLIP写法和DeepBooru写法。</span
+  >
+</p>
+<ul>
+  <li style="text-align: left">
+    <span style="font-size: 16px"><strong>CLIP写法：</strong></span
+    ><span style="font-size: 16px">强调</span
+    ><span style="font-size: 16px"><strong>自然语言</strong></span
+    ><span style="font-size: 16px">描述的清晰性、具体性和艺术指导性。例：</span>
+  </li>
+</ul>
+<blockquote style="text-align: left">
+  <span style="font-size: 16px"
+    >“A warm afternoon sunlight bathes an ancient European street, with
+    cobblestone roads reflecting soft light. On either side, stone buildings
+    covered in vines. In the distance, the spire of a church is faintly visible.
+    The scene is predominantly warm-toned, with a slight impressionist
+    style,”，</span
+  ><span style="font-size: 16px"
+    >表示“一个温暖的午后阳光沐浴着一条古老的欧洲街道，鹅卵石路面反射出柔和的光线。两侧是覆盖着藤蔓的石砌建筑。远处，教堂的尖塔隐约可见。整个场景以暖色调为主，带有一点印象派的风格”，其它参数默认。</span
+  >
+</blockquote>
+<ul>
+  <li style="text-align: left">
+    <span style="font-size: 16px"><strong>DeepBooru写法：</strong></span
+    ><span style="font-size: 16px">强调</span
+    ><span style="font-size: 16px"><strong>关键词</strong></span
+    ><span style="font-size: 16px"
+      >的直接堆砌，每个关键词代表一个具体的事物或属性，适合精确控制图像中的内容。</span
+    >
+  </li>
+</ul>
+<blockquote style="text-align: left">
+  <span style="font-size: 16px"
+    >例：“European street, ancient, cobblestone road, sunlight, afternoon,
+    vines, stone masonry buildings, church, spire, warm tone, impressionist
+    style,”，</span
+  ><span style="font-size: 16px"
+    >表示“欧洲街道，古老，鹅卵石路，阳光，下午，藤蔓，石砌建筑，教堂，尖塔，暖色调，印象派风格”，其它参数默认。</span
+  >
+</blockquote>
+<p style="text-align: left">
+  <span style="font-size: 16px"
+    >在实际应用中，可以根据需要将两种风格结合使用，以获得更精准且富有艺术性的图像。</span
+  >
+</p>
+<h3 style="text-align: left">
+  <span style="font-size: 16px">（2）提示词书写内容</span>
+</h3>
+<p>
+  <span style="font-size: 16px"
+    >通过书写准确全面的提示词内容，可以获得更加有效和精确的图片，推荐的书写内容包含：画质词；画风词；画面主体描述；环境、场景、灯光、构图；LORA；负面提示词。具体如表1所示。</span
+  >
+</p>
+<table style="width: auto; table-layout: auto; height: 392">
+  <colgroup contenteditable="false">
+    <col width="274" />
+    <col width="274" />
+    <col width="275" />
+  </colgroup>
+  <tbody>
+    <tr style="height: 39px">
+      <th
+        colspan="2"
+        rowspan="1"
+        width="auto"
+        style="
+          text-align: left;
+          background-color: rgb(242, 243, 245);
+          border-style: solid;
+        "
+      >
+        <span style="font-size: 16px">提示词书写内容</span>
+      </th>
+      <th
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="
+          text-align: left;
+          background-color: rgb(242, 243, 245);
+          border-style: solid;
+        "
+      >
+        <span style="font-size: 16px">描述</span>
+      </th>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="5"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">正向提示词</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">画质词</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">如表2所示</span>
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">画风词</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px"
+          >二次元风、写实风、迪士尼风、国风、油画、2D插画风格、肖像画风</span
+        >
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">画面主体描述</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px"
+          >人物、年龄、发型、头发颜色、情绪表情、衣服装束、动作等</span
+        >
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">环境、场景、灯光、构图</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px"
+          >下雨天的咖啡厅，正面视觉，人物特写，侧视图等</span
+        >
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">LORA</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">加载LORA模型等触发内容</span>
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="2"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">负面提示词</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">如表3所示</span
+        ><span style="font-size: 16px"
+          ><strong
+            ><br />
+            <br /> </strong
+        ></span>
+      </td>
+    </tr>
+    <tr style="height: 30px">
+      <td
+        colspan="3"
+        rowspan="1"
+        width="auto"
+        style="
+          text-align: center;
+          border-style: solid;
+          border-color: rgb(204, 204, 204);
+        "
+      >
+        <span style="font-size: 16px">表1 提示词书写内容推荐</span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h3 style="text-align: left"></h3>
+<h3 style="text-align: left">
+  <span style="font-size: 16px">（3）正向提示词</span>
+</h3>
+<p>
+  <span style="font-size: 16px"
+    >用户通过使用正向提示词可以在生成图像的过程中创作出用户希望在图像中看到的具体内容。例如提升画质的正向提示词见表2所示。</span
+  >
+</p>
+<p><br /></p>
+<table style="width: auto; table-layout: fixed; height: 549">
+  <colgroup contenteditable="false">
+    <col width="90" />
+    <col width="90" />
+  </colgroup>
+  <tbody>
+    <tr style="height: 39px">
+      <th
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="
+          text-align: left;
+          background-color: rgb(242, 243, 245);
+          border-style: solid;
+        "
+      >
+        <span style="font-size: 16px">提示词</span>
+      </th>
+      <th
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="
+          text-align: left;
+          background-color: rgb(242, 243, 245);
+          border-style: solid;
+        "
+      >
+        <span style="font-size: 16px">描述</span>
+      </th>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">HDR，UHD，4K，8K</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">提升画面的质量</span>
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">best quality</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">最佳质量</span>
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">Highly detailed</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">画出更多细节</span>
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">Studio lighting</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px"
+          >演播室灯光，为图像添加一些漂亮的纹理</span
+        >
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">sharp focus</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">聚焦清晰</span>
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">Professional</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">改善图像的色彩对比和细节</span>
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">Vivid colors</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">添加鲜艳的色彩，为图像增添活力</span>
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">Bokeh</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">虚化模糊背景，突出主题</span>
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">High resolution scan</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">为图像赋予年代感</span><br />
+      </td>
+    </tr>
+    <tr style="height: 30px">
+      <td
+        colspan="2"
+        rowspan="1"
+        width="auto"
+        style="
+          text-align: center;
+          border-style: solid;
+          border-color: rgb(204, 204, 204);
+        "
+      >
+        <span style="font-size: 16px">表2 &nbsp;提升画质的正向提示词</span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h3 style="text-align: left">
+  <span style="font-size: 16px">（4）负面提示词</span>
+</h3>
+<p>
+  <span style="font-size: 16px"
+    >用户使用负面提示词可以明确指出生成图像时应避免或者排除的内容特征。通用负面提示词如表3所示。</span
+  >
+</p>
+<p><br /></p>
+<table style="width: auto; table-layout: fixed; height: 549">
+  <colgroup contenteditable="false">
+    <col width="90" />
+    <col width="90" />
+  </colgroup>
+  <tbody>
+    <tr style="height: 39px">
+      <th
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="
+          text-align: left;
+          background-color: rgb(242, 243, 245);
+          border-style: solid;
+        "
+      >
+        <span style="font-size: 16px">提示词</span>
+      </th>
+      <th
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="
+          text-align: left;
+          background-color: rgb(242, 243, 245);
+          border-style: solid;
+        "
+      >
+        <span style="font-size: 16px">描述</span>
+      </th>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">Low quality</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">避免生成低质量图像</span>
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">blurry</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">防止图像模糊不清</span>
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">nsfw</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">排除不适合的敏感内容</span>
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">bad anatomy</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">避免生物结构错误的图像</span>
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">mutated</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">避免变异</span>
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">no watercolor</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">排除水彩效果的艺术风格</span>
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">no background</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">排除复杂或不希望的背景</span>
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">grainy</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">避免有颗粒感的图像</span>
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">duplicate</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">防止生成重复的图案或元素</span><br />
+      </td>
+    </tr>
+    <tr style="height: 30px">
+      <td
+        colspan="2"
+        rowspan="1"
+        width="auto"
+        style="
+          text-align: center;
+          border-style: solid;
+          border-color: rgb(204, 204, 204);
+        "
+      >
+        <span style="font-size: 16px">表3 &nbsp;通用负面提示词</span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h3 style="text-align: left">
+  <span style="font-size: 16px">（5）提示词书写格式</span>
+</h3>
+<ul>
+  <li style="text-align: left">
+    <span style="font-size: 16px">提示词之间用英文逗号分隔；</span>
+  </li>
+  <li style="text-align: left">
+    <span style="font-size: 16px">提示词之间可以换行，但结尾必须加逗号；</span>
+  </li>
+  <li style="text-align: left">
+    <span style="font-size: 16px">提示词默认权重为1，越靠前权重越高；</span>
+  </li>
+  <li style="text-align: left">
+    <span style="font-size: 16px">提示词数量控制在75个单词以内。</span>
+  </li>
+</ul>
+<h3 style="text-align: left">
+  <span style="font-size: 16px">（6）提示词权重设置</span>
+</h3>
+<p>
+  <span style="font-size: 16px"
+    >设置权重可以影响提示词在生成图像过程中的重要性或影响力，提示词权重如表4所示。</span
+  >
+</p>
+<p><br /></p>
+<table style="width: auto; table-layout: fixed; height: 396">
+  <colgroup contenteditable="false">
+    <col width="90" />
+    <col width="90" />
+  </colgroup>
+  <tbody>
+    <tr style="height: 39px">
+      <th
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="
+          text-align: left;
+          background-color: rgb(242, 243, 245);
+          border-style: solid;
+        "
+      >
+        <span style="font-size: 16px">提示词权重符号</span>
+      </th>
+      <th
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="
+          text-align: left;
+          background-color: rgb(242, 243, 245);
+          border-style: solid;
+        "
+      >
+        <span style="font-size: 16px">描述</span>
+      </th>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">小括号()</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px"
+          >将权重提高1.1倍，(word)=1.1，(((word)))=1.331</span
+        >
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">中括号[]</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px"
+          >将权重降低到0.9倍，[word]=0.9，[[[word]]]=0.729</span
+        >
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">大括号{}</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px"
+          >将权重提高1.05倍，{word}=1.05，{{{word}}}=1.15</span
+        >
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">小括号()直接设置权重</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">(word1:1.5)，(word2:0.3)</span><br /><span
+          style="font-size: 16px"
+          ><strong>表4 提示词权重设置</strong></span
+        >
+      </td>
+    </tr>
+    <tr style="height: 30px">
+      <td
+        colspan="2"
+        rowspan="1"
+        width="auto"
+        style="
+          text-align: center;
+          border-style: solid;
+          border-color: rgb(204, 204, 204);
+        "
+      >
+        <span style="font-size: 16px">表4 提示词权重设置</span><br />
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h3 style="text-align: left">
+  <span style="font-size: 16px">（7）提示词下划线_</span>
+</h3>
+<p>
+  <span style="font-size: 16px"
+    >提示词word1与提示词word2之间的下划线：word1_word2，能让词与词之间更紧密地关联在一起。</span
+  >
+</p>
+<h3 style="text-align: left">
+  <span style="font-size: 16px">（8）提示词生效时间设置</span>
+</h3>
+<p>
+  <span style="font-size: 16px"
+    >提示词生效时间指的是生成图像时文本对图像产生影响的时间段，通常在生成过程的早期对画面内容影响更为显著，提示词生效时间如表5所示。</span
+  >
+</p>
+<p><br /></p>
+<table style="width: auto; table-layout: fixed; height: 278">
+  <colgroup contenteditable="false">
+    <col width="90" />
+    <col width="90" />
+  </colgroup>
+  <tbody>
+    <tr style="height: 39px">
+      <th
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="
+          text-align: left;
+          background-color: rgb(242, 243, 245);
+          border-style: solid;
+        "
+      >
+        <span style="font-size: 16px">生效时间设置</span>
+      </th>
+      <th
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="
+          text-align: left;
+          background-color: rgb(242, 243, 245);
+          border-style: solid;
+        "
+      >
+        <span style="font-size: 16px">描述</span>
+      </th>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">[word:0-1之间具体数值]</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px"
+          >表示采样进程达到一定数值之后才开始对该提示词生效</span
+        >
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">[word::0-1之间具体数值]</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px"
+          >表示从开始采样就对该提示词生效，直到一定采样进程后才结束对提示词采样</span
+        >
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">[word1:word2:0-1数值]</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px"
+          >表示前一段采样进程对word1生效，后一段采样进程对word2生效</span
+        >
+      </td>
+    </tr>
+    <tr style="height: 39px">
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">[word1|word2]</span>
+      </td>
+      <td
+        colspan="1"
+        rowspan="1"
+        width="auto"
+        style="border-style: solid; border-color: rgb(204, 204, 204)"
+      >
+        <span style="font-size: 16px">对两个提示词进行交替采样</span>
+      </td>
+    </tr>
+    <tr style="height: 30px">
+      <td
+        colspan="2"
+        rowspan="1"
+        width="auto"
+        style="
+          text-align: center;
+          border-style: solid;
+          border-color: rgb(204, 204, 204);
+        "
+      >
+        <span style="font-size: 16px">表5 提示词生效时间设置</span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<h3 style="text-align: left">
+  <span style="font-size: 16px">（9）AI绘图助手辅助生成提示词</span>
+</h3>
+<p>
+  <span style="font-size: 16px"
+    >通过点击AI助手中的提示词对话框，输入图像描述内容，AI助手会根据用户提供的图像描述生成相对应的正向提示词和负面提示词，用户可以利用AI助手生成的提示词在AI图像生成界面进行快速创作。方法如下：</span
+  >
+</p>
+<p><span style="font-size: 16px">进入AI助手界面，操作如图所示，</span></p>
+<p style="text-align: left">
+  <img
+    src="/minio-img/test/editor/file/4cd995fdf9a554d800860309b2c21326.png"
+    alt="/minio-img/test/editor/file/4cd995fdf9a554d800860309b2c21326.png"
+    data-href="cfb97b19928de2a42013e4b0257fb4c1.png"
+    width=""
+    height=""
+    style="width: 793.25px; height: 808.23px"
+  />
+</p>
+<p style="text-align: left"><br /></p>
+<p style="text-align: center"><br /></p>
+<p>
+  <span style="font-size: 16px"
+    >在下方的编辑框中，先用“@”符号调用“绘图提示词助手”使用中文描述希望绘制的画面内容，点击“发送”后，AI助手会给出相应的提示词作为反馈。比如输入“一只正在玩耍的小狗”。</span
+  >
+</p>
+<blockquote>
+  <span style="font-size: 16px"
+    >A cute puppy playing, big round eyes, soft fur, wagging tail, in a green
+    grassy yard, sunlight shining through the leaves, bright colors,detailed,
+    high - definition, 8k resolution，</span
+  >
+</blockquote>
+<p>
+  <span style="font-size: 16px"
+    >AI助手的反馈如下图所示所示，会出现提示词、负面提示词、提示词的中文翻译以及推荐的参数设置。分别将提示词和推荐的参数内容复制粘贴到AI图像生成界面，最后点击“生成图片”，生成效果图。</span
+  >
+</p>
+<p style="text-align: left">
+  <img
+    src="/minio-img/test/editor/file/5bb3b153abee4de9d34e18254650e8c7.png"
+    alt="/minio-img/test/editor/file/5bb3b153abee4de9d34e18254650e8c7.png"
+    data-href="589a6ea64ffe0a5b9e17e96dea4566fa.png"
+    width=""
+    height=""
+    style="width: 798.19px; height: 750.52px"
+  />
+</p>
+<p style="text-align: left"><br /></p>
+<p style="text-align: left">
+  <img
+    src="/minio-img/test/editor/file/7ac4939c49e25ac2db99eaca1074fa04.png"
+    alt="/minio-img/test/editor/file/7ac4939c49e25ac2db99eaca1074fa04.png"
+    data-href="image.png"
+    width=""
+    height=""
+    style="width: 799px; height: 804.27px"
+  />
+</p>
+<p style="text-align: left">
+  <img
+    src="/minio-img/test/editor/file/4f1fe337ea12af3d45fda20cb515da76.png"
+    alt="/minio-img/test/editor/file/4f1fe337ea12af3d45fda20cb515da76.png"
+    data-href="image.png"
+    width=""
+    height=""
+    style="width: 800px; height: 817.23px"
+  />
+</p>
+<h2 style="text-align: left"></h2>
+<h2 style="text-align: left">
+  <span style="font-size: 16px">2. 操作步骤</span>
+</h2>
+<p style="text-align: left">
+  <img
+    src="/minio-img/test/editor/file/b22f8e78296761eedc630fae91d6b80e.png"
+    alt="/minio-img/test/editor/file/b22f8e78296761eedc630fae91d6b80e.png"
+    data-href="image.png"
+    width=""
+    height=""
+    style="width: 778px; height: 794.52px"
+  />
+</p>
+<p><br /></p>
+<p>
+  <span style="font-size: 16px"><strong>step1</strong></span
+  ><span style="font-size: 16px">
+    进入AI图像生成界面，确定画面主体是一个“女生”，在正向提示词中输入“1girl”，选择“二次元风格什么都能画”的模型，其他参数默认，如图所示。</span
+  >
+</p>
+<p style="text-align: left">
+  <img
+    src="/minio-img/test/editor/file/0646816de92bedd17e3f80fcfa889f1b.png"
+    alt="/minio-img/test/editor/file/0646816de92bedd17e3f80fcfa889f1b.png"
+    data-href="image.png"
+    width=""
+    height=""
+    style="width: 785px; height: 815.47px"
+  />
+</p>
+<p><br /></p>
+<p>
+  <span style="font-size: 16px"><strong>step2</strong></span
+  ><span style="font-size: 16px">
+    点击“生成图片”，图片将会在界面显示出来，点击“下载图片”可以将生成的图片保存到本地，操作如图所示。</span
+  >
+</p>
+<p style="text-align: left">
+  <img
+    src="/minio-img/test/editor/file/b23c9358cfead4d29f6ba1bb51555005.png"
+    alt="/minio-img/test/editor/file/b23c9358cfead4d29f6ba1bb51555005.png"
+    data-href="image.png"
+    width=""
+    height=""
+    style="width: 788px; height: 829.17px"
+  />
+</p>
+<p><br /></p>
+<p>
+  <span style="font-size: 16px"><strong>step3</strong></span
+  ><span style="font-size: 16px">
+    从图中可以发现，图片按照我们选择的提示词和模型生成了一位二次元女生，但是图片的画质、人物主体和环境场景都相对单一，因此我们按照提示词书写内容的推荐，增加正向提示词和负面提示词。先增加提升画质的提示词，在正向提示词中输入“masterpiece,
+    best quality, Highly detailed,
+    ”，表示“杰作，最佳画质，高细节度”，在负面提示词中输入“low quality,
+    blurry,duplicate,”，表示“低画质，模糊，防止生成重复的图案或元素”，主模型选择“二次元风格什么都能画”，其它参数不变。点击“生成图片”，生成结果如图8所示，可以看出图片的画质更加清晰，细节内容也得到了显著增加。</span
+  >
+</p>
+<p style="text-align: left">
+  <img
+    src="/minio-img/test/editor/file/cf5bc62136f2e82be7f9a3d85e709e8b.png"
+    alt="/minio-img/test/editor/file/cf5bc62136f2e82be7f9a3d85e709e8b.png"
+    data-href="image.png"
+    width=""
+    height=""
+    style="width: 791px; height: 855.98px"
+  />
+</p>
+<p><br /></p>
+<p>
+  <span style="font-size: 16px"><strong>step4</strong></span
+  ><span style="font-size: 16px">
+    图像画质词添加后，对图像人物形象进行具体描述，新增正向提示词“</span
+  ><span
+    style="
+      color: rgb(23, 23, 23);
+      background-color: rgb(255, 255, 255);
+      font-size: 14px;
+      font-family:
+        ui-sans-serif, system-ui, sans-serif, &quot;Apple Color Emoji&quot;,
+        &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;,
+        &quot;Noto Color Emoji&quot;;
+    "
+    >A smiling girl,student, &nbsp;long brown hair, a yellow bow, holding a
+    magic wand, bust shot,</span
+  ><span style="font-size: 16px"
+    >”，表示“一个面带微笑的女生，学生，棕色长发，黄色蝴蝶结，拿着魔法杖，半身像”，其它参数不变，点击“生成图片”，结果如图9所示，可以看到人物肖像和动作已经刻画完成。</span
+  >
+</p>
+<p style="text-align: left">
+  <img
+    src="/minio-img/test/editor/file/2c6971f5f103707c613a6a763556ced3.png"
+    alt="/minio-img/test/editor/file/2c6971f5f103707c613a6a763556ced3.png"
+    data-href="image.png"
+    width=""
+    height=""
+    style="width: 790px; height: 922.91px"
+  />
+</p>
+<p><br /></p>
+<p>
+  <span style="font-size: 16px"><strong>step5</strong></span
+  ><span style="font-size: 16px">
+    添加环境场景和画面镜头描述提示词，新增正向提示词“castle,medium_shot, front
+    view, depth of
+    field,outdoor,”表示“城堡，中镜头，前视图，景深，室外”，其它参数不变，正向提示词既可以分行书写以便于清晰展示，也可以连续书写。点击“生成图片”，结果如图所示。可以看出，通过添加图片的画质画风、画面主体描述、画面场景描述，生成的人物、场景图片更加立体和丰富。</span
+  >
+</p>
+<p style="text-align: left">
+  <img
+    src="/minio-img/test/editor/file/361c93bbba604502613b487c29887019.png"
+    alt="/minio-img/test/editor/file/361c93bbba604502613b487c29887019.png"
+    data-href="image.png"
+    width=""
+    height=""
+    style="width: 787px; height: 905.45px"
+  />
+</p>
+<p><br /></p>
+<p><br /></p>
+<p>
+  <span style="font-size: 16px"><strong>step8</strong></span
+  ><span style="font-size: 16px"> 通过将正向提示词中的“</span
+  ><span
+    style="
+      color: rgb(23, 23, 23);
+      background-color: rgb(255, 255, 255);
+      font-size: 14px;
+      font-family:
+        ui-sans-serif, system-ui, sans-serif, &quot;Apple Color Emoji&quot;,
+        &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;,
+        &quot;Noto Color Emoji&quot;;
+    "
+  >
+    holding a magic wand</span
+  ><span style="font-size: 16px">”替换成“（</span
+  ><span
+    style="
+      color: rgb(23, 23, 23);
+      background-color: rgb(255, 255, 255);
+      font-size: 14px;
+      font-family:
+        ui-sans-serif, system-ui, sans-serif, &quot;Apple Color Emoji&quot;,
+        &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;,
+        &quot;Noto Color Emoji&quot;;
+    "
+  >
+    holding a magic wand</span
+  ><span style="font-size: 16px">:1.5）”（这表示将提示词“</span
+  ><span
+    style="
+      color: rgb(23, 23, 23);
+      background-color: rgb(255, 255, 255);
+      font-size: 14px;
+      font-family:
+        ui-sans-serif, system-ui, sans-serif, &quot;Apple Color Emoji&quot;,
+        &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;,
+        &quot;Noto Color Emoji&quot;;
+    "
+  >
+    holding a magic wand</span
+  ><span style="font-size: 16px"
+    >”的权重设置为1.5，默认情况下提示词的权重为1）。点击“生成图片”。随机生成两张图片，如图12所示，可见法杖的权重被提高后，其在画面中的比重也得到了提升。</span
+  >
+</p>
+<p style="text-align: left">
+  <img
+    src="/minio-img/test/editor/file/de15a0ab9bf06c21585e47f4969f7cc9.png"
+    alt="/minio-img/test/editor/file/de15a0ab9bf06c21585e47f4969f7cc9.png"
+    data-href="image.png"
+    width=""
+    height=""
+    style="width: 784px; height: 878.61px"
+  />
+</p>
+<p><br /></p>
+<p>
+  <span style="font-size: 16px"
+    >从以上所有图片中可以看到女生手持的剑的颜色多为黄色，如果想要将剑的颜色修改成为蓝色，可以将提示词“yellow(holding
+    a magic wand:1.5)”修改为“blue(holding a magic
+    wand:1.5)”，在blue和sword之间加下划线“_”后，表示将蓝色和法杖这两个提示词进行有效关联。点击“生成图片”，生成结果可以看到法杖的颜色变成了蓝色。</span
+  >
+</p>
+<p style="text-align: left">
+  <img
+    src="/minio-img/test/editor/file/038ea609311b8356e427af09a15da9f6.png"
+    alt="/minio-img/test/editor/file/038ea609311b8356e427af09a15da9f6.png"
+    data-href="image.png"
+    width=""
+    height=""
+    style="width: 783px; height: 881.39px"
+  />
+</p>
+<p><br /></p>
+<p><br /></p>
+<p>
+  <span style="font-size: 16px"><strong>step9</strong></span
+  ><span style="font-size: 16px">
+    设置提示词生效时间，可以更精准化控制图像。将提示词“castle”修改成“[castle:skyscrapers:0.1]”，因为采样迭代步数设置为32步，这里表示在总步数的前10%是在绘制城堡，后90%是在绘制摩天大楼。提示词修改完成后，点击“生成图片”，可以看到图像背景已经变成摩天大楼。</span
+  >
+</p>
+<p style="text-align: left">
+  <img
+    src="/minio-img/test/editor/file/4b10bd602d8e6c131347e0e385d33065.png"
+    alt="/minio-img/test/editor/file/4b10bd602d8e6c131347e0e385d33065.png"
+    data-href="image.png"
+    width=""
+    height=""
+    style="width: 790px; height: 887.34px"
+  />
+</p>
+<p><br /></p>
+<p><br /></p>

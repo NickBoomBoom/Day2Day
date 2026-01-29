@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>欢迎登录</title>
+    <style>
+      :root {
+        /* 你的主题色动态变量 */
+        --outer-color-primary: #fa702e;
+        --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        --white: #ffffff;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+
+      body {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-gradient);
+        overflow: hidden;
+      }
+
+      /* 背景装饰球，增加氛围感 */
+      .shape {
+        position: absolute;
+        z-index: -1;
+        border-radius: 50%;
+        background: var(--outer-color-primary);
+        opacity: 0.15;
+        filter: blur(50px);
+      }
+      .shape-1 {
+        width: 300px;
+        height: 300px;
+        top: -100px;
+        right: -50px;
+      }
+      .shape-2 {
+        width: 200px;
+        height: 200px;
+        bottom: -50px;
+        left: -50px;
+      }
+
+      .login-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        text-align: center;
+      }
+
+      .login-card h2 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 24px;
+      }
+
+      .login-card p {
+        color: #777;
+        font-size: 14px;
+        margin-bottom: 30px;
+      }
+
+      .input-group {
+        margin-bottom: 20px;
+        text-align: left;
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 13px;
+        color: #555;
+        font-weight: 600;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #eee;
+        border-radius: 10px;
+        outline: none;
+        transition: border-color 0.3s ease;
+      }
+
+      .input-group input:focus {
+        /* 聚焦时使用主题色 */
+        border-color: var(--outer-color-primary);
+      }
+
+      .login-btn {
+        width: 100%;
+        padding: 12px;
+        background-color: var(--outer-color-primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          opacity 0.3s;
+        margin-top: 10px;
+        box-shadow: 0 4px 15px rgba(250, 112, 46, 0.3);
+      }
+
+      .login-btn:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+      }
+
+      .login-btn:active {
+        transform: translateY(0);
+      }
+
+      .footer-links {
+        margin-top: 25px;
+        font-size: 13px;
+      }
+
+      .footer-links a {
+        color: var(--outer-color-primary);
+        text-decoration: none;
+        margin: 0 10px;
+      }
+
+      .footer-links a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+
+    <div class="login-card">
+      <h2>欢迎回来</h2>
+      <p>请登录您的账号以继续</p>
+
+      <form action="#">
+        <div class="input-group">
+          <label>电子邮箱 / 用户名</label>
+          <input type="text" placeholder="请输入您的账号" required />
+        </div>
+
+        <div class="input-group">
+          <label>密码</label>
+          <input type="password" placeholder="请输入密码" required />
+        </div>
+
+        <button type="submit" class="login-btn">立即登录</button>
+      </form>
+
+      <div class="footer-links">
+        <a href="#">忘记密码？</a>
+        <span>|</span>
+        <a href="#">注册新账号</a>
+      </div>
+    </div>
+  </body>
+</html>

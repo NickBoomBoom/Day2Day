@@ -1,22 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>嵌入 JupyterLab</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        font-family: Arial;
+      }
+      iframe {
+        width: 100%;
+        height: 800px;
+        border: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>我的应用 - 嵌入 JupyterLab</h2>
+    <button onclick="send()">send</button>
+    <!-- 替换为你的 JupyterLab 地址 -->
+    <iframe
+      id="jlabFrame"
+      src="https://interactivejupyter.dev.tiusolution.com/voila/render/cosyvoice_app.ipynb"
+    ></iframe>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <style>
-    iframe {
-      width: 100vw;
-      height: 100vh;
-    }
-  </style>
-</head>
-
-<body>
-  <iframe src="https://www.kimi.com/" frameborder="0"></iframe>
-  <iframe src="https://chat.deepseek.com/" frameborder="0"></iframe>
-  <iframe src="https://www.doubao.com/chat/" frameborder="0"></iframe>
-</body>
-
+    <script>
+      // 你的外部 Token（实际应由后端动态生成）
+      const EXTERNAL_TOKEN = "secret-token-from-your-backend-12345";
+      // 监听来自 iframe 的消息
+      window.addEventListener("message", function (event) {
+        const { type, data } = event.data || {};
+        console.log("Received message:", type, data);
+        if (type === "JCJY_AUTHING_READY") {
+          console.log("🟢 JupyterLab 已就绪，正在发送 Token...");
+          // 向 iframe 发送 Token
+          const iframe = document.getElementById("jlabFrame");
+          iframe.contentWindow.postMessage(
+            {
+              type: "JCJY_AUTHING_DATA",
+              data: {
+                token: EXTERNAL_TOKEN,
+              },
+            },
+            "*",
+          ); // 👈 必须指定目标 origin！
+        }
+      });
+    </script>
+  </body>
 </html>
+
+<script>
+  console.log("start push");
+  const sender = Jupyter.notebook.kernel.comm_manager.new_comm("auth_token");
+  sender.send(data);
+  console.log("push end");
+
+  /*
+  window.addEventListener("message", (e) => {
+    const { type, data } = e.data;
+    if (type === "JCJY_AUTHING_DATA") {
+                      const sender =  Jupyter.notebook.kernel.comm_manager.new_comm("auth_token")
+                      sender.send(data)
+    }
+  });
+  window.parent.postMessage(
+    {
+      type: "JCJY_AUTHING_READY",
+    },
+    "*"
+  );
+  */
+</script>
