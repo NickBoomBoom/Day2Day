@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程管理系统 - 风格展示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .style-selector {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .styles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .style-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .style-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+
+        .style-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .style-card p {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .style-card .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 12px;
+        }
+
+        .style-card.featured {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #f5f7ff 0%, #fff 100%);
+        }
+
+        .style-card.featured .badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .footer-note {
+            text-align: center;
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="style-selector">
+        <h1>🎨 课程管理系统 UI 风格展示</h1>
+        <p class="subtitle">选择一种风格查看课程管理页面的不同设计</p>
+
+        <div class="styles-grid">
+            <div class="style-card featured" onclick="openStyle('modern')">
+                <h3>✨ 现代简约</h3>
+                <p>清新简洁的设计，采用卡片式布局和柔和的阴影，适合各类教育平台。</p>
+                <span class="badge">推荐</span>
+            </div>
+
+            <div class="style-card" onclick="openStyle('dark')">
+                <h3>🌙 深色模式</h3>
+                <p>深色主题设计，减少眼部疲劳，适合长时间使用和夜间学习。</p>
+                <span class="badge">热门</span>
+            </div>
+
+            <div class="style-card" onclick="openStyle('glassmorphism')">
+                <h3>💎 玻璃态</h3>
+                <p>流行的毛玻璃效果，半透明背景配合渐变，极具现代感和科技感。</p>
+                <span class="badge">时尚</span>
+            </div>
+
+            <div class="style-card" onclick="openStyle('neumorphism')">
+                <h3>🎭 新拟态</h3>
+                <p>柔和的阴影创造立体感，元素仿佛从背景中浮起，触感真实。</p>
+                <span class="badge">独特</span>
+            </div>
+
+            <div class="style-card" onclick="openStyle('brutalism')">
+                <h3>🔲 野兽派</h3>
+                <p>大胆的配色和粗犷的边框，强烈视觉冲击，适合创意教育平台。</p>
+                <span class="badge">个性</span>
+            </div>
+
+            <div class="style-card" onclick="openStyle('gradient')">
+                <h3>🌈 渐变色彩</h3>
+                <p>丰富的渐变色彩搭配，活力四射，适合年轻用户群体。</p>
+                <span class="badge">活力</span>
+            </div>
+        </div>
+
+        <p class="footer-note">
+            💡 提示：每种风格都包含完整的导航栏、课程卡片、分类过滤和分页功能
+        </p>
+    </div>
+
+    <script>
+        function openStyle(style) {
+            window.location.href = `styles/${style}/course.html`;
+        }
+    </script>
+</body>
+</html>
