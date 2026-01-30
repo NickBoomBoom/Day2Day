@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习日历 - 现代简约风格</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary: #10B981;
+            --background: #F9FAFB;
+            --surface: #FFFFFF;
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --border: #E5E7EB;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --course: #8B5CF6;
+            --homework: #F59E0B;
+            --exam: #EF4444;
+            --review: #3B82F6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 4px;
+            margin-left: 40px;
+        }
+
+        .nav-link {
+            padding: 8px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: var(--background);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--background);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .notification-btn:hover {
+            background: var(--border);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 8px;
+            height: 8px;
+            background: #EF4444;
+            border-radius: 50%;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .page-title-section h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .page-title-section p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+            background: var(--surface);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .view-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .view-btn:hover {
+            background: var(--background);
+        }
+
+        .view-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Calendar Layout */
+        .calendar-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        /* Calendar Card */
+        .calendar-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .calendar-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .calendar-nav-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-nav-btn:hover {
+            background: var(--background);
+            border-color: var(--primary);
+        }
+
+        /* Calendar Grid */
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .calendar-weekday {
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding: 8px;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            border: 1px solid transparent;
+        }
+
+        .calendar-day:hover {
+            background: var(--background);
+            border-color: var(--border);
+        }
+
+        .calendar-day.other-month {
+            color: var(--text-secondary);
+            opacity: 0.4;
+        }
+
+        .calendar-day.today {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        .calendar-day.selected {
+            border-color: var(--primary);
+            background: #EEF2FF;
+        }
+
+        .calendar-day.has-events {
+            font-weight: 600;
+        }
+
+        .event-dots {
+            display: flex;
+            gap: 2px;
+            margin-top: 4px;
+        }
+
+        .event-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+        }
+
+        .event-dot.course {
+            background: var(--course);
+        }
+
+        .event-dot.homework {
+            background: var(--homework);
+        }
+
+        .event-dot.exam {
+            background: var(--exam);
+        }
+
+        .event-dot.review {
+            background: var(--review);
+        }
+
+        /* Today's Tasks */
+        .tasks-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        .tasks-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .tasks-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .add-task-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .add-task-btn:hover {
+            background: var(--primary-hover);
+            transform: scale(1.1);
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .task-item {
+            padding: 12px;
+            background: var(--background);
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+            transition: all 0.2s ease;
+        }
+
+        .task-item:hover {
+            background: var(--surface);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .task-item.course {
+            border-left-color: var(--course);
+        }
+
+        .task-item.homework {
+            border-left-color: var(--homework);
+        }
+
+        .task-item.exam {
+            border-left-color: var(--exam);
+        }
+
+        .task-item.review {
+            border-left-color: var(--review);
+        }
+
+        .task-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .task-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .task-type {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .task-type.course {
+            background: #EDE9FE;
+            color: var(--course);
+        }
+
+        .task-type.homework {
+            background: #FEF3C7;
+            color: var(--homework);
+        }
+
+        .task-type.exam {
+            background: #FEE2E2;
+            color: var(--exam);
+        }
+
+        .task-type.review {
+            background: #DBEAFE;
+            color: var(--review);
+        }
+
+        /* Event Legend */
+        .event-legend {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* Back Link */
+        .back-link {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            padding: 12px 20px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-link:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1024px) {
+            .calendar-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .calendar-days {
+                gap: 4px;
+            }
+
+            .calendar-day {
+                padding: 4px;
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="#" class="logo">📚 智学云</a>
+                <div class="nav-menu">
+                    <a href="dashboard.html" class="nav-link">仪表板</a>
+                    <a href="course.html" class="nav-link">我的课程</a>
+                    <a href="learning-path.html" class="nav-link">学习路径</a>
+                    <a href="achievements.html" class="nav-link">成就证书</a>
+                    <a href="calendar.html" class="nav-link active">学习日历</a>
+                </div>
+            </div>
+
+            <div class="user-section">
+                <button class="notification-btn">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
+                    </svg>
+                    <span class="notification-badge"></span>
+                </button>
+                <div class="user-avatar">张</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-title-section">
+                <h1>学习日历</h1>
+                <p>管理你的学习计划和课程安排</p>
+            </div>
+            <div class="view-toggle">
+                <button class="view-btn active">月视图</button>
+                <button class="view-btn">周视图</button>
+                <button class="view-btn">日视图</button>
+            </div>
+        </div>
+
+        <!-- Calendar Layout -->
+        <div class="calendar-layout">
+            <!-- Calendar -->
+            <div class="calendar-card">
+                <div class="calendar-header">
+                    <h2 class="calendar-title">2026年1月</h2>
+                    <div class="calendar-nav">
+                        <button class="calendar-nav-btn">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                        <button class="calendar-nav-btn">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="calendar-weekdays">
+                    <div class="calendar-weekday">日</div>
+                    <div class="calendar-weekday">一</div>
+                    <div class="calendar-weekday">二</div>
+                    <div class="calendar-weekday">三</div>
+                    <div class="calendar-weekday">四</div>
+                    <div class="calendar-weekday">五</div>
+                    <div class="calendar-weekday">六</div>
+                </div>
+
+                <div class="calendar-days">
+                    <!-- Week 1 -->
+                    <div class="calendar-day other-month">29</div>
+                    <div class="calendar-day other-month">30</div>
+                    <div class="calendar-day other-month">31</div>
+                    <div class="calendar-day has-events">
+                        1
+                        <div class="event-dots">
+                            <div class="event-dot course"></div>
+                            <div class="event-dot homework"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day has-events">
+                        2
+                        <div class="event-dots">
+                            <div class="event-dot course"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day has-events">
+                        3
+                        <div class="event-dots">
+                            <div class="event-dot review"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day">4</div>
+
+                    <!-- Week 2 -->
+                    <div class="calendar-day">5</div>
+                    <div class="calendar-day has-events">
+                        6
+                        <div class="event-dots">
+                            <div class="event-dot course"></div>
+                            <div class="event-dot homework"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day has-events">
+                        7
+                        <div class="event-dots">
+                            <div class="event-dot course"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day has-events">
+                        8
+                        <div class="event-dots">
+                            <div class="event-dot exam"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day has-events">
+                        9
+                        <div class="event-dots">
+                            <div class="event-dot course"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day has-events">
+                        10
+                        <div class="event-dots">
+                            <div class="event-dot review"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day">11</div>
+
+                    <!-- Week 3 -->
+                    <div class="calendar-day">12</div>
+                    <div class="calendar-day has-events">
+                        13
+                        <div class="event-dots">
+                            <div class="event-dot course"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day has-events">
+                        14
+                        <div class="event-dots">
+                            <div class="event-dot course"></div>
+                            <div class="event-dot homework"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day has-events">
+                        15
+                        <div class="event-dots">
+                            <div class="event-dot exam"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day has-events">
+                        16
+                        <div class="event-dots">
+                            <div class="event-dot course"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day has-events">
+                        17
+                        <div class="event-dots">
+                            <div class="event-dot review"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day">18</div>
+
+                    <!-- Week 4 -->
+                    <div class="calendar-day">19</div>
+                    <div class="calendar-day has-events">
+                        20
+                        <div class="event-dots">
+                            <div class="event-dot course"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day has-events">
+                        21
+                        <div class="event-dots">
+                            <div class="event-dot course"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day has-events">
+                        22
+                        <div class="event-dots">
+                            <div class="event-dot homework"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day has-events">
+                        23
+                        <div class="event-dots">
+                            <div class="event-dot course"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day has-events">
+                        24
+                        <div class="event-dots">
+                            <div class="event-dot review"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day">25</div>
+
+                    <!-- Week 5 -->
+                    <div class="calendar-day">26</div>
+                    <div class="calendar-day has-events">
+                        27
+                        <div class="event-dots">
+                            <div class="event-dot course"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day has-events">
+                        28
+                        <div class="event-dots">
+                            <div class="event-dot course"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day has-events">
+                        29
+                        <div class="event-dots">
+                            <div class="event-dot exam"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day today selected">30</div>
+                    <div class="calendar-day has-events">
+                        31
+                        <div class="event-dots">
+                            <div class="event-dot review"></div>
+                        </div>
+                    </div>
+                    <div class="calendar-day other-month">1</div>
+                </div>
+
+                <div class="event-legend">
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: var(--course);"></div>
+                        <span>课程</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: var(--homework);"></div>
+                        <span>作业</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: var(--exam);"></div>
+                        <span>考试</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: var(--review);"></div>
+                        <span>复习</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Tasks -->
+            <div class="tasks-card">
+                <div class="tasks-header">
+                    <h3 class="tasks-title">今日任务</h3>
+                    <button class="add-task-btn">+</button>
+                </div>
+
+                <div class="task-list">
+                    <div class="task-item course">
+                        <div class="task-time">09:00 - 10:30</div>
+                        <div class="task-title">React Hooks 深入学习</div>
+                        <span class="task-type course">课程</span>
+                    </div>
+
+                    <div class="task-item homework">
+                        <div class="task-time">截止 18:00</div>
+                        <div class="task-title">Python 数据分析作业</div>
+                        <span class="task-type homework">作业</span>
+                    </div>
+
+                    <div class="task-item review">
+                        <div class="task-time">14:00 - 15:00</div>
+                        <div class="task-title">JavaScript 基础复习</div>
+                        <span class="task-type review">复习</span>
+                    </div>
+
+                    <div class="task-item course">
+                        <div class="task-time">19:00 - 20:30</div>
+                        <div class="task-title">UI/UX 设计直播课</div>
+                        <span class="task-type course">课程</span>
+                    </div>
+
+                    <div class="task-item review">
+                        <div class="task-time">20:30 - 21:00</div>
+                        <div class="task-title">CSS 布局技巧总结</div>
+                        <span class="task-type review">复习</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <a href="../../index.html" class="back-link">← 返回风格选择</a>
+</body>
+</html>

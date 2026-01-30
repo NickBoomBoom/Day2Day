@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成就与证书 - 现代简约风格</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary: #10B981;
+            --background: #F9FAFB;
+            --surface: #FFFFFF;
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --border: #E5E7EB;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+            --gold: #F59E0B;
+            --silver: #9CA3AF;
+            --bronze: #D97706;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 4px;
+            margin-left: 40px;
+        }
+
+        .nav-link {
+            padding: 8px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: var(--background);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--background);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .notification-btn:hover {
+            background: var(--border);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 8px;
+            height: 8px;
+            background: #EF4444;
+            border-radius: 50%;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-icon.primary {
+            background: #EEF2FF;
+        }
+
+        .stat-icon.success {
+            background: #D1FAE5;
+        }
+
+        .stat-icon.warning {
+            background: #FEF3C7;
+        }
+
+        .stat-icon.info {
+            background: #DBEAFE;
+        }
+
+        .stat-content {
+            margin-top: 12px;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-unit {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            margin-left: 4px;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .section-filter {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            background: var(--background);
+            color: var(--primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Badge Grid */
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 24px;
+        }
+
+        .badge-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .badge-card.locked {
+            opacity: 0.5;
+        }
+
+        .badge-card.locked .badge-icon {
+            filter: grayscale(100%);
+        }
+
+        .badge-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .badge-icon.gold {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .badge-icon.silver {
+            background: linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%);
+            box-shadow: 0 4px 12px rgba(156, 163, 175, 0.3);
+        }
+
+        .badge-icon.bronze {
+            background: linear-gradient(135deg, #FED7AA 0%, #FDBA74 100%);
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+        }
+
+        .badge-icon.primary {
+            background: linear-gradient(135deg, #EEF2FF 0%, #C7D2FE 100%);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .badge-icon.success {
+            background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .badge-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .badge-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .badge-progress {
+            width: 100%;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+
+        .badge-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--info) 100%);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .badge-progress-text {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .badge-date {
+            font-size: 0.75rem;
+            color: var(--success);
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        /* Certificate List */
+        .certificate-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .certificate-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            display: flex;
+            gap: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .certificate-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .certificate-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .certificate-content {
+            flex: 1;
+        }
+
+        .certificate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .certificate-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .certificate-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .certificate-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .certificate-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .certificate-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .certificate-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .certificate-btn.primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .certificate-btn.secondary {
+            background: var(--background);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .certificate-btn.secondary:hover {
+            background: var(--border);
+        }
+
+        /* Leaderboard */
+        .leaderboard-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        .leaderboard-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .leaderboard-tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .leaderboard-tab:hover {
+            color: var(--primary);
+        }
+
+        .leaderboard-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            background: var(--background);
+            transition: all 0.2s ease;
+        }
+
+        .leaderboard-item:hover {
+            background: var(--border);
+        }
+
+        .leaderboard-item.current-user {
+            background: #EEF2FF;
+            border: 2px solid var(--primary);
+        }
+
+        .leaderboard-rank {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.125rem;
+            flex-shrink: 0;
+        }
+
+        .leaderboard-rank.top1 {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            color: #92400E;
+        }
+
+        .leaderboard-rank.top2 {
+            background: linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%);
+            color: #374151;
+        }
+
+        .leaderboard-rank.top3 {
+            background: linear-gradient(135deg, #FED7AA 0%, #FDBA74 100%);
+            color: #7C2D12;
+        }
+
+        .leaderboard-rank.other {
+            background: var(--surface);
+            color: var(--text-secondary);
+        }
+
+        .leaderboard-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .leaderboard-info {
+            flex: 1;
+        }
+
+        .leaderboard-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .leaderboard-stats {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .leaderboard-time {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Back Link */
+        .back-link {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            padding: 12px 20px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-link:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .badge-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .certificate-card {
+                flex-direction: column;
+            }
+
+            .certificate-actions {
+                flex-direction: column;
+            }
+
+            .certificate-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="#" class="logo">📚 智学云</a>
+                <div class="nav-menu">
+                    <a href="dashboard.html" class="nav-link">仪表板</a>
+                    <a href="course.html" class="nav-link">我的课程</a>
+                    <a href="learning-path.html" class="nav-link">学习路径</a>
+                    <a href="achievements.html" class="nav-link active">成就证书</a>
+                    <a href="calendar.html" class="nav-link">学习日历</a>
+                </div>
+            </div>
+
+            <div class="user-section">
+                <button class="notification-btn">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
+                    </svg>
+                    <span class="notification-badge"></span>
+                </button>
+                <div class="user-avatar">张</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">成就与证书</h1>
+            <p class="page-subtitle">记录你的学习成就，展示你的学习成果</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon warning">🏆</div>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">总徽章数</div>
+                    <div class="stat-value">24<span class="stat-unit">个</span></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon success">📜</div>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">总证书数</div>
+                    <div class="stat-value">8<span class="stat-unit">张</span></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon primary">📊</div>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">本周排名</div>
+                    <div class="stat-value">12<span class="stat-unit">名</span></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon info">⭐</div>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">成就点数</div>
+                    <div class="stat-value">1,850<span class="stat-unit">分</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Badges Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">我的徽章</h2>
+                <div class="section-filter">
+                    <button class="filter-btn active">全部</button>
+                    <button class="filter-btn">已获得</button>
+                    <button class="filter-btn">未获得</button>
+                </div>
+            </div>
+
+            <div class="badge-grid">
+                <!-- Earned Badge 1 -->
+                <div class="badge-card">
+                    <div class="badge-icon gold">🔥</div>
+                    <div class="badge-name">连续学习7天</div>
+                    <div class="badge-description">连续7天完成学习任务</div>
+                    <div class="badge-date">获得于 2026-01-23</div>
+                </div>
+
+                <!-- Earned Badge 2 -->
+                <div class="badge-card">
+                    <div class="badge-icon gold">🎯</div>
+                    <div class="badge-name">连续学习30天</div>
+                    <div class="badge-description">连续30天完成学习任务</div>
+                    <div class="badge-date">获得于 2026-01-15</div>
+                </div>
+
+                <!-- In Progress Badge -->
+                <div class="badge-card">
+                    <div class="badge-icon gold">💪</div>
+                    <div class="badge-name">连续学习100天</div>
+                    <div class="badge-description">连续100天完成学习任务</div>
+                    <div class="badge-progress">
+                        <div class="badge-progress-bar" style="width: 45%;"></div>
+                    </div>
+                    <div class="badge-progress-text">45/100 天</div>
+                </div>
+
+                <!-- Earned Badge 3 -->
+                <div class="badge-card">
+                    <div class="badge-icon primary">📚</div>
+                    <div class="badge-name">完成5门课程</div>
+                    <div class="badge-description">成功完成5门在线课程</div>
+                    <div class="badge-date">获得于 2026-01-10</div>
+                </div>
+
+                <!-- Earned Badge 4 -->
+                <div class="badge-card">
+                    <div class="badge-icon primary">🎓</div>
+                    <div class="badge-name">完成10门课程</div>
+                    <div class="badge-description">成功完成10门在线课程</div>
+                    <div class="badge-date">获得于 2026-01-20</div>
+                </div>
+
+                <!-- In Progress Badge -->
+                <div class="badge-card">
+                    <div class="badge-icon primary">🏅</div>
+                    <div class="badge-name">完成20门课程</div>
+                    <div class="badge-description">成功完成20门在线课程</div>
+                    <div class="badge-progress">
+                        <div class="badge-progress-bar" style="width: 65%;"></div>
+                    </div>
+                    <div class="badge-progress-text">13/20 门</div>
+                </div>
+
+                <!-- Earned Badge 5 -->
+                <div class="badge-card">
+                    <div class="badge-icon success">💻</div>
+                    <div class="badge-name">前端大师</div>
+                    <div class="badge-description">精通前端开发技能</div>
+                    <div class="badge-date">获得于 2026-01-18</div>
+                </div>
+
+                <!-- Locked Badge -->
+                <div class="badge-card locked">
+                    <div class="badge-icon success">🔧</div>
+                    <div class="badge-name">后端专家</div>
+                    <div class="badge-description">精通后端开发技能</div>
+                    <div class="badge-progress">
+                        <div class="badge-progress-bar" style="width: 30%;"></div>
+                    </div>
+                    <div class="badge-progress-text">3/10 门课程</div>
+                </div>
+
+                <!-- Earned Badge 6 -->
+                <div class="badge-card">
+                    <div class="badge-icon warning">🌅</div>
+                    <div class="badge-name">早起学习</div>
+                    <div class="badge-description">在早上6-8点学习10次</div>
+                    <div class="badge-date">获得于 2026-01-12</div>
+                </div>
+
+                <!-- Locked Badge -->
+                <div class="badge-card locked">
+                    <div class="badge-icon warning">🌙</div>
+                    <div class="badge-name">夜猫子</div>
+                    <div class="badge-description">在晚上10-12点学习10次</div>
+                    <div class="badge-progress">
+                        <div class="badge-progress-bar" style="width: 60%;"></div>
+                    </div>
+                    <div class="badge-progress-text">6/10 次</div>
+                </div>
+
+                <!-- Earned Badge 7 -->
+                <div class="badge-card">
+                    <div class="badge-icon info">🎯</div>
+                    <div class="badge-name">周末战士</div>
+                    <div class="badge-description">连续4个周末完成学习</div>
+                    <div class="badge-date">获得于 2026-01-28</div>
+                </div>
+
+                <!-- Locked Badge -->
+                <div class="badge-card locked">
+                    <div class="badge-icon silver">🏆</div>
+                    <div class="badge-name">学习达人</div>
+                    <div class="badge-description">累计学习时长达到500小时</div>
+                    <div class="badge-progress">
+                        <div class="badge-progress-bar" style="width: 75%;"></div>
+                    </div>
+                    <div class="badge-progress-text">375/500 小时</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Certificates Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">我的证书</h2>
+            </div>
+
+            <div class="certificate-list">
+                <!-- Certificate 1 -->
+                <div class="certificate-card">
+                    <div class="certificate-icon">🎓</div>
+                    <div class="certificate-content">
+                        <div class="certificate-header">
+                            <div>
+                                <h3 class="certificate-title">前端开发工程师认证</h3>
+                                <div class="certificate-meta">
+                                    <div class="certificate-meta-item">
+                                        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                        </svg>
+                                        颁发日期：2026-01-20
+                                    </div>
+                                    <div class="certificate-meta-item">
+                                        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"/>
+                                        </svg>
+                                        证书编号：FE-2026-001234
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="certificate-actions">
+                            <button class="certificate-btn primary">下载证书</button>
+                            <button class="certificate-btn secondary">分享证书</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificate 2 -->
+                <div class="certificate-card">
+                    <div class="certificate-icon">💻</div>
+                    <div class="certificate-content">
+                        <div class="certificate-header">
+                            <div>
+                                <h3 class="certificate-title">React 高级开发认证</h3>
+                                <div class="certificate-meta">
+                                    <div class="certificate-meta-item">
+                                        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                        </svg>
+                                        颁发日期：2026-01-18
+                                    </div>
+                                    <div class="certificate-meta-item">
+                                        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"/>
+                                        </svg>
+                                        证书编号：REACT-2026-005678
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="certificate-actions">
+                            <button class="certificate-btn primary">下载证书</button>
+                            <button class="certificate-btn secondary">分享证书</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificate 3 -->
+                <div class="certificate-card">
+                    <div class="certificate-icon">🎨</div>
+                    <div class="certificate-content">
+                        <div class="certificate-header">
+                            <div>
+                                <h3 class="certificate-title">UI/UX 设计师认证</h3>
+                                <div class="certificate-meta">
+                                    <div class="certificate-meta-item">
+                                        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                        </svg>
+                                        颁发日期：2026-01-15
+                                    </div>
+                                    <div class="certificate-meta-item">
+                                        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"/>
+                                        </svg>
+                                        证书编号：UIUX-2026-009012
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="certificate-actions">
+                            <button class="certificate-btn primary">下载证书</button>
+                            <button class="certificate-btn secondary">分享证书</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certificate 4 -->
+                <div class="certificate-card">
+                    <div class="certificate-icon">📊</div>
+                    <div class="certificate-content">
+                        <div class="certificate-header">
+                            <div>
+                                <h3 class="certificate-title">数据分析师认证</h3>
+                                <div class="certificate-meta">
+                                    <div class="certificate-meta-item">
+                                        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                        </svg>
+                                        颁发日期：2026-01-10
+                                    </div>
+                                    <div class="certificate-meta-item">
+                                        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"/>
+                                        </svg>
+                                        证书编号：DATA-2026-003456
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="certificate-actions">
+                            <button class="certificate-btn primary">下载证书</button>
+                            <button class="certificate-btn secondary">分享证书</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">学习排行榜</h2>
+            </div>
+
+            <div class="leaderboard-card">
+                <div class="leaderboard-tabs">
+                    <button class="leaderboard-tab active">本周</button>
+                    <button class="leaderboard-tab">本月</button>
+                    <button class="leaderboard-tab">总榜</button>
+                </div>
+
+                <div class="leaderboard-list">
+                    <!-- Rank 1 -->
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-rank top1">1</div>
+                        <div class="leaderboard-avatar">李</div>
+                        <div class="leaderboard-info">
+                            <div class="leaderboard-name">李明</div>
+                            <div class="leaderboard-stats">完成12门课程</div>
+                        </div>
+                        <div class="leaderboard-time">32.5h</div>
+                    </div>
+
+                    <!-- Rank 2 -->
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-rank top2">2</div>
+                        <div class="leaderboard-avatar">王</div>
+                        <div class="leaderboard-info">
+                            <div class="leaderboard-name">王芳</div>
+                            <div class="leaderboard-stats">完成10门课程</div>
+                        </div>
+                        <div class="leaderboard-time">28.3h</div>
+                    </div>
+
+                    <!-- Rank 3 -->
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-rank top3">3</div>
+                        <div class="leaderboard-avatar">刘</div>
+                        <div class="leaderboard-info">
+                            <div class="leaderboard-name">刘强</div>
+                            <div class="leaderboard-stats">完成9门课程</div>
+                        </div>
+                        <div class="leaderboard-time">25.8h</div>
+                    </div>
+
+                    <!-- Current User -->
+                    <div class="leaderboard-item current-user">
+                        <div class="leaderboard-rank other">12</div>
+                        <div class="leaderboard-avatar">张</div>
+                        <div class="leaderboard-info">
+                            <div class="leaderboard-name">张三（你）</div>
+                            <div class="leaderboard-stats">完成6门课程</div>
+                        </div>
+                        <div class="leaderboard-time">18.5h</div>
+                    </div>
+
+                    <!-- Rank 13 -->
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-rank other">13</div>
+                        <div class="leaderboard-avatar">陈</div>
+                        <div class="leaderboard-info">
+                            <div class="leaderboard-name">陈静</div>
+                            <div class="leaderboard-stats">完成5门课程</div>
+                        </div>
+                        <div class="leaderboard-time">17.2h</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <a href="../../index.html" class="back-link">← 返回风格选择</a>
+</body>
+</html>

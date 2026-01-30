@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习仪表板 - 现代简约风格</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary: #10B981;
+            --background: #F9FAFB;
+            --surface: #FFFFFF;
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --border: #E5E7EB;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 4px;
+            margin-left: 40px;
+        }
+
+        .nav-link {
+            padding: 8px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: var(--background);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--background);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .notification-btn:hover {
+            background: var(--border);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 8px;
+            height: 8px;
+            background: #EF4444;
+            border-radius: 50%;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-icon.primary {
+            background: #EEF2FF;
+        }
+
+        .stat-icon.success {
+            background: #D1FAE5;
+        }
+
+        .stat-icon.warning {
+            background: #FEF3C7;
+        }
+
+        .stat-icon.info {
+            background: #DBEAFE;
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .stat-trend.up {
+            color: var(--success);
+        }
+
+        .stat-trend.down {
+            color: var(--danger);
+        }
+
+        .stat-content {
+            margin-top: 12px;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-unit {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-secondary);
+            margin-left: 4px;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .dashboard-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-action {
+            font-size: 0.875rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .card-action:hover {
+            color: var(--primary-hover);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            height: 300px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 20px 0;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-hover) 100%);
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .chart-bar:hover {
+            opacity: 0.8;
+            transform: translateY(-4px);
+        }
+
+        .chart-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .chart-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Activity List */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+
+        .activity-item:hover {
+            background: var(--background);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Progress Ring */
+        .progress-ring-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .progress-ring {
+            width: 180px;
+            height: 180px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-circle {
+            fill: none;
+            stroke: var(--border);
+            stroke-width: 12;
+        }
+
+        .progress-ring-progress {
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 12;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .progress-ring-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-ring-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .progress-ring-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .quick-action-btn {
+            padding: 12px;
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .quick-action-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Heatmap */
+        .heatmap-container {
+            margin-top: 20px;
+        }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .heatmap-cell {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            background: var(--border);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .heatmap-cell:hover {
+            transform: scale(1.1);
+        }
+
+        .heatmap-cell.level-0 {
+            background: var(--border);
+        }
+
+        .heatmap-cell.level-1 {
+            background: #C7D2FE;
+        }
+
+        .heatmap-cell.level-2 {
+            background: #A5B4FC;
+        }
+
+        .heatmap-cell.level-3 {
+            background: #818CF8;
+        }
+
+        .heatmap-cell.level-4 {
+            background: var(--primary);
+        }
+
+        .heatmap-legend {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .heatmap-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .heatmap-legend-box {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .back-link {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            padding: 12px 20px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-link:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="#" class="logo">📚 智学云</a>
+                <div class="nav-menu">
+                    <a href="dashboard.html" class="nav-link active">仪表板</a>
+                    <a href="course.html" class="nav-link">我的课程</a>
+                    <a href="learning-path.html" class="nav-link">学习路径</a>
+                    <a href="achievements.html" class="nav-link">成就证书</a>
+                    <a href="calendar.html" class="nav-link">学习日历</a>
+                </div>
+            </div>
+
+            <div class="user-section">
+                <button class="notification-btn">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
+                    </svg>
+                    <span class="notification-badge"></span>
+                </button>
+                <div class="user-avatar">张</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">学习仪表板</h1>
+            <p class="page-subtitle">欢迎回来！继续你的学习之旅</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon primary">⏱️</div>
+                    <div class="stat-trend up">
+                        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        +12%
+                    </div>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">本周学习时长</div>
+                    <div class="stat-value">18.5<span class="stat-unit">小时</span></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon success">✅</div>
+                    <div class="stat-trend up">
+                        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        +3
+                    </div>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">已完成课程</div>
+                    <div class="stat-value">28<span class="stat-unit">门</span></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon warning">🔥</div>
+                    <div class="stat-trend up">
+                        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        连续
+                    </div>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">学习连续天数</div>
+                    <div class="stat-value">15<span class="stat-unit">天</span></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon info">📊</div>
+                    <div class="stat-trend up">
+                        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                        +8%
+                    </div>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-label">平均完成率</div>
+                    <div class="stat-value">72<span class="stat-unit">%</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Learning Progress Chart -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">每周学习时长统计</h3>
+                    <a href="#" class="card-action">查看详情 →</a>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-bar" style="height: 60%;">
+                        <span class="chart-value">12h</span>
+                        <span class="chart-label">周一</span>
+                    </div>
+                    <div class="chart-bar" style="height: 80%;">
+                        <span class="chart-value">16h</span>
+                        <span class="chart-label">周二</span>
+                    </div>
+                    <div class="chart-bar" style="height: 45%;">
+                        <span class="chart-value">9h</span>
+                        <span class="chart-label">周三</span>
+                    </div>
+                    <div class="chart-bar" style="height: 90%;">
+                        <span class="chart-value">18h</span>
+                        <span class="chart-label">周四</span>
+                    </div>
+                    <div class="chart-bar" style="height: 70%;">
+                        <span class="chart-value">14h</span>
+                        <span class="chart-label">周五</span>
+                    </div>
+                    <div class="chart-bar" style="height: 55%;">
+                        <span class="chart-value">11h</span>
+                        <span class="chart-label">周六</span>
+                    </div>
+                    <div class="chart-bar" style="height: 40%;">
+                        <span class="chart-value">8h</span>
+                        <span class="chart-label">周日</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">最近学习记录</h3>
+                    <a href="#" class="card-action">查看全部 →</a>
+                </div>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: #EEF2FF;">📘</div>
+                        <div class="activity-content">
+                            <div class="activity-title">完成 React Hooks 章节</div>
+                            <div class="activity-time">2小时前</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: #D1FAE5;">🎯</div>
+                        <div class="activity-content">
+                            <div class="activity-title">获得"连续学习7天"徽章</div>
+                            <div class="activity-time">5小时前</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: #FEF3C7;">📝</div>
+                        <div class="activity-content">
+                            <div class="activity-title">提交 Python 项目作业</div>
+                            <div class="activity-time">昨天</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: #DBEAFE;">✨</div>
+                        <div class="activity-content">
+                            <div class="activity-title">开始学习 UI/UX 设计</div>
+                            <div class="activity-time">2天前</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: #FCE7F3;">🏆</div>
+                        <div class="activity-content">
+                            <div class="activity-title">完成 Excel 高级课程</div>
+                            <div class="activity-time">3天前</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Row -->
+        <div class="dashboard-grid">
+            <!-- Learning Heatmap -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">学习活跃度热力图</h3>
+                    <a href="#" class="card-action">本月数据 →</a>
+                </div>
+                <div class="heatmap-container">
+                    <div class="heatmap-grid">
+                        <div class="heatmap-cell level-2"></div>
+                        <div class="heatmap-cell level-3"></div>
+                        <div class="heatmap-cell level-1"></div>
+                        <div class="heatmap-cell level-4"></div>
+                        <div class="heatmap-cell level-2"></div>
+                        <div class="heatmap-cell level-3"></div>
+                        <div class="heatmap-cell level-1"></div>
+                        <div class="heatmap-cell level-3"></div>
+                        <div class="heatmap-cell level-4"></div>
+                        <div class="heatmap-cell level-2"></div>
+                        <div class="heatmap-cell level-3"></div>
+                        <div class="heatmap-cell level-4"></div>
+                        <div class="heatmap-cell level-1"></div>
+                        <div class="heatmap-cell level-2"></div>
+                        <div class="heatmap-cell level-1"></div>
+                        <div class="heatmap-cell level-2"></div>
+                        <div class="heatmap-cell level-3"></div>
+                        <div class="heatmap-cell level-4"></div>
+                        <div class="heatmap-cell level-2"></div>
+                        <div class="heatmap-cell level-0"></div>
+                        <div class="heatmap-cell level-1"></div>
+                        <div class="heatmap-cell level-4"></div>
+                        <div class="heatmap-cell level-3"></div>
+                        <div class="heatmap-cell level-2"></div>
+                        <div class="heatmap-cell level-3"></div>
+                        <div class="heatmap-cell level-1"></div>
+                        <div class="heatmap-cell level-2"></div>
+                        <div class="heatmap-cell level-4"></div>
+                    </div>
+                    <div class="heatmap-legend">
+                        <span>少</span>
+                        <div class="heatmap-legend-item">
+                            <div class="heatmap-legend-box level-0"></div>
+                        </div>
+                        <div class="heatmap-legend-item">
+                            <div class="heatmap-legend-box level-1"></div>
+                        </div>
+                        <div class="heatmap-legend-item">
+                            <div class="heatmap-legend-box level-2"></div>
+                        </div>
+                        <div class="heatmap-legend-item">
+                            <div class="heatmap-legend-box level-3"></div>
+                        </div>
+                        <div class="heatmap-legend-item">
+                            <div class="heatmap-legend-box level-4"></div>
+                        </div>
+                        <span>多</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overall Progress -->
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">整体学习进度</h3>
+                </div>
+                <div class="progress-ring-container">
+                    <div class="progress-ring">
+                        <svg width="180" height="180">
+                            <circle class="progress-ring-circle" cx="90" cy="90" r="80"></circle>
+                            <circle class="progress-ring-progress" cx="90" cy="90" r="80"
+                                    stroke-dasharray="502.4" stroke-dashoffset="150.72"></circle>
+                        </svg>
+                        <div class="progress-ring-text">
+                            <div class="progress-ring-value">72%</div>
+                            <div class="progress-ring-label">总体完成</div>
+                        </div>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="quick-action-btn">继续学习</button>
+                        <button class="quick-action-btn">查看课程</button>
+                        <button class="quick-action-btn">学习计划</button>
+                        <button class="quick-action-btn">我的成就</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <a href="../../index.html" class="back-link">← 返回风格选择</a>
+</body>
+</html>

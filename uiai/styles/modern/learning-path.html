@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习路径 - 现代简约风格</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary: #10B981;
+            --background: #F9FAFB;
+            --surface: #FFFFFF;
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --border: #E5E7EB;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --info: #3B82F6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 4px;
+            margin-left: 40px;
+        }
+
+        .nav-link {
+            padding: 8px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: var(--background);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notification-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--background);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .notification-btn:hover {
+            background: var(--border);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 8px;
+            height: 8px;
+            background: #EF4444;
+            border-radius: 50%;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Learning Path Cards */
+        .path-section {
+            margin-bottom: 48px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+        }
+
+        .path-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .path-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .path-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .path-card.selected {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, #EEF2FF 0%, var(--surface) 100%);
+        }
+
+        .path-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            padding: 4px 12px;
+            background: var(--primary);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .path-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .path-icon.frontend {
+            background: linear-gradient(135deg, #EEF2FF 0%, #C7D2FE 100%);
+        }
+
+        .path-icon.fullstack {
+            background: linear-gradient(135deg, #D1FAE5 0%, #6EE7B7 100%);
+        }
+
+        .path-icon.datascience {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FCD34D 100%);
+        }
+
+        .path-icon.design {
+            background: linear-gradient(135deg, #FCE7F3 0%, #F9A8D4 100%);
+        }
+
+        .path-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .path-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .path-stats {
+            display: flex;
+            gap: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .path-stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        /* Current Path Progress */
+        .current-path {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            margin-bottom: 48px;
+        }
+
+        .current-path-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .current-path-info h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .current-path-info p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .overall-progress {
+            text-align: right;
+        }
+
+        .progress-percentage {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .progress-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background: var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+
+        /* Milestones */
+        .milestones {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .milestone {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            background: var(--background);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .milestone:hover {
+            background: var(--surface);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .milestone-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .milestone.completed .milestone-icon {
+            background: var(--success);
+            color: white;
+        }
+
+        .milestone.in-progress .milestone-icon {
+            background: var(--warning);
+            color: white;
+        }
+
+        .milestone.pending .milestone-icon {
+            background: var(--border);
+            color: var(--text-secondary);
+        }
+
+        .milestone-content {
+            flex: 1;
+        }
+
+        .milestone-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .milestone-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .milestone-progress {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Skill Tree */
+        .skill-tree {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            margin-bottom: 48px;
+        }
+
+        .skill-tree-container {
+            position: relative;
+            padding: 40px 20px;
+            min-height: 600px;
+        }
+
+        .skill-node {
+            position: absolute;
+            width: 160px;
+            padding: 16px;
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .skill-node:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+            z-index: 10;
+        }
+
+        .skill-node.completed {
+            border-color: var(--success);
+            background: linear-gradient(135deg, #D1FAE5 0%, var(--surface) 100%);
+        }
+
+        .skill-node.in-progress {
+            border-color: var(--warning);
+            background: linear-gradient(135deg, #FEF3C7 0%, var(--surface) 100%);
+        }
+
+        .skill-node.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .skill-node-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            background: var(--background);
+        }
+
+        .skill-node-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .skill-node-status {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Connection Lines */
+        .connection-line {
+            position: absolute;
+            background: var(--border);
+            z-index: 0;
+        }
+
+        .connection-line.completed {
+            background: var(--success);
+        }
+
+        .connection-line.horizontal {
+            height: 2px;
+        }
+
+        .connection-line.vertical {
+            width: 2px;
+        }
+
+        /* Back Link */
+        .back-link {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            padding: 12px 20px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-link:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1024px) {
+            .path-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+
+            .milestones {
+                grid-template-columns: 1fr;
+            }
+
+            .skill-tree-container {
+                overflow-x: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .path-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .current-path-header {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .overall-progress {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="#" class="logo">📚 智学云</a>
+                <div class="nav-menu">
+                    <a href="dashboard.html" class="nav-link">仪表板</a>
+                    <a href="course.html" class="nav-link">我的课程</a>
+                    <a href="learning-path.html" class="nav-link active">学习路径</a>
+                    <a href="achievements.html" class="nav-link">成就证书</a>
+                    <a href="calendar.html" class="nav-link">学习日历</a>
+                </div>
+            </div>
+
+            <div class="user-section">
+                <button class="notification-btn">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
+                    </svg>
+                    <span class="notification-badge"></span>
+                </button>
+                <div class="user-avatar">张</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">学习路径</h1>
+            <p class="page-subtitle">选择适合你的学习路径，系统化提升技能</p>
+        </div>
+
+        <!-- Recommended Learning Paths -->
+        <section class="path-section">
+            <h2 class="section-title">推荐学习路径</h2>
+            <div class="path-grid">
+                <div class="path-card selected">
+                    <span class="path-badge">进行中</span>
+                    <div class="path-icon frontend">💻</div>
+                    <h3 class="path-name">前端开发路径</h3>
+                    <p class="path-description">从HTML/CSS基础到React/Vue框架，全面掌握现代前端开发技术栈</p>
+                    <div class="path-stats">
+                        <span class="path-stat">📚 12门课程</span>
+                        <span class="path-stat">⏱️ 48小时</span>
+                        <span class="path-stat">🎯 45%完成</span>
+                    </div>
+                </div>
+
+                <div class="path-card">
+                    <div class="path-icon fullstack">🚀</div>
+                    <h3 class="path-name">全栈开发路径</h3>
+                    <p class="path-description">掌握前后端开发技能，成为能够独立完成项目的全栈工程师</p>
+                    <div class="path-stats">
+                        <span class="path-stat">📚 18门课程</span>
+                        <span class="path-stat">⏱️ 72小时</span>
+                        <span class="path-stat">🎯 0%完成</span>
+                    </div>
+                </div>
+
+                <div class="path-card">
+                    <div class="path-icon datascience">📊</div>
+                    <h3 class="path-name">数据科学路径</h3>
+                    <p class="path-description">学习Python数据分析、机器学习和数据可视化，开启数据科学之旅</p>
+                    <div class="path-stats">
+                        <span class="path-stat">📚 15门课程</span>
+                        <span class="path-stat">⏱️ 60小时</span>
+                        <span class="path-stat">🎯 0%完成</span>
+                    </div>
+                </div>
+
+                <div class="path-card">
+                    <div class="path-icon design">🎨</div>
+                    <h3 class="path-name">UI/UX设计路径</h3>
+                    <p class="path-description">从设计基础到高级交互，培养专业的用户体验设计能力</p>
+                    <div class="path-stats">
+                        <span class="path-stat">📚 10门课程</span>
+                        <span class="path-stat">⏱️ 40小时</span>
+                        <span class="path-stat">🎯 0%完成</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Current Path Progress -->
+        <section class="current-path">
+            <div class="current-path-header">
+                <div class="current-path-info">
+                    <h3>前端开发路径</h3>
+                    <p>你正在学习前端开发，已经完成了基础阶段，继续加油！</p>
+                </div>
+                <div class="overall-progress">
+                    <div class="progress-percentage">45%</div>
+                    <div class="progress-label">整体进度</div>
+                </div>
+            </div>
+
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" style="width: 45%;"></div>
+            </div>
+
+            <h4 class="section-title" style="font-size: 1.25rem; margin-bottom: 16px;">学习里程碑</h4>
+            <div class="milestones">
+                <div class="milestone completed">
+                    <div class="milestone-icon">✓</div>
+                    <div class="milestone-content">
+                        <div class="milestone-title">基础入门</div>
+                        <div class="milestone-description">HTML、CSS、JavaScript基础</div>
+                        <div class="milestone-progress">4/4 课程已完成</div>
+                    </div>
+                </div>
+
+                <div class="milestone in-progress">
+                    <div class="milestone-icon">⏳</div>
+                    <div class="milestone-content">
+                        <div class="milestone-title">进阶提升</div>
+                        <div class="milestone-description">ES6+、响应式设计、工程化</div>
+                        <div class="milestone-progress">2/4 课程已完成</div>
+                    </div>
+                </div>
+
+                <div class="milestone pending">
+                    <div class="milestone-icon">🔒</div>
+                    <div class="milestone-content">
+                        <div class="milestone-title">框架实战</div>
+                        <div class="milestone-description">React/Vue框架深入学习</div>
+                        <div class="milestone-progress">0/4 课程已完成</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skill Tree Visualization -->
+        <section class="skill-tree">
+            <h2 class="section-title">技能树</h2>
+            <div class="skill-tree-container">
+                <!-- Connection Lines -->
+                <div class="connection-line horizontal completed" style="top: 100px; left: 180px; width: 100px;"></div>
+                <div class="connection-line horizontal completed" style="top: 100px; left: 380px; width: 100px;"></div>
+                <div class="connection-line horizontal" style="top: 100px; left: 580px; width: 100px;"></div>
+
+                <div class="connection-line vertical completed" style="top: 100px; left: 280px; height: 100px;"></div>
+                <div class="connection-line vertical completed" style="top: 100px; left: 480px; height: 100px;"></div>
+                <div class="connection-line vertical" style="top: 100px; left: 680px; height: 100px;"></div>
+
+                <div class="connection-line horizontal completed" style="top: 300px; left: 180px; width: 100px;"></div>
+                <div class="connection-line horizontal" style="top: 300px; left: 380px; width: 100px;"></div>
+                <div class="connection-line horizontal" style="top: 300px; left: 580px; width: 100px;"></div>
+
+                <!-- Level 1: Foundation -->
+                <div class="skill-node completed" style="top: 50px; left: 100px;">
+                    <div class="skill-node-icon">📝</div>
+                    <div class="skill-node-title">HTML基础</div>
+                    <div class="skill-node-status">已完成</div>
+                </div>
+
+                <div class="skill-node completed" style="top: 50px; left: 300px;">
+                    <div class="skill-node-icon">🎨</div>
+                    <div class="skill-node-title">CSS基础</div>
+                    <div class="skill-node-status">已完成</div>
+                </div>
+
+                <div class="skill-node completed" style="top: 50px; left: 500px;">
+                    <div class="skill-node-icon">⚡</div>
+                    <div class="skill-node-title">JavaScript基础</div>
+                    <div class="skill-node-status">已完成</div>
+                </div>
+
+                <div class="skill-node" style="top: 50px; left: 700px;">
+                    <div class="skill-node-icon">🔧</div>
+                    <div class="skill-node-title">开发工具</div>
+                    <div class="skill-node-status">未开始</div>
+                </div>
+
+                <!-- Level 2: Intermediate -->
+                <div class="skill-node completed" style="top: 250px; left: 100px;">
+                    <div class="skill-node-icon">📱</div>
+                    <div class="skill-node-title">响应式设计</div>
+                    <div class="skill-node-status">已完成</div>
+                </div>
+
+                <div class="skill-node in-progress" style="top: 250px; left: 300px;">
+                    <div class="skill-node-icon">🚀</div>
+                    <div class="skill-node-title">ES6+特性</div>
+                    <div class="skill-node-status">进行中 60%</div>
+                </div>
+
+                <div class="skill-node locked" style="top: 250px; left: 500px;">
+                    <div class="skill-node-icon">📦</div>
+                    <div class="skill-node-title">模块化开发</div>
+                    <div class="skill-node-status">已锁定</div>
+                </div>
+
+                <div class="skill-node locked" style="top: 250px; left: 700px;">
+                    <div class="skill-node-icon">⚙️</div>
+                    <div class="skill-node-title">构建工具</div>
+                    <div class="skill-node-status">已锁定</div>
+                </div>
+
+                <!-- Level 3: Advanced -->
+                <div class="skill-node locked" style="top: 450px; left: 200px;">
+                    <div class="skill-node-icon">⚛️</div>
+                    <div class="skill-node-title">React框架</div>
+                    <div class="skill-node-status">已锁定</div>
+                </div>
+
+                <div class="skill-node locked" style="top: 450px; left: 400px;">
+                    <div class="skill-node-icon">💚</div>
+                    <div class="skill-node-title">Vue框架</div>
+                    <div class="skill-node-status">已锁定</div>
+                </div>
+
+                <div class="skill-node locked" style="top: 450px; left: 600px;">
+                    <div class="skill-node-icon">🔄</div>
+                    <div class="skill-node-title">状态管理</div>
+                    <div class="skill-node-status">已锁定</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <a href="../../index.html" class="back-link">← 返回风格选择</a>
+</body>
+</html>

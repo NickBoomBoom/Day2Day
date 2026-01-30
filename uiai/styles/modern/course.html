@@ -72,19 +72,12 @@
             margin-left: 40px;
         }
 
-        .nav-item {
-            position: relative;
-        }
-
         .nav-link {
             padding: 8px 16px;
             color: var(--text-secondary);
             text-decoration: none;
             border-radius: 8px;
             transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 4px;
             font-weight: 500;
         }
 
@@ -93,50 +86,9 @@
             color: var(--primary);
         }
 
-        .dropdown-icon {
-            width: 16px;
-            height: 16px;
-            transition: transform 0.2s ease;
-        }
-
-        .nav-item:hover .dropdown-icon {
-            transform: rotate(180deg);
-        }
-
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            box-shadow: var(--shadow-lg);
-            min-width: 200px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.2s ease;
-            padding: 8px 0;
-            margin-top: 8px;
-        }
-
-        .nav-item:hover .dropdown-menu {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .dropdown-item {
-            padding: 10px 16px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            display: block;
-            transition: all 0.15s ease;
-        }
-
-        .dropdown-item:hover {
-            background: var(--background);
-            color: var(--primary);
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
         }
 
         .user-section {
@@ -197,6 +149,166 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 40px 20px;
+        }
+
+        /* Continue Learning Section */
+        .continue-learning {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .continue-content h2 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .continue-content p {
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+
+        .continue-btn {
+            padding: 12px 24px;
+            background: white;
+            color: var(--primary);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .continue-progress {
+            text-align: right;
+        }
+
+        .continue-progress-value {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .continue-progress-label {
+            opacity: 0.9;
+        }
+
+        /* Recommended Section */
+        .recommended-section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .section-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .section-link:hover {
+            color: var(--primary-hover);
+        }
+
+        .recommended-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .recommended-card {
+            background: var(--surface);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .recommended-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .recommended-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            z-index: 10;
+        }
+
+        .recommended-badge.hot {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+
+        .recommended-badge.new {
+            background: #D1FAE5;
+            color: #059669;
+        }
+
+        .recommended-image {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .recommended-content {
+            padding: 16px;
+        }
+
+        .recommended-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .recommended-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .recommended-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         /* Filter Section */
@@ -434,6 +546,20 @@
                 display: none;
             }
 
+            .continue-learning {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .continue-progress {
+                text-align: center;
+                margin-top: 20px;
+            }
+
+            .recommended-grid {
+                grid-template-columns: 1fr;
+            }
+
             .course-grid {
                 grid-template-columns: 1fr;
             }
@@ -456,61 +582,11 @@
             <div class="nav-left">
                 <a href="#" class="logo">📚 智学云</a>
                 <div class="nav-menu">
-                    <div class="nav-item">
-                        <a href="#" class="nav-link">
-                            进行中课程
-                            <svg class="dropdown-icon" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
-                            </svg>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a href="#" class="dropdown-item">🎯 正在学习 (12)</a>
-                            <a href="#" class="dropdown-item">⏸️ 暂停课程 (3)</a>
-                            <a href="#" class="dropdown-item">📌 收藏课程 (8)</a>
-                        </div>
-                    </div>
-
-                    <div class="nav-item">
-                        <a href="#" class="nav-link">
-                            体验中课程
-                            <svg class="dropdown-icon" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
-                            </svg>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a href="#" class="dropdown-item">🎮 试用课程 (5)</a>
-                            <a href="#" class="dropdown-item">🎁 免费课程 (10)</a>
-                            <a href="#" class="dropdown-item">⭐ 精选体验 (3)</a>
-                        </div>
-                    </div>
-
-                    <div class="nav-item">
-                        <a href="#" class="nav-link">
-                            已完成课程
-                            <svg class="dropdown-icon" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
-                            </svg>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a href="#" class="dropdown-item">✅ 已完成 (28)</a>
-                            <a href="#" class="dropdown-item">🏆 证书课程 (15)</a>
-                            <a href="#" class="dropdown-item">📊 学习报告</a>
-                        </div>
-                    </div>
-
-                    <div class="nav-item">
-                        <a href="#" class="nav-link">
-                            系统管理
-                            <svg class="dropdown-icon" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
-                            </svg>
-                        </a>
-                        <div class="dropdown-menu">
-                            <a href="#" class="dropdown-item">👤 用户管理</a>
-                            <a href="#" class="dropdown-item">📚 课程管理</a>
-                            <a href="#" class="dropdown-item">⚙️ 系统设置</a>
-                        </div>
-                    </div>
+                    <a href="dashboard.html" class="nav-link">仪表板</a>
+                    <a href="course.html" class="nav-link active">我的课程</a>
+                    <a href="learning-path.html" class="nav-link">学习路径</a>
+                    <a href="achievements.html" class="nav-link">成就证书</a>
+                    <a href="calendar.html" class="nav-link">学习日历</a>
                 </div>
             </div>
 
@@ -528,6 +604,79 @@
 
     <!-- Main Content -->
     <main class="main-container">
+        <!-- Continue Learning -->
+        <section class="continue-learning">
+            <div class="continue-content">
+                <h2>继续学习 React 18 完整开发指南</h2>
+                <p>你已经完成了 65% 的课程内容，继续加油！</p>
+                <button class="continue-btn">继续学习 →</button>
+            </div>
+            <div class="continue-progress">
+                <div class="continue-progress-value">65%</div>
+                <div class="continue-progress-label">已完成</div>
+            </div>
+        </section>
+
+        <!-- Recommended Courses -->
+        <section class="recommended-section">
+            <div class="section-header">
+                <h2 class="section-title">为你推荐</h2>
+                <a href="#" class="section-link">查看更多 →</a>
+            </div>
+            <div class="recommended-grid">
+                <div class="recommended-card">
+                    <span class="recommended-badge hot">🔥 热门</span>
+                    <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=200&fit=crop" alt="TypeScript" class="recommended-image">
+                    <div class="recommended-content">
+                        <h3 class="recommended-title">TypeScript 从入门到精通</h3>
+                        <div class="recommended-meta">
+                            <span class="recommended-meta-item">⭐ 4.8</span>
+                            <span class="recommended-meta-item">👥 12.5k</span>
+                            <span class="recommended-meta-item">⏱️ 32课时</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recommended-card">
+                    <span class="recommended-badge new">✨ 新课</span>
+                    <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=200&fit=crop" alt="Node.js" class="recommended-image">
+                    <div class="recommended-content">
+                        <h3 class="recommended-title">Node.js 后端开发实战</h3>
+                        <div class="recommended-meta">
+                            <span class="recommended-meta-item">⭐ 4.9</span>
+                            <span class="recommended-meta-item">👥 8.3k</span>
+                            <span class="recommended-meta-item">⏱️ 40课时</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recommended-card">
+                    <span class="recommended-badge">💎 推荐</span>
+                    <img src="https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=400&h=200&fit=crop" alt="Next.js" class="recommended-image">
+                    <div class="recommended-content">
+                        <h3 class="recommended-title">Next.js 全栈开发指南</h3>
+                        <div class="recommended-meta">
+                            <span class="recommended-meta-item">⭐ 4.7</span>
+                            <span class="recommended-meta-item">👥 6.8k</span>
+                            <span class="recommended-meta-item">⏱️ 28课时</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recommended-card">
+                    <span class="recommended-badge hot">🔥 热门</span>
+                    <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=400&h=200&fit=crop" alt="Docker" class="recommended-image">
+                    <div class="recommended-content">
+                        <h3 class="recommended-title">Docker 容器化技术</h3>
+                        <div class="recommended-meta">
+                            <span class="recommended-meta-item">⭐ 4.6</span>
+                            <span class="recommended-meta-item">👥 9.2k</span>
+                            <span class="recommended-meta-item">⏱️ 24课时</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
         <!-- Filter Section -->
         <section class="filter-section">
             <div class="filter-header">
