@@ -1,46 +1,2170 @@
-<!DOCTYPE html>
-<html lang="en">
-
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width='device-width', initial-scale=1.0">
-    <title>Document</title>
-  </head>
-
-  <body>
-
-    <div class="f">
-      <div class="c"></div>
-    </div>
-
-    <style>
-      .f {
-        width: 400px;
-        height: 400px;
-        position: relative;
-        background-color: red;
-        z-index: auto;
-        transition: all 1s;
-        transform: translate3d(0, 0, 100deg);
-      }
-
-      .c {
-        width: 200px;
-        height: 200px;
-        position: absolute;
-        bottom: -100px;
-        background-color: blue;
-        z-index: -1;
-      }
-
-      .y {
-        background-color: yellow;
-      }
-
-    </style>
-    <script>
-
-    </script>
-  </body>
-
-</html>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >今天这篇是我们正式开篇的第一篇文章，我想和你聊聊 HTML。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >我猜屏幕那一边的你估计会说：“HTML
+    我很熟悉了，每天写，这不是初级程序员才学的内容么，这我还能不会吗？”</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >其实在我看来，HTML
+    并不简单，它是典型的“入门容易，精通困难”的一部分知识。深刻理解 HTML
+    是成为优秀的前端工程师重要的一步。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >我们在上一篇文章中讲到了，HTML 的标签可以分为很多种，比如 head
+    里面的元信息类标签，又比如 img、video、audio
+    之类的替换型媒体标签。我今天要讲的标签是：语义类标签。</span
+  >
+</p>
+<div class="raw-html-embed">
+  <cp-image-swiper
+    images="/minio-img/test/8501a77f9de7d20a5078b23ff8984df9;/minio-img/test/1e5cb05fc50e601d7646034d47d71978;/minio-img/test/36cc8c1539eccbb7aa198d0a247495d6;/minio-img/test/c8f509eaa61da54f3e6e0e7e84d3a37b;/minio-img/test/ffef8c4568d1edc94260176d26f78b4c;/minio-img/test/ea4e10a1113439bf217644190f841753;/minio-img/test/8501a77f9de7d20a5078b23ff8984df9;/minio-img/test/1e5cb05fc50e601d7646034d47d71978;/minio-img/test/69a7b738d7cd960804e147508b400af5;/minio-img/test/36cc8c1539eccbb7aa198d0a247495d6;/minio-img/test/ed252af06339950c45e54eb94f2c7f60;/minio-img/test/c8f509eaa61da54f3e6e0e7e84d3a37b;/minio-img/test/bb140d6841c089abd4abfb678155ce5e;/minio-img/test/ffef8c4568d1edc94260176d26f78b4c;/minio-img/test/01fce5b5bed754d83438e8374ec87699;/minio-img/test/ea4e10a1113439bf217644190f841753;/minio-img/test/69a7b738d7cd960804e147508b400af5;/minio-img/test/c57dff0575303d047ed58e8d53b68b3e;/minio-img/test/ed252af06339950c45e54eb94f2c7f60;/minio-img/test/609e1d294318aece465c19dac5f5bb8e;/minio-img/test/bb140d6841c089abd4abfb678155ce5e;/minio-img/test/6bf88a5e4c4b1ed5d34b2da8eee45fc8;/minio-img/test/01fce5b5bed754d83438e8374ec87699;/minio-img/test/004ee7227660523de8cfb3a087bf7337;/minio-img/test/c57dff0575303d047ed58e8d53b68b3e;/minio-img/test/9c64c62930b80afe07afa7214cfd35cf;/minio-img/test/74a1f26be351c57b8f26d06dfc14d4f1;/minio-img/test/609e1d294318aece465c19dac5f5bb8e;/minio-img/test/6bf88a5e4c4b1ed5d34b2da8eee45fc8;/minio-img/test/004ee7227660523de8cfb3a087bf7337;/minio-img/test/b3d0968d77fafe80d3eb08ed7cade09e;/minio-img/test/9c64c62930b80afe07afa7214cfd35cf;/minio-img/test/74a1f26be351c57b8f26d06dfc14d4f1;/minio-img/test/63ee67c45fcc25d6352ee8de2f05ead6;/minio-img/test/f81172ba6ccf63436b3ef53873b2e3b1;/minio-img/test/b3d0968d77fafe80d3eb08ed7cade09e;/minio-img/test/c52a9f2534f8a8ddf2505191fc96521f;/minio-img/test/63ee67c45fcc25d6352ee8de2f05ead6;/minio-img/test/4281fea0c68f62377b7f264376045f27;/minio-img/test/f81172ba6ccf63436b3ef53873b2e3b1;/minio-img/test/ba68464e7f09f39137d96779b5573718;/minio-img/test/d81d0c6be4c446219cd1f7e9b13b8bd6;/minio-img/test/c52a9f2534f8a8ddf2505191fc96521f;/minio-img/test/34d134b78ba76e1ba79d54417cd7916a;/minio-img/test/4281fea0c68f62377b7f264376045f27;/minio-img/test/af88bd83a989728189f9b61321b1cc9b;/minio-img/test/ba68464e7f09f39137d96779b5573718;/minio-img/test/64d18f44cd135758f06a68a66d1b4c2a;/minio-img/test/d81d0c6be4c446219cd1f7e9b13b8bd6;/minio-img/test/34d134b78ba76e1ba79d54417cd7916a;/minio-img/test/059e7a553318a3360a0ab59181798ecf;/minio-img/test/af88bd83a989728189f9b61321b1cc9b;/minio-img/test/9a0144c7b8ae0fd4642e75c939ddab7b;/minio-img/test/64d18f44cd135758f06a68a66d1b4c2a;/minio-img/test/a517aa71dbc23423172af01101be14b9;/minio-img/test/769aa5c688dd36265cc54c41107119cb;/minio-img/test/059e7a553318a3360a0ab59181798ecf;/minio-img/test/9a0144c7b8ae0fd4642e75c939ddab7b;/minio-img/test/92e459758fb0fa86595e0dcdd7563821;/minio-img/test/a517aa71dbc23423172af01101be14b9;/minio-img/test/f412c3ec23fdc789fcb80d2cb917dd85;/minio-img/test/769aa5c688dd36265cc54c41107119cb;/minio-img/test/b31aa6034556aadad0c9846a56b2325f;/minio-img/test/92e459758fb0fa86595e0dcdd7563821;/minio-img/test/619cd21a4952ef1d97cb261f78b70209;/minio-img/test/f412c3ec23fdc789fcb80d2cb917dd85;/minio-img/test/417cac4c0929aafd819a9487af4c8649;/minio-img/test/b31aa6034556aadad0c9846a56b2325f;/minio-img/test/66714953455978a9d1f36eb8a5cd287c;/minio-img/test/619cd21a4952ef1d97cb261f78b70209;/minio-img/test/ab3f09e061a1c3aee97aeb7f37d61205;/minio-img/test/417cac4c0929aafd819a9487af4c8649;/minio-img/test/da6984309b0e03afcdf996935050ed4c;/minio-img/test/66714953455978a9d1f36eb8a5cd287c;/minio-img/test/d451ffacf67ee08783da2c699377d50d;/minio-img/test/ab3f09e061a1c3aee97aeb7f37d61205;/minio-img/test/1df8b252b3fbcf857c6cb41c8899637a;/minio-img/test/da6984309b0e03afcdf996935050ed4c;/minio-img/test/a3db4c9a67ae7bdebdac5aa24f4662bb;/minio-img/test/d451ffacf67ee08783da2c699377d50d;/minio-img/test/c89b62f17c8275430727f5fd131368a8;/minio-img/test/1df8b252b3fbcf857c6cb41c8899637a;/minio-img/test/5cc6fa817a5c9e47ea9658c258b4e5b2;/minio-img/test/a3db4c9a67ae7bdebdac5aa24f4662bb;/minio-img/test/6848176c8d2635fac642b2e88196a917;/minio-img/test/c89b62f17c8275430727f5fd131368a8;/minio-img/test/3b026e996d47adedd843e3529a957a49;/minio-img/test/5cc6fa817a5c9e47ea9658c258b4e5b2;/minio-img/test/9d36b3892030e78be5d60ed05d2d8777;/minio-img/test/6848176c8d2635fac642b2e88196a917;/minio-img/test/02fcc3a3568731cc3b04e4f7a30e5f4d;/minio-img/test/3b026e996d47adedd843e3529a957a49;/minio-img/test/7e34dd75cd55d6b42760d16805de9f81;/minio-img/test/9d36b3892030e78be5d60ed05d2d8777;/minio-img/test/e518178d48d8da4e872e7256fd21d387;/minio-img/test/02fcc3a3568731cc3b04e4f7a30e5f4d;/minio-img/test/23158b9a201334acfcba517b436a300f;/minio-img/test/7e34dd75cd55d6b42760d16805de9f81;/minio-img/test/d1baf42f132401359c46d79314433243;/minio-img/test/e518178d48d8da4e872e7256fd21d387;/minio-img/test/62ca41ea9daecfa2de04441bbe495f12;/minio-img/test/23158b9a201334acfcba517b436a300f;/minio-img/test/4f59ff3a5903e7ea14fc1f3ea3d3930f;/minio-img/test/d1baf42f132401359c46d79314433243;/minio-img/test/57cd2cafd0171f45e6cfb99674855e44;/minio-img/test/62ca41ea9daecfa2de04441bbe495f12;/minio-img/test/b87d6cbb6b186fcc30d489101bd1fbab;/minio-img/test/4f59ff3a5903e7ea14fc1f3ea3d3930f;/minio-img/test/57cd2cafd0171f45e6cfb99674855e44;/minio-img/test/8501a77f9de7d20a5078b23ff8984df9;/minio-img/test/1e5cb05fc50e601d7646034d47d71978;/minio-img/test/b87d6cbb6b186fcc30d489101bd1fbab;/minio-img/test/36cc8c1539eccbb7aa198d0a247495d6;/minio-img/test/8501a77f9de7d20a5078b23ff8984df9;/minio-img/test/c8f509eaa61da54f3e6e0e7e84d3a37b;/minio-img/test/1e5cb05fc50e601d7646034d47d71978;/minio-img/test/ffef8c4568d1edc94260176d26f78b4c;/minio-img/test/36cc8c1539eccbb7aa198d0a247495d6;/minio-img/test/ea4e10a1113439bf217644190f841753;/minio-img/test/c8f509eaa61da54f3e6e0e7e84d3a37b;/minio-img/test/ffef8c4568d1edc94260176d26f78b4c;/minio-img/test/69a7b738d7cd960804e147508b400af5;/minio-img/test/ea4e10a1113439bf217644190f841753;/minio-img/test/ed252af06339950c45e54eb94f2c7f60;/minio-img/test/bb140d6841c089abd4abfb678155ce5e;/minio-img/test/69a7b738d7cd960804e147508b400af5;/minio-img/test/01fce5b5bed754d83438e8374ec87699;/minio-img/test/ed252af06339950c45e54eb94f2c7f60;/minio-img/test/c57dff0575303d047ed58e8d53b68b3e;/minio-img/test/bb140d6841c089abd4abfb678155ce5e;/minio-img/test/01fce5b5bed754d83438e8374ec87699;/minio-img/test/609e1d294318aece465c19dac5f5bb8e;/minio-img/test/c57dff0575303d047ed58e8d53b68b3e;/minio-img/test/6bf88a5e4c4b1ed5d34b2da8eee45fc8;/minio-img/test/609e1d294318aece465c19dac5f5bb8e;/minio-img/test/004ee7227660523de8cfb3a087bf7337;/minio-img/test/6bf88a5e4c4b1ed5d34b2da8eee45fc8;/minio-img/test/9c64c62930b80afe07afa7214cfd35cf;/minio-img/test/004ee7227660523de8cfb3a087bf7337;/minio-img/test/74a1f26be351c57b8f26d06dfc14d4f1;/minio-img/test/9c64c62930b80afe07afa7214cfd35cf;/minio-img/test/b3d0968d77fafe80d3eb08ed7cade09e;/minio-img/test/74a1f26be351c57b8f26d06dfc14d4f1;/minio-img/test/63ee67c45fcc25d6352ee8de2f05ead6;/minio-img/test/b3d0968d77fafe80d3eb08ed7cade09e;/minio-img/test/f81172ba6ccf63436b3ef53873b2e3b1;/minio-img/test/63ee67c45fcc25d6352ee8de2f05ead6;/minio-img/test/c52a9f2534f8a8ddf2505191fc96521f;/minio-img/test/f81172ba6ccf63436b3ef53873b2e3b1;/minio-img/test/4281fea0c68f62377b7f264376045f27;/minio-img/test/ba68464e7f09f39137d96779b5573718;/minio-img/test/c52a9f2534f8a8ddf2505191fc96521f;/minio-img/test/d81d0c6be4c446219cd1f7e9b13b8bd6;/minio-img/test/4281fea0c68f62377b7f264376045f27;/minio-img/test/34d134b78ba76e1ba79d54417cd7916a;/minio-img/test/ba68464e7f09f39137d96779b5573718;/minio-img/test/af88bd83a989728189f9b61321b1cc9b;/minio-img/test/d81d0c6be4c446219cd1f7e9b13b8bd6;/minio-img/test/64d18f44cd135758f06a68a66d1b4c2a;/minio-img/test/34d134b78ba76e1ba79d54417cd7916a;/minio-img/test/059e7a553318a3360a0ab59181798ecf;/minio-img/test/af88bd83a989728189f9b61321b1cc9b;/minio-img/test/64d18f44cd135758f06a68a66d1b4c2a;/minio-img/test/9a0144c7b8ae0fd4642e75c939ddab7b;/minio-img/test/a517aa71dbc23423172af01101be14b9;/minio-img/test/059e7a553318a3360a0ab59181798ecf;/minio-img/test/769aa5c688dd36265cc54c41107119cb;/minio-img/test/9a0144c7b8ae0fd4642e75c939ddab7b;/minio-img/test/92e459758fb0fa86595e0dcdd7563821;/minio-img/test/a517aa71dbc23423172af01101be14b9;/minio-img/test/f412c3ec23fdc789fcb80d2cb917dd85;/minio-img/test/769aa5c688dd36265cc54c41107119cb;/minio-img/test/b31aa6034556aadad0c9846a56b2325f;/minio-img/test/619cd21a4952ef1d97cb261f78b70209;/minio-img/test/92e459758fb0fa86595e0dcdd7563821;/minio-img/test/417cac4c0929aafd819a9487af4c8649;/minio-img/test/f412c3ec23fdc789fcb80d2cb917dd85;/minio-img/test/66714953455978a9d1f36eb8a5cd287c;/minio-img/test/b31aa6034556aadad0c9846a56b2325f;/minio-img/test/619cd21a4952ef1d97cb261f78b70209;/minio-img/test/ab3f09e061a1c3aee97aeb7f37d61205;/minio-img/test/417cac4c0929aafd819a9487af4c8649;/minio-img/test/da6984309b0e03afcdf996935050ed4c;/minio-img/test/d451ffacf67ee08783da2c699377d50d;/minio-img/test/66714953455978a9d1f36eb8a5cd287c;/minio-img/test/1df8b252b3fbcf857c6cb41c8899637a;/minio-img/test/ab3f09e061a1c3aee97aeb7f37d61205;/minio-img/test/a3db4c9a67ae7bdebdac5aa24f4662bb;/minio-img/test/da6984309b0e03afcdf996935050ed4c;/minio-img/test/c89b62f17c8275430727f5fd131368a8;/minio-img/test/d451ffacf67ee08783da2c699377d50d;/minio-img/test/5cc6fa817a5c9e47ea9658c258b4e5b2;/minio-img/test/1df8b252b3fbcf857c6cb41c8899637a;/minio-img/test/6848176c8d2635fac642b2e88196a917;/minio-img/test/a3db4c9a67ae7bdebdac5aa24f4662bb;/minio-img/test/3b026e996d47adedd843e3529a957a49;/minio-img/test/c89b62f17c8275430727f5fd131368a8;/minio-img/test/9d36b3892030e78be5d60ed05d2d8777;/minio-img/test/5cc6fa817a5c9e47ea9658c258b4e5b2;/minio-img/test/02fcc3a3568731cc3b04e4f7a30e5f4d;/minio-img/test/6848176c8d2635fac642b2e88196a917;/minio-img/test/7e34dd75cd55d6b42760d16805de9f81;/minio-img/test/3b026e996d47adedd843e3529a957a49;/minio-img/test/e518178d48d8da4e872e7256fd21d387;/minio-img/test/9d36b3892030e78be5d60ed05d2d8777;/minio-img/test/23158b9a201334acfcba517b436a300f;/minio-img/test/02fcc3a3568731cc3b04e4f7a30e5f4d;/minio-img/test/d1baf42f132401359c46d79314433243;/minio-img/test/7e34dd75cd55d6b42760d16805de9f81;/minio-img/test/62ca41ea9daecfa2de04441bbe495f12;/minio-img/test/e518178d48d8da4e872e7256fd21d387;/minio-img/test/4f59ff3a5903e7ea14fc1f3ea3d3930f;/minio-img/test/23158b9a201334acfcba517b436a300f;/minio-img/test/57cd2cafd0171f45e6cfb99674855e44;/minio-img/test/b87d6cbb6b186fcc30d489101bd1fbab;/minio-img/test/d1baf42f132401359c46d79314433243;/minio-img/test/62ca41ea9daecfa2de04441bbe495f12;/minio-img/test/4f59ff3a5903e7ea14fc1f3ea3d3930f;/minio-img/test/57cd2cafd0171f45e6cfb99674855e44;/minio-img/test/b87d6cbb6b186fcc30d489101bd1fbab"
+  ></cp-image-swiper>
+</div>
+<h2>语义类标签是什么,使用它有什么好处?</h2>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >语义类标签也是大家工作中经常会用到的一类标签，它们的特点是视觉表现上互相都差不多，主要的区别在于它们表示了不同的语义，比如大家会经常见到的
+    section、nav、p，这些都是语义类的标签。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >语义是我们说话表达的意思，多数的语义实际上都是由文字来承载的。语义类标签则是纯文字的补充，比如标题、自然段、章节、列表，这些内容都是纯文字无法表达的，我们需要依靠语义标签代为表达。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >在讲语义之前，我们来说说为什么要用语义。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >现在我们很多的前端工程师写起代码来，多数都不用复杂的语义标签， 只靠 div 和
+    span 就能走天下了。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >这样做行不行呢？毫无疑问答案是行。那这样做好不好呢？按照正确的套路，我应该说不好，但是在很多情况下，答案其实是好。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >这是因为在现代互联网产品里，HTML
+    用于描述“软件界面”多过于“富文本”，而软件界面里的东西，实际上几乎是没有语义的。比如说，我们做了一个购物车功能，我们一定要给每个购物车里的商品套上
+    ul 吗？比如说，加入购物车这个按钮，我们一定要用 Button 吗？</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >实际上我觉得没必要，因为这个场景里面，跟文本中的列表，以及表单中的
+    Button，其实已经相差很远了，所以，我支持在任何“软件界面”的场景中，直接使用
+    div 和 span。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    ><strong
+      >不过，在很多工作场景里，语义类标签也有它们自己无可替代的优点。正确地使用语义标签可以带来很多好处。</strong
+    ></span
+  >
+</p>
+<ul>
+  <li>
+    <span
+      style="
+        -webkit-text-stroke-width: 0px;
+        background-color: rgb(255, 255, 255);
+        color: rgb(51, 51, 51);
+        display: inline !important;
+        float: none;
+        font-family:
+          &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+          &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+          &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+          &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+        font-size: 16px;
+        font-style: normal;
+        font-variant-caps: normal;
+        font-variant-ligatures: normal;
+        font-weight: 400;
+        letter-spacing: normal;
+        orphans: 2;
+        text-align: start;
+        text-decoration-color: initial;
+        text-decoration-style: initial;
+        text-decoration-thickness: initial;
+        text-indent: 0px;
+        text-transform: none;
+        white-space: normal;
+        widows: 2;
+        word-spacing: 0px;
+      "
+      >语义类标签对开发者更为友好，使用语义类标签增强了可读性，即便是在没有 CSS
+      的时候，开发者也能够清晰地看出网页的结构，也更为便于团队的开发和维护。</span
+    >
+  </li>
+  <li>
+    <span
+      style="
+        -webkit-text-stroke-width: 0px;
+        background-color: rgb(255, 255, 255);
+        color: rgb(51, 51, 51);
+        display: inline !important;
+        float: none;
+        font-family:
+          &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+          &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+          &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+          &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+        font-size: 16px;
+        font-style: normal;
+        font-variant-caps: normal;
+        font-variant-ligatures: normal;
+        font-weight: 400;
+        letter-spacing: normal;
+        orphans: 2;
+        text-align: start;
+        text-decoration-color: initial;
+        text-decoration-style: initial;
+        text-decoration-thickness: initial;
+        text-indent: 0px;
+        text-transform: none;
+        white-space: normal;
+        widows: 2;
+        word-spacing: 0px;
+      "
+      >除了对人类友好之外，语义类标签也十分适宜机器阅读。它的文字表现力丰富，更适合搜索引擎检索（SEO），也可以让搜索引擎爬虫更好地获取到更多有效信息，有效提升网页的搜索量，并且语义类还可以支持读屏软件，根据文章可以自动生成目录等等。</span
+    >
+  </li>
+</ul>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >不过，不恰当地使用语义标签，反而会造成负面作用。这里我们举一个常见的误区作为例子。我们都知道
+    ul 是无序列表，ol
+    是有序列表，所以很多接触过语义这个概念，半懂不懂的前端工程师，特别喜欢给所有并列关系的元素都套上
+    ul。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >实际上， ul 是长成下面的这种样子的 (以下来自 HTML 标准)。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >I have lived in the following countries:</span
+  >
+</p>
+<ul>
+  <li>
+    <span
+      style="
+        -webkit-text-stroke-width: 0px;
+        background-color: rgb(255, 255, 255);
+        color: rgb(51, 51, 51);
+        display: inline !important;
+        float: none;
+        font-family:
+          &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+          &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+          &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+          &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+        font-size: 16px;
+        font-style: normal;
+        font-variant-caps: normal;
+        font-variant-ligatures: normal;
+        font-weight: 400;
+        letter-spacing: normal;
+        orphans: 2;
+        text-align: start;
+        text-decoration-color: initial;
+        text-decoration-style: initial;
+        text-decoration-thickness: initial;
+        text-indent: 0px;
+        text-transform: none;
+        white-space: normal;
+        widows: 2;
+        word-spacing: 0px;
+      "
+      >Switzerland</span
+    >
+  </li>
+  <li>
+    <span
+      style="
+        -webkit-text-stroke-width: 0px;
+        background-color: rgb(255, 255, 255);
+        color: rgb(51, 51, 51);
+        display: inline !important;
+        float: none;
+        font-family:
+          &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+          &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+          &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+          &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+        font-size: 16px;
+        font-style: normal;
+        font-variant-caps: normal;
+        font-variant-ligatures: normal;
+        font-weight: 400;
+        letter-spacing: normal;
+        orphans: 2;
+        text-align: start;
+        text-decoration-color: initial;
+        text-decoration-style: initial;
+        text-decoration-thickness: initial;
+        text-indent: 0px;
+        text-transform: none;
+        white-space: normal;
+        widows: 2;
+        word-spacing: 0px;
+      "
+      >Norway</span
+    >
+  </li>
+  <li>
+    <span
+      style="
+        -webkit-text-stroke-width: 0px;
+        background-color: rgb(255, 255, 255);
+        color: rgb(51, 51, 51);
+        display: inline !important;
+        float: none;
+        font-family:
+          &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+          &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+          &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+          &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+        font-size: 16px;
+        font-style: normal;
+        font-variant-caps: normal;
+        font-variant-ligatures: normal;
+        font-weight: 400;
+        letter-spacing: normal;
+        orphans: 2;
+        text-align: start;
+        text-decoration-color: initial;
+        text-decoration-style: initial;
+        text-decoration-thickness: initial;
+        text-indent: 0px;
+        text-transform: none;
+        white-space: normal;
+        widows: 2;
+        word-spacing: 0px;
+      "
+      >United Kingdom</span
+    >
+  </li>
+  <li>
+    <span
+      style="
+        -webkit-text-stroke-width: 0px;
+        background-color: rgb(255, 255, 255);
+        color: rgb(51, 51, 51);
+        display: inline !important;
+        float: none;
+        font-family:
+          &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+          &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+          &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+          &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+        font-size: 16px;
+        font-style: normal;
+        font-variant-caps: normal;
+        font-variant-ligatures: normal;
+        font-weight: 400;
+        letter-spacing: normal;
+        orphans: 2;
+        text-align: start;
+        text-decoration-color: initial;
+        text-decoration-style: initial;
+        text-decoration-thickness: initial;
+        text-indent: 0px;
+        text-transform: none;
+        white-space: normal;
+        widows: 2;
+        word-spacing: 0px;
+      "
+      >United States</span
+    >
+  </li>
+</ul>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >ul
+    多数出现正在行文中间，它的上文多数在提示：要列举某些项。但是，如果所有并列关系都用
+    ul，会造成大量冗余标签。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >错误地使用语义标签，会给机器阅读造成混淆、增加嵌套，给 CSS
+    编写加重负担。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >所以，对于语义标签，我的态度是：<strong
+      >“用对”比“不用”好，“不用”比“用错”好。当然了，我觉得有理想的前端工程师还是应该去追求“用对”它们。</strong
+    ></span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >与 JavaScript 这样严格的编程语言相比，HTML
+    中语义标签的使用更接近我们平常说话用的自然语言。我们说话并没有唯一的标准措辞，语义标签的使用也是一样。下面，我挑选了几种（我认为）比较重要的语义标签使用场景，来为你介绍一下。</span
+  >
+</p>
+<h2>作为自然语言延伸的语义类标签</h2>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >其实语义问题不仅仅属于理科，它还是个文科问题。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    ><strong
+      >所以我们这里讲语义标签的使用的第一个场景，也是最自然的使用场景，就是：作为自然语言和纯文本的补充，用来表达一定的结构或者消除歧义。</strong
+    ></span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >我们先来看看“表达一定的结构”这个场景。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >在日语中，有一个语法现象叫做：ルビ，它的读音是 ruby（著名的 ruby
+    语言就是据此命名的），它中文的意思大约类似于注音或者意思的注解，它的形式可以看下图:</span
+  >
+</p>
+<p>
+  <img
+    src="/minio-img/test/0ea7ab7b863a2ade0e0348d823765a21.png"
+  /><br /><br /><span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >图中的例子选自动画片《某科学的超电磁炮》第二季第一话。图中把 teleport
+    放在空间移动上方的用法，就是日文中 ruby
+    的用法。“空间移动”是动画中白井黑子的技能，这里动画字幕上写的是“空间移动”，动画里的台词则用了英文发音“Teleport”，这里就形成了一个使用
+    ruby 的场景。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >ruby 的这个形式，在中国的网友中间最近被玩出了新花样，比如表情包。</span
+  >
+</p>
+<figure class="image image-style-align-center">
+  <img
+    style="aspect-ratio: 500/333"
+    src="/minio-img/test/d38b4943911efc700b1055d82465770d"
+    width="500"
+    height="333"
+  />
+</figure>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >有时候微信聊天，不能用 ruby
+    这样的东西真的是好急啊，只好用括号代替，效果真是差了不少。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >在 HTML5 中，就引入了这个表示 ruby 的标签，它由 ruby、rt、rp
+    三个标签来实现。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >所以说，这些情况里存在的语义，其实原本就存在了，只是我们用纯文字是没法表达的，HTML
+    作为一种“超文本”语言，支持这些文字表达就是必要的了。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    ><strong
+      >还有一种情况是，HTML
+      的有些标签实际上就是必要的，甚至必要的程度可以达到：如果没有这个标签，文字会产生歧义的程度。</strong
+    ></span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >这里我们可以介绍一下 em 标签。</span
+  >
+</p>
+<pre><code class="language-Plain text">今天我吃了一个苹果</code></pre>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >我们看看这句话，看上去它很清楚，但是实际上，这句话放到不同上下文中，可能表达完全不同的意思。</span
+  >
+</p>
+<pre><code class="language-Plain text">昨天我吃了一个苹果
+今天我吃了一个苹果</code></pre>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >再比如:</span
+  >
+</p>
+<pre><code class="language-Plain text">昨天我吃了两个苹果
+今天我吃了一个苹果</code></pre>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >试着读一读，这两段里面的“今天我吃了一个苹果”，你是不是发现读音不自觉地发生了变化？</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >实际上，不仅仅是读音，这里的意思也发生了变化。前一段中，表示我今天吃的是苹果，而不是别的什么东西，后一段中，则表示我今天只吃了一个苹果，没有多吃。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >当没有上下文时，如何消除歧义呢？这就要用到我们的 em 标签了。em
+    表示重音：</span
+  >
+</p>
+<pre><code class="language-Plain text">今天我吃了一个&lt;em&gt;苹果&lt;/em&gt;。
+今天我吃了&lt;em&gt;一个&lt;/em&gt;苹果。</code></pre>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >通过 em 标签，我们可以消除这样的歧义。一些文章常常会拿 em 和 strong
+    做对比，实际上，我们只要理解了 em 的真正意思，它和 strong
+    可谓天差地别，并没有任何混淆的可能。</span
+  >
+</p>
+<h2>作为标题摘要的语义类标签</h2>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >介绍完自然语言的语义场景后，我想介绍的另一个语义重要使用场景，就是文章的结构。中国古代小说就形成了“章
+    -
+    回”的概念，西方的戏剧也有幕的区分，所以人类的自然语言作品也是如出一辙。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >HTML 也应该支持这样的需求。HTML
+    语义标签中，有不少是用于支持这样的结构的标签。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >语义化的 HTML 能够支持自动生成目录结构，HTML
+    标准中还专门规定了生成目录结构的算法，即使我们并不打算深入实践语义，也应该尽量在大的层面上保证这些元素的语义化使用。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >首先我们需要形成一个概念，一篇文档会有一个树形的目录结构，它由各个级别的标题组成。这个树形结构可能不会跟
+    HTML 元素的嵌套关系一致。</span
+  >
+</p>
+<p>例如：</p>
+<pre><code class="language-Plain text">
+&lt;h1&gt;HTML语义&lt;/h1&gt;
+&lt;p&gt;balah&nbsp;balah&nbsp;balah&nbsp;balah&lt;/p&gt;
+&lt;h2&gt;弱语义&lt;/h2&gt;
+&lt;p&gt;balah&nbsp;balah&lt;/p&gt;
+&lt;h2&gt;结构性元素&lt;/h2&gt;
+&lt;p&gt;balah&nbsp;balah&lt;/p&gt;
+......</code></pre>
+<p>&nbsp;</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >这段 HTML 几乎是平铺的元素，但是它的标题结构是：</span
+  >
+</p>
+<ul>
+  <li>
+    <span
+      style="
+        -webkit-text-stroke-width: 0px;
+        background-color: rgb(255, 255, 255);
+        color: rgb(51, 51, 51);
+        display: inline !important;
+        float: none;
+        font-family:
+          &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+          &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+          &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+          &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+        font-size: 16px;
+        font-style: normal;
+        font-variant-caps: normal;
+        font-variant-ligatures: normal;
+        font-weight: 400;
+        letter-spacing: normal;
+        orphans: 2;
+        text-align: start;
+        text-decoration-color: initial;
+        text-decoration-style: initial;
+        text-decoration-thickness: initial;
+        text-indent: 0px;
+        text-transform: none;
+        white-space: normal;
+        widows: 2;
+        word-spacing: 0px;
+      "
+      >HTML 语义</span
+    >
+    <ul>
+      <li>
+        <span
+          style="
+            -webkit-text-stroke-width: 0px;
+            background-color: rgb(255, 255, 255);
+            color: rgb(51, 51, 51);
+            display: inline !important;
+            float: none;
+            font-family:
+              &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+              &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+              &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+              &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+            font-size: 16px;
+            font-style: normal;
+            font-variant-caps: normal;
+            font-variant-ligatures: normal;
+            font-weight: 400;
+            letter-spacing: normal;
+            orphans: 2;
+            text-align: start;
+            text-decoration-color: initial;
+            text-decoration-style: initial;
+            text-decoration-thickness: initial;
+            text-indent: 0px;
+            text-transform: none;
+            white-space: normal;
+            widows: 2;
+            word-spacing: 0px;
+          "
+          >弱语义</span
+        >
+      </li>
+      <li>
+        <span
+          style="
+            -webkit-text-stroke-width: 0px;
+            background-color: rgb(255, 255, 255);
+            color: rgb(51, 51, 51);
+            display: inline !important;
+            float: none;
+            font-family:
+              &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+              &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+              &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+              &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+            font-size: 16px;
+            font-style: normal;
+            font-variant-caps: normal;
+            font-variant-ligatures: normal;
+            font-weight: 400;
+            letter-spacing: normal;
+            orphans: 2;
+            text-align: start;
+            text-decoration-color: initial;
+            text-decoration-style: initial;
+            text-decoration-thickness: initial;
+            text-indent: 0px;
+            text-transform: none;
+            white-space: normal;
+            widows: 2;
+            word-spacing: 0px;
+          "
+          >结构性元素</span
+        >
+      </li>
+      <li>
+        <span
+          style="
+            -webkit-text-stroke-width: 0px;
+            background-color: rgb(255, 255, 255);
+            color: rgb(51, 51, 51);
+            display: inline !important;
+            float: none;
+            font-family:
+              &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+              &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+              &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+              &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+            font-size: 16px;
+            font-style: normal;
+            font-variant-caps: normal;
+            font-variant-ligatures: normal;
+            font-weight: 400;
+            letter-spacing: normal;
+            orphans: 2;
+            text-align: start;
+            text-decoration-color: initial;
+            text-decoration-style: initial;
+            text-decoration-thickness: initial;
+            text-indent: 0px;
+            text-transform: none;
+            white-space: normal;
+            widows: 2;
+            word-spacing: 0px;
+          "
+          >……</span
+        >
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >h1-h6
+    是最基本的标题，它们表示了文章中不同层级的标题。有些时候，我们会有副标题，为了避免副标题产生额外的一个层级，我们使用
+    hgroup 标签。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >我们来看下有 / 无 hgroup 的对比：</span
+  >
+</p>
+<pre><code class="language-Plain text">&lt;h1&gt;JavaScript对象&lt;/h1&gt;
+&lt;h2&gt;我们需要模拟类吗？&lt;/h2&gt;
+&lt;p&gt;balah&nbsp;balah&lt;/p&gt;
+......</code></pre>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >此段生成以下标题结构：</span
+  >
+</p>
+<ul>
+  <li>
+    <span
+      style="
+        -webkit-text-stroke-width: 0px;
+        background-color: rgb(255, 255, 255);
+        color: rgb(51, 51, 51);
+        display: inline !important;
+        float: none;
+        font-family:
+          &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+          &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+          &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+          &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+        font-size: 16px;
+        font-style: normal;
+        font-variant-caps: normal;
+        font-variant-ligatures: normal;
+        font-weight: 400;
+        letter-spacing: normal;
+        orphans: 2;
+        text-align: start;
+        text-decoration-color: initial;
+        text-decoration-style: initial;
+        text-decoration-thickness: initial;
+        text-indent: 0px;
+        text-transform: none;
+        white-space: normal;
+        widows: 2;
+        word-spacing: 0px;
+      "
+      >JavaScript 对象</span
+    >
+    <ul>
+      <li>
+        <span
+          style="
+            -webkit-text-stroke-width: 0px;
+            background-color: rgb(255, 255, 255);
+            color: rgb(51, 51, 51);
+            display: inline !important;
+            float: none;
+            font-family:
+              &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+              &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+              &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+              &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+            font-size: 16px;
+            font-style: normal;
+            font-variant-caps: normal;
+            font-variant-ligatures: normal;
+            font-weight: 400;
+            letter-spacing: normal;
+            orphans: 2;
+            text-align: start;
+            text-decoration-color: initial;
+            text-decoration-style: initial;
+            text-decoration-thickness: initial;
+            text-indent: 0px;
+            text-transform: none;
+            white-space: normal;
+            widows: 2;
+            word-spacing: 0px;
+          "
+          >我们需要模拟类吗？</span
+        >
+      </li>
+      <li>
+        <span
+          style="
+            -webkit-text-stroke-width: 0px;
+            background-color: rgb(255, 255, 255);
+            color: rgb(51, 51, 51);
+            display: inline !important;
+            float: none;
+            font-family:
+              &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+              &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+              &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+              &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+            font-size: 16px;
+            font-style: normal;
+            font-variant-caps: normal;
+            font-variant-ligatures: normal;
+            font-weight: 400;
+            letter-spacing: normal;
+            orphans: 2;
+            text-align: start;
+            text-decoration-color: initial;
+            text-decoration-style: initial;
+            text-decoration-thickness: initial;
+            text-indent: 0px;
+            text-transform: none;
+            white-space: normal;
+            widows: 2;
+            word-spacing: 0px;
+          "
+          >…</span
+        >
+      </li>
+    </ul>
+  </li>
+</ul>
+<pre><code class="language-Plain text">&lt;hgroup&gt;
+&lt;h1&gt;JavaScript对象&lt;/h1&gt;
+&lt;h2&gt;我们需要模拟类吗？&lt;/h2&gt;
+&lt;/hgroup&gt;
+&lt;p&gt;balah&nbsp;balah&lt;/p&gt;
+......</code></pre>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >这一段生成以下标题结构：</span
+  >
+</p>
+<ul>
+  <li>
+    <span
+      style="
+        -webkit-text-stroke-width: 0px;
+        background-color: rgb(255, 255, 255);
+        color: rgb(51, 51, 51);
+        display: inline !important;
+        float: none;
+        font-family:
+          &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+          &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+          &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+          &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+        font-size: 16px;
+        font-style: normal;
+        font-variant-caps: normal;
+        font-variant-ligatures: normal;
+        font-weight: 400;
+        letter-spacing: normal;
+        orphans: 2;
+        text-align: start;
+        text-decoration-color: initial;
+        text-decoration-style: initial;
+        text-decoration-thickness: initial;
+        text-indent: 0px;
+        text-transform: none;
+        white-space: normal;
+        widows: 2;
+        word-spacing: 0px;
+      "
+      >JavaScript 对象——我们需要模拟类吗？</span
+    >
+    <ul>
+      <li>
+        <span
+          style="
+            -webkit-text-stroke-width: 0px;
+            background-color: rgb(255, 255, 255);
+            color: rgb(51, 51, 51);
+            display: inline !important;
+            float: none;
+            font-family:
+              &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+              &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+              &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+              &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+            font-size: 16px;
+            font-style: normal;
+            font-variant-caps: normal;
+            font-variant-ligatures: normal;
+            font-weight: 400;
+            letter-spacing: normal;
+            orphans: 2;
+            text-align: start;
+            text-decoration-color: initial;
+            text-decoration-style: initial;
+            text-decoration-thickness: initial;
+            text-indent: 0px;
+            text-transform: none;
+            white-space: normal;
+            widows: 2;
+            word-spacing: 0px;
+          "
+          >…</span
+        >
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >我们通过两个效果的对比就可以知道，在 hgroup 中的 h1-h6
+    被视为同一标题的不同组成部分。</span
+  >
+</p>
+<p>
+  <span
+    style="
+      -webkit-text-stroke-width: 0px;
+      background-color: rgb(255, 255, 255);
+      color: rgb(51, 51, 51);
+      display: inline !important;
+      float: none;
+      font-family:
+        &quot;PingFang SC&quot;, Avenir, Tahoma, Arial,
+        &quot;Lantinghei SC&quot;, &quot;Microsoft Yahei&quot;,
+        &quot;Hiragino Sans GB&quot;, &quot;Microsoft Sans Serif&quot;,
+        &quot;WenQuanYi Micro Hei&quot;, Helvetica, sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-variant-caps: normal;
+      font-variant-ligatures: normal;
+      font-weight: 400;
+      letter-spacing: normal;
+      orphans: 2;
+      text-align: start;
+      text-decoration-color: initial;
+      text-decoration-style: initial;
+      text-decoration-thickness: initial;
+      text-indent: 0px;
+      text-transform: none;
+      white-space: normal;
+      widows: 2;
+      word-spacing: 0px;
+    "
+    >从 HTML 5 开始，我们有了 section 标签，这个标签可不仅仅是一个“有语义的
+    div”，它会改变 h1-h6 的语义。section 的嵌套会使得其中的 h1-h6
+    下降一级，因此，在 HTML5 以后，我们只需要 section 和 h1
+    就足以形成文档的树形结构：</span
+  >
+</p>
+<pre><code class="language-HTML">&lt;section&gt;
+ &nbsp;&nbsp;&nbsp;&lt;h1&gt;HTML语义&lt;/h1&gt;
+ &nbsp;&nbsp;&nbsp;&lt;p&gt;balah&nbsp;balah&nbsp;balah&nbsp;balah&lt;/p&gt;
+ &nbsp;&nbsp;&nbsp;&lt;section&gt;
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;弱语义&lt;/h1&gt;
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;balah&nbsp;balah&lt;/p&gt;
+ &nbsp;&nbsp;&nbsp;&lt;/section&gt;
+ &nbsp;&nbsp;&nbsp;&lt;section&gt;
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;结构性元素&lt;/h1&gt;
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;balah&nbsp;balah&lt;/p&gt; 
+ &nbsp;&nbsp;&nbsp;&lt;/section&gt;
+......
+&lt;/section&gt;</code></pre>
+<p>&nbsp;</p>
