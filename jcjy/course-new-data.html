@@ -1,0 +1,3125 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Skillmap</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&family=Varela+Round&display=swap");
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #fffaf8;
+        --panel: #ffffff;
+        --panel-soft: #fff6f1;
+        --ink: #1f2330;
+        --muted: #7a8094;
+        --line: #eadfd7;
+        --line-strong: #efc7b1;
+        --accent: rgb(250, 112, 46);
+        --accent-deep: #b84b1a;
+        --accent-soft: #fff1e8;
+        --accent-softer: #fff8f4;
+        --accent-ring: rgba(250, 112, 46, 0.14);
+        --shadow: 0 18px 40px -36px rgba(31, 35, 48, 0.28);
+        --radius: 8px;
+        --body-font:
+          "Nunito Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+          sans-serif;
+        --display-font:
+          "Varela Round", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+          sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      html {
+        color-scheme: light;
+        font-family: var(--body-font);
+        color: var(--ink);
+      }
+
+      body {
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+        background:
+          radial-gradient(
+            circle at 12% 10%,
+            rgba(132, 193, 255, 0.22),
+            transparent 24%
+          ),
+          radial-gradient(
+            circle at 88% 10%,
+            rgba(250, 196, 126, 0.22),
+            transparent 22%
+          ),
+          linear-gradient(180deg, #fbfefd 0%, #fffaf4 100%);
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 16% -8% auto -8%;
+        height: 44vh;
+        pointer-events: none;
+        opacity: 0.42;
+        background:
+          radial-gradient(
+            circle at 20% 50%,
+            rgba(115, 177, 255, 0.08),
+            transparent 32%
+          ),
+          radial-gradient(
+            circle at 80% 44%,
+            rgba(247, 178, 92, 0.08),
+            transparent 28%
+          ),
+          repeating-radial-gradient(
+            circle at 50% 50%,
+            rgba(133, 165, 216, 0.12) 0 1px,
+            transparent 1px 11px
+          );
+        mask: linear-gradient(
+          180deg,
+          transparent 0%,
+          #000 18%,
+          #000 82%,
+          transparent 100%
+        );
+        z-index: -1;
+      }
+
+      button,
+      input,
+      textarea,
+      select {
+        font: inherit;
+      }
+
+      #app {
+        width: 1600px;
+        margin: 0 auto;
+        padding: clamp(18px, 2vw, 28px);
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel);
+        box-shadow: 0 16px 36px -34px rgba(31, 35, 48, 0.24);
+      }
+
+      .boot-state,
+      .boot-error {
+        display: grid;
+        place-items: center;
+        min-height: calc(100vh - 20px);
+        padding: 24px;
+        text-align: center;
+      }
+
+      .boot-state p,
+      .boot-error p {
+        max-width: 520px;
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+
+      .skillmap-page {
+        position: relative;
+        display: grid;
+        gap: clamp(34px, 4vw, 56px);
+        padding-bottom: 42px;
+      }
+
+      .hero-scene {
+        position: relative;
+        display: grid;
+        gap: 28px;
+        justify-items: center;
+        padding-top: 8px;
+      }
+
+      .hero-copy {
+        display: grid;
+        gap: 10px;
+        justify-items: center;
+        text-align: center;
+      }
+
+      .hero-kicker {
+        font-size: 13px;
+        line-height: 1.2;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #57758f;
+      }
+
+      .hero-title {
+        font-family: var(--display-font);
+        font-size: 32px;
+        line-height: 1.06;
+        letter-spacing: -0.05em;
+        color: #121a2b;
+        text-align: center;
+      }
+
+      .hero-summary {
+        max-width: 960px;
+        font-size: 14px;
+        line-height: 1.8;
+        color: #5d6a80;
+        text-align: center;
+      }
+
+      .overview-stage {
+        position: relative;
+        width: min(100%, 980px);
+        padding: 26px 26px 30px;
+        border: 1px solid rgba(226, 216, 205, 0.92);
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.86);
+        box-shadow: 0 24px 60px -46px rgba(31, 35, 48, 0.34);
+        backdrop-filter: blur(12px);
+      }
+
+      .overview-stage::before,
+      .overview-stage::after {
+        content: "";
+        position: absolute;
+        top: 34px;
+        width: 84px;
+        height: 164px;
+        border-radius: 999px;
+        opacity: 0.68;
+        pointer-events: none;
+      }
+
+      .overview-stage::before {
+        left: -118px;
+        background:
+          linear-gradient(180deg, rgba(96, 166, 247, 0.22), transparent 80%),
+          radial-gradient(
+            circle at 50% 100%,
+            rgba(92, 146, 255, 0.28),
+            transparent 48%
+          );
+      }
+
+      .overview-stage::after {
+        right: -118px;
+        background:
+          linear-gradient(180deg, rgba(253, 191, 94, 0.22), transparent 80%),
+          radial-gradient(
+            circle at 50% 100%,
+            rgba(253, 174, 72, 0.28),
+            transparent 48%
+          );
+      }
+
+      .overview-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .overview-column.role-column {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .overview-column.role-column .overview-item {
+        flex: 1;
+      }
+
+      .overview-column.role-column > h2 {
+        margin-bottom: 4px;
+      }
+
+      .overview-column.skill-column {
+        display: grid;
+        grid-template-rows: auto auto;
+        gap: 14px;
+      }
+
+      .overview-heading {
+        height: 44px;
+        line-height: 44px;
+        text-align: center;
+        border-radius: 12px;
+        color: #fff;
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+      }
+
+      .overview-heading.role {
+        background: linear-gradient(135deg, #294e95 0%, #1e6bc2 100%);
+      }
+
+      .overview-heading.skill {
+        background: linear-gradient(135deg, #12836f 0%, #26a77a 100%);
+      }
+
+      .overview-list {
+        display: grid;
+        gap: 10px;
+        list-style: none;
+      }
+
+      .overview-column.skill-column .overview-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .overview-column.skill-column .overview-item {
+        padding: 10px 12px;
+      }
+
+      .overview-column.skill-column .overview-item-text {
+        font-size: 16px;
+        line-height: 1.3;
+      }
+
+      .overview-item {
+        --tone-bg: #eef4ff;
+        --tone-border: #d1dfff;
+        --tone-accent: #3f6dbf;
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        gap: 12px;
+        min-height: 54px;
+        padding: 10px 14px;
+        border: 1px solid var(--tone-border);
+        border-radius: 14px;
+        background:
+          linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.72),
+            rgba(255, 255, 255, 0.48)
+          ),
+          var(--tone-bg);
+      }
+
+      .overview-item-badge {
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--tone-accent) 14%, white);
+        color: var(--tone-accent);
+        font-size: 13px;
+        line-height: 1;
+        font-weight: 800;
+      }
+
+      .overview-item-text {
+        font-size: 18px;
+        line-height: 1.35;
+        font-weight: 800;
+        color: #1e2435;
+        word-break: break-word;
+      }
+
+      .flow-section {
+        display: grid;
+        gap: 26px;
+      }
+
+      .flow-title {
+        font-family: var(--display-font);
+        font-size: clamp(28px, 3vw, 44px);
+        line-height: 1.08;
+        text-align: center;
+        color: #172136;
+      }
+
+      .flow-shell {
+        display: grid;
+        gap: 64px;
+      }
+
+      .flow-row {
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 30px;
+        align-items: start;
+      }
+
+      .flow-row::before {
+        content: "";
+        position: absolute;
+        left: 8%;
+        right: 8%;
+        top: 58px;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          rgba(120, 166, 217, 0.55) 0%,
+          rgba(120, 166, 217, 0.55) 33%,
+          rgba(244, 184, 88, 0.55) 66%,
+          rgba(244, 184, 88, 0.55) 100%
+        );
+        z-index: 0;
+      }
+
+      .row-turn {
+        --turn-color: #b76517;
+        position: absolute;
+        top: 58px;
+        bottom: -56px;
+        width: 80px;
+        pointer-events: none;
+        z-index: 0;
+        color: var(--turn-color);
+      }
+
+      .row-turn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 14px;
+        width: 72px;
+        border-top: 4px solid color-mix(in srgb, var(--turn-color) 82%, white);
+        border-bottom: 4px solid
+          color-mix(in srgb, var(--turn-color) 82%, white);
+        box-shadow: 0 16px 24px -24px rgba(183, 101, 23, 0.42);
+      }
+
+      .row-turn-arrow {
+        position: absolute;
+        bottom: 4px;
+        width: 0;
+        height: 0;
+        z-index: 1;
+      }
+
+      .row-turn.is-right {
+        right: -72px;
+      }
+
+      .row-turn.is-right::before {
+        left: 0;
+        border-right: 4px solid color-mix(in srgb, var(--turn-color) 82%, white);
+        border-top-right-radius: 36px;
+        border-bottom-right-radius: 36px;
+      }
+
+      .row-turn.is-right .row-turn-arrow {
+        left: -1px;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        border-right: 14px solid
+          color-mix(in srgb, var(--turn-color) 86%, white);
+        filter: drop-shadow(0 8px 10px rgba(183, 101, 23, 0.24));
+      }
+
+      .row-turn.is-left {
+        left: -72px;
+      }
+
+      .row-turn.is-left::before {
+        right: 0;
+        border-left: 4px solid color-mix(in srgb, var(--turn-color) 82%, white);
+        border-top-left-radius: 36px;
+        border-bottom-left-radius: 36px;
+      }
+
+      .row-turn.is-left .row-turn-arrow {
+        right: -1px;
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        border-left: 14px solid
+          color-mix(in srgb, var(--turn-color) 86%, white);
+        filter: drop-shadow(0 8px 10px rgba(183, 101, 23, 0.24));
+      }
+
+      .flow-stage {
+        --stage-surface: #edf3ff;
+        --stage-border: #bed1ff;
+        --stage-accent: #4675d8;
+        position: relative;
+        display: grid;
+        gap: 20px;
+        z-index: 1;
+        min-width: 0;
+      }
+
+      .flow-stage::after {
+        content: "→";
+        position: absolute;
+        top: 38px;
+        right: -18px;
+        color: var(--stage-accent);
+        font-size: 28px;
+        line-height: 1;
+        font-weight: 700;
+      }
+
+      .flow-stage:last-child::after {
+        display: none;
+      }
+
+      .flow-row.is-reverse .flow-stage::after {
+        display: none;
+      }
+
+      .flow-row.is-reverse .flow-stage::before {
+        content: "←";
+        position: absolute;
+        top: 38px;
+        left: -18px;
+        color: var(--stage-accent);
+        font-size: 28px;
+        line-height: 1;
+        font-weight: 700;
+      }
+
+      .flow-row.is-reverse .flow-stage:first-child::before {
+        display: none;
+      }
+
+      .project-node {
+        min-height: 116px;
+        display: grid;
+        align-content: center;
+        gap: 8px;
+        padding: 22px 18px;
+        border: 1px solid var(--stage-border);
+        border-radius: 20px;
+        background:
+          linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.78),
+            rgba(255, 255, 255, 0.56)
+          ),
+          var(--stage-surface);
+        box-shadow: 0 18px 42px -38px
+          color-mix(in srgb, var(--stage-accent) 30%, white);
+        text-align: center;
+        min-width: 0;
+      }
+
+      .project-order {
+        font-size: 14px;
+        line-height: 1.2;
+        font-weight: 800;
+        color: var(--stage-accent);
+      }
+
+      .project-name {
+        font-family: var(--display-font);
+        font-size: 21px;
+        line-height: 1.16;
+        color: #1a2336;
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+
+      .task-tree {
+        position: relative;
+        display: grid;
+        gap: 14px;
+        width: 100%;
+        max-width: 340px;
+        justify-self: center;
+        padding-top: 18px;
+        list-style: none;
+        min-width: 0;
+      }
+
+      .task-tree::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 22px;
+        width: 2px;
+        height: 18px;
+        background: color-mix(in srgb, var(--stage-accent) 35%, white);
+      }
+
+      .task-node {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+
+      .task-node::before {
+        content: "";
+        position: absolute;
+        left: 22px;
+        top: -14px;
+        width: 2px;
+        height: 14px;
+        background: color-mix(in srgb, var(--stage-accent) 24%, white);
+      }
+
+      .task-node:first-child::before {
+        display: none;
+      }
+
+      .task-badge {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--stage-accent) 14%, white);
+        border: 1px solid color-mix(in srgb, var(--stage-accent) 20%, white);
+        color: var(--stage-accent);
+        font-size: 14px;
+        line-height: 1;
+        margin-right: 8px;
+        font-weight: 800;
+      }
+
+      .task-content {
+        display: grid;
+        align-content: center;
+        min-width: 0;
+      }
+
+      .task-text {
+        font-size: 16px;
+        line-height: 1.2;
+        font-weight: 700;
+        color: #222c40;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+      }
+
+      .empty-state {
+        min-height: 220px;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        border: 1px dashed rgba(90, 111, 141, 0.22);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.72);
+        text-align: center;
+        font-size: 15px;
+        line-height: 1.8;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="boot-state card">
+        <p>
+          课程图谱模块加载中… 如果长时间没有内容，请检查网络是否可以访问 Vue 3
+          CDN。
+        </p>
+      </div>
+    </div>
+    <script type="module">
+      const MOCK_COURSE_BRIEF = {
+        id: 8801,
+        teacherId: 3615,
+        name: "大模型应用开发实训",
+      };
+
+      const MOCK_SKILL_LIBRARY = {
+        提示词设计: {
+          id: 101,
+          name: "提示词设计",
+          industries: [
+            {
+              industryId: 301,
+              jobPosition: "大模型应用开发工程师",
+              industryLevel1: "互联网和信息技术服务",
+              industryLevel2: "AIGC应用开发",
+            },
+          ],
+        },
+        业务需求拆解: {
+          id: 102,
+          name: "业务需求拆解",
+          industries: [
+            {
+              industryId: 301,
+              jobPosition: "AI 解决方案实施顾问",
+              industryLevel1: "企业数字化服务",
+              industryLevel2: "智能客服",
+            },
+          ],
+        },
+        安全拒答设计: {
+          id: 103,
+          name: "安全拒答设计",
+          industries: [
+            {
+              industryId: 301,
+              jobPosition: "AI 解决方案实施顾问",
+              industryLevel1: "企业数字化服务",
+              industryLevel2: "智能客服",
+            },
+          ],
+        },
+        知识库构建: {
+          id: 104,
+          name: "知识库构建",
+          industries: [
+            {
+              industryId: 302,
+              jobPosition: "知识库工程师",
+              industryLevel1: "企业数字化服务",
+              industryLevel2: "企业知识管理",
+            },
+          ],
+        },
+        检索调优: {
+          id: 105,
+          name: "检索调优",
+          industries: [
+            {
+              industryId: 302,
+              jobPosition: "AI 应用工程师",
+              industryLevel1: "互联网和信息技术服务",
+              industryLevel2: "AIGC应用开发",
+            },
+          ],
+        },
+        引用式回答设计: {
+          id: 106,
+          name: "引用式回答设计",
+          industries: [
+            {
+              industryId: 302,
+              jobPosition: "知识库工程师",
+              industryLevel1: "企业数字化服务",
+              industryLevel2: "企业知识管理",
+            },
+          ],
+        },
+        工具调用设计: {
+          id: 107,
+          name: "工具调用设计",
+          industries: [
+            {
+              industryId: 303,
+              jobPosition: "AI 应用工程师",
+              industryLevel1: "互联网和信息技术服务",
+              industryLevel2: "AIGC应用开发",
+            },
+          ],
+        },
+        "API 联调与异常处理": {
+          id: 108,
+          name: "API 联调与异常处理",
+          industries: [
+            {
+              industryId: 303,
+              jobPosition: "后端集成工程师",
+              industryLevel1: "互联网和信息技术服务",
+              industryLevel2: "企业系统集成",
+            },
+          ],
+        },
+        "Agent 工作流编排": {
+          id: 109,
+          name: "Agent 工作流编排",
+          industries: [
+            {
+              industryId: 304,
+              jobPosition: "大模型应用开发工程师",
+              industryLevel1: "互联网和信息技术服务",
+              industryLevel2: "AIGC应用开发",
+            },
+          ],
+        },
+        对话状态管理: {
+          id: 110,
+          name: "对话状态管理",
+          industries: [
+            {
+              industryId: 304,
+              jobPosition: "智能客服产品工程师",
+              industryLevel1: "企业数字化服务",
+              industryLevel2: "智能客服",
+            },
+          ],
+        },
+        质量评测与人工兜底: {
+          id: 111,
+          name: "质量评测与人工兜底",
+          industries: [
+            {
+              industryId: 304,
+              jobPosition: "AI 解决方案实施顾问",
+              industryLevel1: "企业数字化服务",
+              industryLevel2: "智能客服",
+            },
+          ],
+        },
+      };
+
+      const EXTRA_MOCK_PROJECT_BLUEPRINTS = [
+        {
+          syncKey: "project_prompt_review_lab",
+          name: "项目5 Prompt 评测与迭代实验室",
+          remark: "补充 Prompt 评测与迭代策略场景。",
+          tasks: [
+            { name: "设计 Prompt 评分标准与对照样例", skills: ["提示词设计"] },
+            {
+              name: "拆解业务问答场景并归纳失败模式",
+              skills: ["业务需求拆解"],
+            },
+            {
+              name: "建立拒答兜底模板与异常应答规则",
+              skills: ["安全拒答设计"],
+            },
+            {
+              name: "根据评测结果迭代 system prompt",
+              skills: ["提示词设计", "安全拒答设计"],
+            },
+          ],
+        },
+        {
+          syncKey: "project_multi_turn_dialogue",
+          name: "项目6 多轮对话链路优化",
+          remark: "补充多轮问答与状态记忆链路。",
+          tasks: [
+            { name: "定义多轮追问中的槽位状态模型", skills: ["对话状态管理"] },
+            {
+              name: "为复杂问答设计澄清与追问路径",
+              skills: ["提示词设计", "业务需求拆解"],
+            },
+            {
+              name: "实现转人工前的安全拦截与话术回退",
+              skills: ["安全拒答设计", "质量评测与人工兜底"],
+            },
+            {
+              name: "编排会话状态与任务流转逻辑",
+              skills: ["Agent 工作流编排", "对话状态管理"],
+            },
+          ],
+        },
+        {
+          syncKey: "project_rag_eval_loop",
+          name: "项目7 RAG 评测闭环设计",
+          remark: "补充知识检索评测与追踪分析。",
+          tasks: [
+            { name: "建立知识库样本集与问答评测集", skills: ["知识库构建"] },
+            { name: "分析召回偏差并调优检索策略", skills: ["检索调优"] },
+            {
+              name: "设计引用式回答置信度标注方案",
+              skills: ["引用式回答设计"],
+            },
+            {
+              name: "输出 RAG 评测报告与优化结论",
+              skills: ["知识库构建", "检索调优"],
+            },
+          ],
+        },
+        {
+          syncKey: "project_corpus_governance",
+          name: "项目8 企业知识语料治理",
+          remark: "补充文档治理与切分规范。",
+          tasks: [
+            { name: "清洗售后知识文档并建立目录规范", skills: ["知识库构建"] },
+            {
+              name: "设计切块规则与 metadata 字段标准",
+              skills: ["知识库构建", "检索调优"],
+            },
+            {
+              name: "为引用式回答补充来源定位策略",
+              skills: ["引用式回答设计"],
+            },
+            { name: "评估知识更新后的召回稳定性", skills: ["检索调优"] },
+          ],
+        },
+        {
+          syncKey: "project_tool_router",
+          name: "项目9 工具路由编排控制台",
+          remark: "补充多工具调度和异常分流。",
+          tasks: [
+            { name: "定义天气、物流与工单工具协议", skills: ["工具调用设计"] },
+            {
+              name: "建立工具路由优先级与兜底规则",
+              skills: ["Agent 工作流编排"],
+            },
+            {
+              name: "联调外部 API 并处理超时异常",
+              skills: ["API 联调与异常处理"],
+            },
+            {
+              name: "补齐工具调用失败后的回退文案",
+              skills: ["工具调用设计", "API 联调与异常处理"],
+            },
+          ],
+        },
+        {
+          syncKey: "project_api_contract",
+          name: "项目10 API 协议联调实战",
+          remark: "补充接口规范与异常处理演练。",
+          tasks: [
+            { name: "设计下单查询接口的参数约束", skills: ["工具调用设计"] },
+            {
+              name: "为工单系统建立错误码映射规则",
+              skills: ["API 联调与异常处理"],
+            },
+            {
+              name: "编排接口串联后的上下文归并逻辑",
+              skills: ["Agent 工作流编排"],
+            },
+            {
+              name: "输出接口联调缺陷清单与修复建议",
+              skills: ["API 联调与异常处理", "质量评测与人工兜底"],
+            },
+          ],
+        },
+        {
+          syncKey: "project_memory_agent",
+          name: "项目11 记忆型 Agent 设计",
+          remark: "补充长期记忆与对话连续性能力。",
+          tasks: [
+            {
+              name: "设计客户会话记忆写入与读取机制",
+              skills: ["对话状态管理"],
+            },
+            {
+              name: "拆解任务节点与会话状态同步策略",
+              skills: ["业务需求拆解", "Agent 工作流编排"],
+            },
+            {
+              name: "建立冲突信息回收与记忆纠偏流程",
+              skills: ["对话状态管理", "质量评测与人工兜底"],
+            },
+            { name: "评估多轮会话下的路由稳定性", skills: ["对话状态管理"] },
+          ],
+        },
+        {
+          syncKey: "project_service_quality_guard",
+          name: "项目12 服务质量守护台",
+          remark: "补充线上评测和人工兜底守护流程。",
+          tasks: [
+            {
+              name: "设计客服回答质检维度与评分项",
+              skills: ["质量评测与人工兜底"],
+            },
+            {
+              name: "定义异常问答的人工兜底触发规则",
+              skills: ["安全拒答设计", "质量评测与人工兜底"],
+            },
+            {
+              name: "联调质检日志与告警推送接口",
+              skills: ["API 联调与异常处理"],
+            },
+            { name: "输出上线前质量验收清单", skills: ["质量评测与人工兜底"] },
+          ],
+        },
+        {
+          syncKey: "project_multimodal_ingest",
+          name: "项目13 多模态资料接入",
+          remark: "补充图片文档接入与索引构建场景。",
+          tasks: [
+            { name: "定义图文资料入库字段与切分规则", skills: ["知识库构建"] },
+            { name: "评估多模态检索召回的准确性", skills: ["检索调优"] },
+            {
+              name: "设计多模态回答中的引用说明样式",
+              skills: ["引用式回答设计"],
+            },
+            {
+              name: "输出多模态知识入库操作规范",
+              skills: ["知识库构建", "业务需求拆解"],
+            },
+          ],
+        },
+        {
+          syncKey: "project_sql_agent",
+          name: "项目14 SQL 数据分析 Agent",
+          remark: "补充结构化查询与工具联动场景。",
+          tasks: [
+            {
+              name: "定义 SQL 查询工具的 schema 约束",
+              skills: ["工具调用设计"],
+            },
+            {
+              name: "联调数据查询接口并处理异常重试",
+              skills: ["API 联调与异常处理"],
+            },
+            {
+              name: "编排查询、分析与总结的工作流",
+              skills: ["Agent 工作流编排"],
+            },
+            { name: "设计结果摘要中的解释性提示词", skills: ["提示词设计"] },
+          ],
+        },
+        {
+          syncKey: "project_workflow_guardrail",
+          name: "项目15 工作流防护与回退",
+          remark: "补充流程护栏和安全回退策略。",
+          tasks: [
+            { name: "识别流程执行中的风险节点", skills: ["业务需求拆解"] },
+            { name: "设计异常分支与拒答护栏规则", skills: ["安全拒答设计"] },
+            {
+              name: "编排回退流程与人工确认节点",
+              skills: ["Agent 工作流编排", "质量评测与人工兜底"],
+            },
+            { name: "验证回退后结果的一致性", skills: ["质量评测与人工兜底"] },
+          ],
+        },
+        {
+          syncKey: "project_support_insights",
+          name: "项目16 售后分析助手",
+          remark: "补充售后问题分析与知识闭环。",
+          tasks: [
+            { name: "拆解售后问题类型与意图标签", skills: ["业务需求拆解"] },
+            { name: "为售后语料建立知识分类索引", skills: ["知识库构建"] },
+            { name: "优化高频售后问题的检索排序", skills: ["检索调优"] },
+            { name: "设计引用式问题分析报告模板", skills: ["引用式回答设计"] },
+          ],
+        },
+        {
+          syncKey: "project_internal_copilot",
+          name: "项目17 企业内部 Copilot",
+          remark: "补充企业内部助手应用形态。",
+          tasks: [
+            { name: "梳理内部协作问答的任务边界", skills: ["业务需求拆解"] },
+            { name: "编写内部助手的角色与回复模板", skills: ["提示词设计"] },
+            {
+              name: "搭建知识问答与工具调用混合流程",
+              skills: ["Agent 工作流编排", "工具调用设计"],
+            },
+            {
+              name: "设计高风险问题的拦截和兜底",
+              skills: ["安全拒答设计", "质量评测与人工兜底"],
+            },
+          ],
+        },
+        {
+          syncKey: "project_order_service_agent",
+          name: "项目18 订单服务 Agent",
+          remark: "补充订单查询与服务履约场景。",
+          tasks: [
+            { name: "定义订单查询与退款工具接口", skills: ["工具调用设计"] },
+            {
+              name: "联调订单系统异常与超时处理",
+              skills: ["API 联调与异常处理"],
+            },
+            { name: "管理订单状态与会话上下文同步", skills: ["对话状态管理"] },
+            {
+              name: "编排服务路由与人工升级节点",
+              skills: ["Agent 工作流编排"],
+            },
+          ],
+        },
+        {
+          syncKey: "project_meeting_assistant",
+          name: "项目19 会议纪要助手",
+          remark: "补充会议纪要生成和知识沉淀。",
+          tasks: [
+            { name: "设计会议纪要生成的提示词模板", skills: ["提示词设计"] },
+            { name: "建立会议文档入库与索引方案", skills: ["知识库构建"] },
+            {
+              name: "优化纪要引用原文的检索准确率",
+              skills: ["检索调优", "引用式回答设计"],
+            },
+            {
+              name: "输出纪要审校与人工复核流程",
+              skills: ["质量评测与人工兜底"],
+            },
+          ],
+        },
+        {
+          syncKey: "project_ops_dispatch",
+          name: "项目20 运维调度副驾",
+          remark: "补充运维派单和告警编排。",
+          tasks: [
+            { name: "拆解告警处理场景与派单规则", skills: ["业务需求拆解"] },
+            { name: "定义告警查询和派单工具 schema", skills: ["工具调用设计"] },
+            {
+              name: "联调运维系统接口与异常回退",
+              skills: ["API 联调与异常处理"],
+            },
+            {
+              name: "编排派单、确认与升级工作流",
+              skills: ["Agent 工作流编排"],
+            },
+          ],
+        },
+        {
+          syncKey: "project_quote_answer_refine",
+          name: "项目21 引用式回答优化台",
+          remark: "补充引用式回答质量增强。",
+          tasks: [
+            { name: "定义引用式回答的模板与格式", skills: ["引用式回答设计"] },
+            { name: "分析误召回案例并优化排序逻辑", skills: ["检索调优"] },
+            { name: "补充知识引用中的来源校验规则", skills: ["知识库构建"] },
+            {
+              name: "输出回答置信度与引用完整性报告",
+              skills: ["引用式回答设计", "质量评测与人工兜底"],
+            },
+          ],
+        },
+        {
+          syncKey: "project_risk_response_center",
+          name: "项目22 风险应答控制中心",
+          remark: "补充高风险问答与审计流程。",
+          tasks: [
+            { name: "识别高风险问题并归纳拦截策略", skills: ["安全拒答设计"] },
+            { name: "设计敏感问题的回复模板与提示词", skills: ["提示词设计"] },
+            { name: "定义人工复核的触发标准", skills: ["质量评测与人工兜底"] },
+            {
+              name: "输出风险应答审计记录模板",
+              skills: ["安全拒答设计", "业务需求拆解"],
+            },
+          ],
+        },
+        {
+          syncKey: "project_data_qa_console",
+          name: "项目23 数据问答控制台",
+          remark: "补充结构化数据问答与控制台编排。",
+          tasks: [
+            { name: "梳理业务数据问答的字段语义", skills: ["业务需求拆解"] },
+            { name: "设计数据查询工具的参数规范", skills: ["工具调用设计"] },
+            {
+              name: "联调查询接口与异常恢复策略",
+              skills: ["API 联调与异常处理"],
+            },
+            {
+              name: "编排问答、校验与追问流程",
+              skills: ["Agent 工作流编排", "对话状态管理"],
+            },
+          ],
+        },
+        {
+          syncKey: "project_knowledge_growth",
+          name: "项目24 知识增量更新工坊",
+          remark: "补充知识更新和增量评测流程。",
+          tasks: [
+            { name: "定义知识增量写入与版本策略", skills: ["知识库构建"] },
+            { name: "评估增量更新后的召回波动", skills: ["检索调优"] },
+            { name: "优化新增知识的引用呈现方式", skills: ["引用式回答设计"] },
+            {
+              name: "输出知识更新后的验收报告",
+              skills: ["质量评测与人工兜底"],
+            },
+          ],
+        },
+      ];
+
+      function cloneMockSkill(skillName) {
+        const source = MOCK_SKILL_LIBRARY[skillName];
+        if (!source) {
+          return {
+            id: `mock-${skillName}`,
+            name: skillName,
+            industries: [{ jobPosition: "未绑定岗位" }],
+          };
+        }
+
+        return {
+          id: source.id,
+          name: source.name,
+          industries: (source.industries || []).map((industry) => ({
+            ...industry,
+          })),
+        };
+      }
+
+      const extraMockProjects = EXTRA_MOCK_PROJECT_BLUEPRINTS.map(
+        (blueprint, projectIndex) => {
+          const projectId = 9105 + projectIndex;
+          const teachingRepoId = 7100 + projectIndex;
+          const taskSkillMap = new Map();
+          const testPaperProblems = blueprint.tasks.map((task, taskIndex) => {
+            const teachingModuleId = 5400 + projectIndex * 10 + taskIndex + 1;
+            const skills = task.skills.map((skillName) =>
+              cloneMockSkill(skillName),
+            );
+
+            skills.forEach((skill) => {
+              taskSkillMap.set(skill.id, skill);
+            });
+
+            return {
+              isSourceTestPaperProblemDeleted: false,
+              id: 9600 + projectIndex * 10 + taskIndex + 1,
+              problemId: null,
+              teachingModuleId,
+              score: "0.00",
+              order: taskIndex + 1,
+              problem: null,
+              teachingModule: {
+                id: teachingModuleId,
+                type: 1,
+                name: task.name,
+                creatorId: 3615,
+                teachingRepo: {
+                  id: teachingRepoId,
+                  name: blueprint.name,
+                },
+              },
+              sourceTestPaperProblem: null,
+              resourceType: "teachingModule",
+              skills,
+            };
+          });
+
+          return {
+            testPaper: {
+              poster: null,
+              time2Start: 0,
+              teachingModulesCount: testPaperProblems.length,
+              problemsCount: 0,
+              submitSummary: {
+                totalSubmits: 0,
+                totalUnsubmitted: 0,
+                correctAnswers: 0,
+                incorrectAnswers: 0,
+                ungradedAnswers: 0,
+                score: 0,
+              },
+              typeName: "扩展实训",
+              id: projectId,
+              isEnable: true,
+              syncKey: blueprint.syncKey,
+              name: blueprint.name,
+              creatorId: 3615,
+              courseId: 8801,
+              startTime: null,
+              endTime: null,
+              duration: null,
+              remark: blueprint.remark,
+              config: null,
+              rank: `${5 + projectIndex}.00`,
+              sourceTestPaperId: null,
+              type: 4,
+              allowResubmit: true,
+              showAnswer: 1,
+              showAnalysis: 1,
+              showMark: 1,
+              lessonPlan: null,
+              studentId: null,
+              maxMembers: 0,
+              showScore: 1,
+              unitSubmitCount: 1,
+              submitEndTime: null,
+              shuffleEnabled: false,
+              isProject: true,
+              taskType: 1,
+              createdAt: "2026-03-25T08:00:00.000Z",
+              updatedAt: "2026-04-08T10:00:00.000Z",
+              course: { ...MOCK_COURSE_BRIEF },
+            },
+            testPaperProblems,
+            skills: Array.from(taskSkillMap.values()),
+          };
+        },
+      );
+
+      const legacyData = {
+        rows: [
+          {
+            testPaper: {
+              poster: null,
+              time2Start: 0,
+              teachingModulesCount: 3,
+              problemsCount: 2,
+              submitSummary: {
+                totalSubmits: 26,
+                totalUnsubmitted: 6,
+                correctAnswers: 18,
+                incorrectAnswers: 6,
+                ungradedAnswers: 2,
+                score: 84,
+              },
+              typeName: "教学",
+              id: 9101,
+              isEnable: true,
+              syncKey: "unit_prompt_engineering",
+              name: "项目1 Prompt 设计与角色建模",
+              creatorId: 3615,
+              courseId: 8801,
+              startTime: "2026-03-03T01:30:00.000Z",
+              endTime: null,
+              duration: null,
+              remark: "围绕企业知识库助教场景完成提示词设计入门。",
+              config: null,
+              rank: "1.00",
+              sourceTestPaperId: null,
+              type: 2,
+              allowResubmit: true,
+              showAnswer: 1,
+              showAnalysis: 1,
+              showMark: 1,
+              lessonPlan: null,
+              studentId: null,
+              maxMembers: 0,
+              showScore: 1,
+              unitSubmitCount: 1,
+              submitEndTime: null,
+              shuffleEnabled: false,
+              isProject: false,
+              taskType: 1,
+              createdAt: "2026-03-01T08:00:00.000Z",
+              updatedAt: "2026-04-08T10:00:00.000Z",
+              course: {
+                id: 8801,
+                teacherId: 3615,
+                name: "大模型应用开发实训",
+              },
+            },
+            testPaperProblems: [
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9201,
+                problemId: null,
+                teachingModuleId: 5001,
+                score: "0.00",
+                order: 1,
+                problem: null,
+                teachingModule: {
+                  id: 5001,
+                  type: 1,
+                  name: "角色定义与边界约束",
+                  creatorId: 3615,
+                  teachingRepo: {
+                    id: 7001,
+                    name: "Prompt 工程基础",
+                  },
+                },
+                sourceTestPaperProblem: null,
+                resourceType: "teachingModule",
+                skills: [
+                  {
+                    id: 101,
+                    name: "提示词设计",
+                    industries: [
+                      {
+                        industryId: 301,
+                        jobPosition: "大模型应用开发工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9202,
+                problemId: null,
+                teachingModuleId: 5002,
+                score: "0.00",
+                order: 2,
+                problem: null,
+                teachingModule: {
+                  id: 5002,
+                  type: 1,
+                  name: "输出格式约束与 Few-shot 示例",
+                  creatorId: 3615,
+                  teachingRepo: {
+                    id: 7001,
+                    name: "Prompt 工程基础",
+                  },
+                },
+                sourceTestPaperProblem: null,
+                resourceType: "teachingModule",
+                skills: [
+                  {
+                    id: 101,
+                    name: "提示词设计",
+                    industries: [
+                      {
+                        industryId: 301,
+                        jobPosition: "大模型应用开发工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                  {
+                    id: 102,
+                    name: "业务需求拆解",
+                    industries: [
+                      {
+                        industryId: 301,
+                        jobPosition: "AI 解决方案实施顾问",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "智能客服",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9203,
+                problemId: 6001,
+                teachingModuleId: null,
+                score: "40.00",
+                order: 3,
+                problem: {
+                  id: 6001,
+                  title: "为“企业知识库助教”编写 system prompt",
+                  type: 4,
+                  creatorId: 3615,
+                  teachingModuleIds: [5001, 5002, 5008],
+                  teachingModules: [
+                    {
+                      id: 5001,
+                      name: "角色定义与边界约束",
+                      creatorId: 3615,
+                      teachingRepoId: 7001,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7001,
+                        name: "Prompt 工程基础",
+                      },
+                    },
+                    {
+                      id: 5002,
+                      name: "输出格式约束与 Few-shot 示例",
+                      creatorId: 3615,
+                      teachingRepoId: 7001,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7001,
+                        name: "Prompt 工程基础",
+                      },
+                    },
+                    {
+                      id: 5008,
+                      name: "System Prompt 结构化编写",
+                      creatorId: 3615,
+                      teachingRepoId: 7001,
+                      type: 2,
+                      teachingRepo: {
+                        id: 7001,
+                        name: "Prompt 工程基础",
+                      },
+                    },
+                  ],
+                },
+                teachingModule: null,
+                sourceTestPaperProblem: null,
+                resourceType: "problem",
+                skills: [
+                  {
+                    id: 101,
+                    name: "提示词设计",
+                    industries: [
+                      {
+                        industryId: 301,
+                        jobPosition: "大模型应用开发工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9204,
+                problemId: 6002,
+                teachingModuleId: null,
+                score: "60.00",
+                order: 4,
+                problem: {
+                  id: 6002,
+                  title: "优化问答回复中的拒答与追问策略",
+                  type: 4,
+                  creatorId: 3615,
+                  teachingModuleIds: [5001, 5003, 5009],
+                  teachingModules: [
+                    {
+                      id: 5001,
+                      name: "角色定义与边界约束",
+                      creatorId: 3615,
+                      teachingRepoId: 7001,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7001,
+                        name: "Prompt 工程基础",
+                      },
+                    },
+                    {
+                      id: 5003,
+                      name: "拒答策略与安全规则",
+                      creatorId: 3615,
+                      teachingRepoId: 7001,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7001,
+                        name: "Prompt 工程基础",
+                      },
+                    },
+                    {
+                      id: 5009,
+                      name: "拒答话术与追问改写",
+                      creatorId: 3615,
+                      teachingRepoId: 7001,
+                      type: 10001,
+                      teachingRepo: {
+                        id: 7001,
+                        name: "Prompt 工程基础",
+                      },
+                    },
+                  ],
+                },
+                teachingModule: null,
+                sourceTestPaperProblem: null,
+                resourceType: "problem",
+                skills: [
+                  {
+                    id: 101,
+                    name: "提示词设计",
+                    industries: [
+                      {
+                        industryId: 301,
+                        jobPosition: "大模型应用开发工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                  {
+                    id: 103,
+                    name: "安全拒答设计",
+                    industries: [
+                      {
+                        industryId: 301,
+                        jobPosition: "AI 解决方案实施顾问",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "智能客服",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+            skills: [
+              {
+                id: 101,
+                name: "提示词设计",
+                industries: [
+                  {
+                    industryId: 301,
+                    jobPosition: "大模型应用开发工程师",
+                    industryLevel1: "互联网和信息技术服务",
+                    industryLevel2: "AIGC应用开发",
+                  },
+                ],
+              },
+              {
+                id: 102,
+                name: "业务需求拆解",
+                industries: [
+                  {
+                    industryId: 301,
+                    jobPosition: "AI 解决方案实施顾问",
+                    industryLevel1: "企业数字化服务",
+                    industryLevel2: "智能客服",
+                  },
+                ],
+              },
+              {
+                id: 103,
+                name: "安全拒答设计",
+                industries: [
+                  {
+                    industryId: 301,
+                    jobPosition: "AI 解决方案实施顾问",
+                    industryLevel1: "企业数字化服务",
+                    industryLevel2: "智能客服",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            testPaper: {
+              poster: null,
+              time2Start: 0,
+              teachingModulesCount: 3,
+              problemsCount: 2,
+              submitSummary: {
+                totalSubmits: 24,
+                totalUnsubmitted: 8,
+                correctAnswers: 15,
+                incorrectAnswers: 5,
+                ungradedAnswers: 4,
+                score: 81,
+              },
+              typeName: "作业",
+              id: 9102,
+              isEnable: true,
+              syncKey: "unit_rag_building",
+              name: "项目2 RAG 知识库构建与检索优化",
+              creatorId: 3615,
+              courseId: 8801,
+              startTime: "2026-03-10T01:30:00.000Z",
+              endTime: null,
+              duration: null,
+              remark: "完成知识切分、召回和引用式回答的完整链路。",
+              config: null,
+              rank: "2.00",
+              sourceTestPaperId: null,
+              type: 4,
+              allowResubmit: true,
+              showAnswer: 1,
+              showAnalysis: 1,
+              showMark: 1,
+              lessonPlan: null,
+              studentId: null,
+              maxMembers: 0,
+              showScore: 1,
+              unitSubmitCount: 1,
+              submitEndTime: null,
+              shuffleEnabled: false,
+              isProject: false,
+              taskType: 2,
+              createdAt: "2026-03-08T08:00:00.000Z",
+              updatedAt: "2026-04-08T10:00:00.000Z",
+              course: {
+                id: 8801,
+                teacherId: 3615,
+                name: "大模型应用开发实训",
+              },
+            },
+            testPaperProblems: [
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9301,
+                problemId: null,
+                teachingModuleId: 5101,
+                score: "0.00",
+                order: 1,
+                problem: null,
+                teachingModule: {
+                  id: 5101,
+                  type: 1,
+                  name: "文档切分策略与 Chunk 评估",
+                  creatorId: 3615,
+                  teachingRepo: {
+                    id: 7002,
+                    name: "RAG 实战",
+                  },
+                },
+                sourceTestPaperProblem: null,
+                resourceType: "teachingModule",
+                skills: [
+                  {
+                    id: 104,
+                    name: "知识库构建",
+                    industries: [
+                      {
+                        industryId: 302,
+                        jobPosition: "知识库工程师",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "企业知识管理",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9302,
+                problemId: null,
+                teachingModuleId: 5102,
+                score: "0.00",
+                order: 2,
+                problem: null,
+                teachingModule: {
+                  id: 5102,
+                  type: 1,
+                  name: "向量召回、重排序与引用式回答",
+                  creatorId: 3615,
+                  teachingRepo: {
+                    id: 7002,
+                    name: "RAG 实战",
+                  },
+                },
+                sourceTestPaperProblem: null,
+                resourceType: "teachingModule",
+                skills: [
+                  {
+                    id: 105,
+                    name: "检索调优",
+                    industries: [
+                      {
+                        industryId: 302,
+                        jobPosition: "AI 应用工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                  {
+                    id: 106,
+                    name: "引用式回答设计",
+                    industries: [
+                      {
+                        industryId: 302,
+                        jobPosition: "知识库工程师",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "企业知识管理",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9303,
+                problemId: 6101,
+                teachingModuleId: null,
+                score: "50.00",
+                order: 3,
+                problem: {
+                  id: 6101,
+                  title: "为售后知识库设计分块与 metadata 方案",
+                  type: 10,
+                  creatorId: 3615,
+                  teachingModuleIds: [5101, 5108],
+                  teachingModules: [
+                    {
+                      id: 5101,
+                      name: "文档切分策略与 Chunk 评估",
+                      creatorId: 3615,
+                      teachingRepoId: 7002,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7002,
+                        name: "RAG 实战",
+                      },
+                    },
+                    {
+                      id: 5108,
+                      name: "Chunk 策略调优实践",
+                      creatorId: 3615,
+                      teachingRepoId: 7002,
+                      type: 2,
+                      teachingRepo: {
+                        id: 7002,
+                        name: "RAG 实战",
+                      },
+                    },
+                  ],
+                },
+                teachingModule: null,
+                sourceTestPaperProblem: null,
+                resourceType: "problem",
+                skills: [
+                  {
+                    id: 104,
+                    name: "知识库构建",
+                    industries: [
+                      {
+                        industryId: 302,
+                        jobPosition: "知识库工程师",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "企业知识管理",
+                      },
+                    ],
+                  },
+                  {
+                    id: 105,
+                    name: "检索调优",
+                    industries: [
+                      {
+                        industryId: 302,
+                        jobPosition: "AI 应用工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9304,
+                problemId: 6102,
+                teachingModuleId: null,
+                score: "50.00",
+                order: 4,
+                problem: {
+                  id: 6102,
+                  title: "分析召回日志并优化引用式回答准确率",
+                  type: 10,
+                  creatorId: 3615,
+                  teachingModuleIds: [5102, 5103, 5109],
+                  teachingModules: [
+                    {
+                      id: 5102,
+                      name: "向量召回、重排序与引用式回答",
+                      creatorId: 3615,
+                      teachingRepoId: 7002,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7002,
+                        name: "RAG 实战",
+                      },
+                    },
+                    {
+                      id: 5103,
+                      name: "检索结果评测与误召回分析",
+                      creatorId: 3615,
+                      teachingRepoId: 7002,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7002,
+                        name: "RAG 实战",
+                      },
+                    },
+                    {
+                      id: 5109,
+                      name: "误召回诊断与引用纠偏",
+                      creatorId: 3615,
+                      teachingRepoId: 7002,
+                      type: 10001,
+                      teachingRepo: {
+                        id: 7002,
+                        name: "RAG 实战",
+                      },
+                    },
+                  ],
+                },
+                teachingModule: null,
+                sourceTestPaperProblem: null,
+                resourceType: "problem",
+                skills: [
+                  {
+                    id: 105,
+                    name: "检索调优",
+                    industries: [
+                      {
+                        industryId: 302,
+                        jobPosition: "AI 应用工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                  {
+                    id: 106,
+                    name: "引用式回答设计",
+                    industries: [
+                      {
+                        industryId: 302,
+                        jobPosition: "知识库工程师",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "企业知识管理",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+            skills: [
+              {
+                id: 104,
+                name: "知识库构建",
+                industries: [
+                  {
+                    industryId: 302,
+                    jobPosition: "知识库工程师",
+                    industryLevel1: "企业数字化服务",
+                    industryLevel2: "企业知识管理",
+                  },
+                ],
+              },
+              {
+                id: 105,
+                name: "检索调优",
+                industries: [
+                  {
+                    industryId: 302,
+                    jobPosition: "AI 应用工程师",
+                    industryLevel1: "互联网和信息技术服务",
+                    industryLevel2: "AIGC应用开发",
+                  },
+                ],
+              },
+              {
+                id: 106,
+                name: "引用式回答设计",
+                industries: [
+                  {
+                    industryId: 302,
+                    jobPosition: "知识库工程师",
+                    industryLevel1: "企业数字化服务",
+                    industryLevel2: "企业知识管理",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            testPaper: {
+              poster: null,
+              time2Start: 0,
+              teachingModulesCount: 3,
+              problemsCount: 2,
+              submitSummary: {
+                totalSubmits: 21,
+                totalUnsubmitted: 11,
+                correctAnswers: 13,
+                incorrectAnswers: 4,
+                ungradedAnswers: 4,
+                score: 79,
+              },
+              typeName: "作业",
+              id: 9103,
+              isEnable: true,
+              syncKey: "unit_tool_calling",
+              name: "项目3 Function Calling 与工具编排",
+              creatorId: 3615,
+              courseId: 8801,
+              startTime: "2026-03-17T01:30:00.000Z",
+              endTime: null,
+              duration: null,
+              remark: "完成工具 schema 设计、接口联调和回退策略。",
+              config: {
+                chat: {
+                  name: "工具调用实验助手",
+                  model: 137,
+                  style: 1,
+                  prompt:
+                    "你需要优先判断是否调用工具，并以结构化方式解释调用结果。",
+                  tagPrompt: "",
+                  warningTimes: 0,
+                  enableAutoBan: false,
+                  sampleQuestions: [
+                    "帮我查询今天上海的天气并给出出行建议",
+                    "查询订单 20260318001 的物流状态",
+                  ],
+                },
+              },
+              rank: "3.00",
+              sourceTestPaperId: null,
+              type: 4,
+              allowResubmit: true,
+              showAnswer: 1,
+              showAnalysis: 1,
+              showMark: 1,
+              lessonPlan: null,
+              studentId: null,
+              maxMembers: 0,
+              showScore: 1,
+              unitSubmitCount: 1,
+              submitEndTime: null,
+              shuffleEnabled: false,
+              isProject: false,
+              taskType: 2,
+              createdAt: "2026-03-15T08:00:00.000Z",
+              updatedAt: "2026-04-08T10:00:00.000Z",
+              course: {
+                id: 8801,
+                teacherId: 3615,
+                name: "大模型应用开发实训",
+              },
+            },
+            testPaperProblems: [
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9401,
+                problemId: null,
+                teachingModuleId: 5201,
+                score: "0.00",
+                order: 1,
+                problem: null,
+                teachingModule: {
+                  id: 5201,
+                  type: 1,
+                  name: "工具 schema 设计与参数校验",
+                  creatorId: 3615,
+                  teachingRepo: {
+                    id: 7003,
+                    name: "工具调用与 Agent 编排",
+                  },
+                },
+                sourceTestPaperProblem: null,
+                resourceType: "teachingModule",
+                skills: [
+                  {
+                    id: 107,
+                    name: "工具调用设计",
+                    industries: [
+                      {
+                        industryId: 303,
+                        jobPosition: "AI 应用工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9402,
+                problemId: null,
+                teachingModuleId: 5202,
+                score: "0.00",
+                order: 2,
+                problem: null,
+                teachingModule: {
+                  id: 5202,
+                  type: 1,
+                  name: "多工具路由与异常回退",
+                  creatorId: 3615,
+                  teachingRepo: {
+                    id: 7003,
+                    name: "工具调用与 Agent 编排",
+                  },
+                },
+                sourceTestPaperProblem: null,
+                resourceType: "teachingModule",
+                skills: [
+                  {
+                    id: 108,
+                    name: "API 联调与异常处理",
+                    industries: [
+                      {
+                        industryId: 303,
+                        jobPosition: "后端集成工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "企业系统集成",
+                      },
+                    ],
+                  },
+                  {
+                    id: 109,
+                    name: "Agent 工作流编排",
+                    industries: [
+                      {
+                        industryId: 303,
+                        jobPosition: "大模型应用开发工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9403,
+                problemId: 6201,
+                teachingModuleId: null,
+                score: "45.00",
+                order: 3,
+                problem: {
+                  id: 6201,
+                  title: "为天气查询与工单检索设计 function schema",
+                  type: 10,
+                  creatorId: 3615,
+                  teachingModuleIds: [5201, 5208],
+                  teachingModules: [
+                    {
+                      id: 5201,
+                      name: "工具 schema 设计与参数校验",
+                      creatorId: 3615,
+                      teachingRepoId: 7003,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7003,
+                        name: "工具调用与 Agent 编排",
+                      },
+                    },
+                    {
+                      id: 5208,
+                      name: "Function Schema 建模",
+                      creatorId: 3615,
+                      teachingRepoId: 7003,
+                      type: 2,
+                      teachingRepo: {
+                        id: 7003,
+                        name: "工具调用与 Agent 编排",
+                      },
+                    },
+                  ],
+                },
+                teachingModule: null,
+                sourceTestPaperProblem: null,
+                resourceType: "problem",
+                skills: [
+                  {
+                    id: 107,
+                    name: "工具调用设计",
+                    industries: [
+                      {
+                        industryId: 303,
+                        jobPosition: "AI 应用工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9404,
+                problemId: 6202,
+                teachingModuleId: null,
+                score: "55.00",
+                order: 4,
+                problem: {
+                  id: 6202,
+                  title: "排查 tool call 参数错误并补齐回退逻辑",
+                  type: 10,
+                  creatorId: 3615,
+                  teachingModuleIds: [5202, 5203, 5209],
+                  teachingModules: [
+                    {
+                      id: 5202,
+                      name: "多工具路由与异常回退",
+                      creatorId: 3615,
+                      teachingRepoId: 7003,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7003,
+                        name: "工具调用与 Agent 编排",
+                      },
+                    },
+                    {
+                      id: 5203,
+                      name: "上下文状态管理与结果归并",
+                      creatorId: 3615,
+                      teachingRepoId: 7003,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7003,
+                        name: "工具调用与 Agent 编排",
+                      },
+                    },
+                    {
+                      id: 5209,
+                      name: "Tool Call 异常排障",
+                      creatorId: 3615,
+                      teachingRepoId: 7003,
+                      type: 10001,
+                      teachingRepo: {
+                        id: 7003,
+                        name: "工具调用与 Agent 编排",
+                      },
+                    },
+                  ],
+                },
+                teachingModule: null,
+                sourceTestPaperProblem: null,
+                resourceType: "problem",
+                skills: [
+                  {
+                    id: 108,
+                    name: "API 联调与异常处理",
+                    industries: [
+                      {
+                        industryId: 303,
+                        jobPosition: "后端集成工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "企业系统集成",
+                      },
+                    ],
+                  },
+                  {
+                    id: 109,
+                    name: "Agent 工作流编排",
+                    industries: [
+                      {
+                        industryId: 303,
+                        jobPosition: "大模型应用开发工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+            skills: [
+              {
+                id: 107,
+                name: "工具调用设计",
+                industries: [
+                  {
+                    industryId: 303,
+                    jobPosition: "AI 应用工程师",
+                    industryLevel1: "互联网和信息技术服务",
+                    industryLevel2: "AIGC应用开发",
+                  },
+                ],
+              },
+              {
+                id: 108,
+                name: "API 联调与异常处理",
+                industries: [
+                  {
+                    industryId: 303,
+                    jobPosition: "后端集成工程师",
+                    industryLevel1: "互联网和信息技术服务",
+                    industryLevel2: "企业系统集成",
+                  },
+                ],
+              },
+              {
+                id: 109,
+                name: "Agent 工作流编排",
+                industries: [
+                  {
+                    industryId: 303,
+                    jobPosition: "大模型应用开发工程师",
+                    industryLevel1: "互联网和信息技术服务",
+                    industryLevel2: "AIGC应用开发",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            testPaper: {
+              poster: null,
+              time2Start: 0,
+              teachingModulesCount: 3,
+              problemsCount: 2,
+              submitSummary: {
+                totalSubmits: 19,
+                totalUnsubmitted: 13,
+                correctAnswers: 10,
+                incorrectAnswers: 3,
+                ungradedAnswers: 6,
+                score: 88,
+              },
+              typeName: "作业",
+              id: 9104,
+              isEnable: true,
+              syncKey: "unit_agent_project",
+              name: "项目4 智能客服 Agent 项目实战",
+              creatorId: 3615,
+              courseId: 8801,
+              startTime: "2026-03-24T01:30:00.000Z",
+              endTime: null,
+              duration: null,
+              remark: "使用课程前 3 个项目能力完成一个企业客服 Agent 项目。",
+              config: {
+                chat: {
+                  name: "项目答疑助手",
+                  model: 137,
+                  style: 1,
+                  prompt:
+                    "你是项目评审老师，需要从会话质量、工具调用成功率和知识引用准确率三个维度点评学生方案。",
+                  tagPrompt: "",
+                  warningTimes: 0,
+                  enableAutoBan: false,
+                  sampleQuestions: [
+                    "如何实现售后场景下的意图识别路由？",
+                    "客服机器人回答错误时如何转人工？",
+                  ],
+                },
+              },
+              rank: "4.00",
+              sourceTestPaperId: null,
+              type: 4,
+              allowResubmit: true,
+              showAnswer: 1,
+              showAnalysis: 1,
+              showMark: 1,
+              lessonPlan: null,
+              studentId: null,
+              maxMembers: 4,
+              showScore: 1,
+              unitSubmitCount: 1,
+              submitEndTime: null,
+              shuffleEnabled: false,
+              isProject: true,
+              taskType: 1,
+              createdAt: "2026-03-22T08:00:00.000Z",
+              updatedAt: "2026-04-08T10:00:00.000Z",
+              course: {
+                id: 8801,
+                teacherId: 3615,
+                name: "大模型应用开发实训",
+              },
+            },
+            testPaperProblems: [
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9501,
+                problemId: null,
+                teachingModuleId: 5301,
+                score: "0.00",
+                order: 1,
+                problem: null,
+                teachingModule: {
+                  id: 5301,
+                  type: 1,
+                  name: "会话记忆管理与意图路由",
+                  creatorId: 3615,
+                  teachingRepo: {
+                    id: 7004,
+                    name: "智能客服 Agent 项目实战",
+                  },
+                },
+                sourceTestPaperProblem: null,
+                resourceType: "teachingModule",
+                skills: [
+                  {
+                    id: 110,
+                    name: "对话状态管理",
+                    industries: [
+                      {
+                        industryId: 304,
+                        jobPosition: "智能客服产品工程师",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "智能客服",
+                      },
+                    ],
+                  },
+                  {
+                    id: 109,
+                    name: "Agent 工作流编排",
+                    industries: [
+                      {
+                        industryId: 304,
+                        jobPosition: "大模型应用开发工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9502,
+                problemId: null,
+                teachingModuleId: 5302,
+                score: "0.00",
+                order: 2,
+                problem: null,
+                teachingModule: {
+                  id: 5302,
+                  type: 1,
+                  name: "质量评测、人工兜底与上线验收",
+                  creatorId: 3615,
+                  teachingRepo: {
+                    id: 7004,
+                    name: "智能客服 Agent 项目实战",
+                  },
+                },
+                sourceTestPaperProblem: null,
+                resourceType: "teachingModule",
+                skills: [
+                  {
+                    id: 111,
+                    name: "质量评测与人工兜底",
+                    industries: [
+                      {
+                        industryId: 304,
+                        jobPosition: "AI 解决方案实施顾问",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "智能客服",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9503,
+                problemId: 6301,
+                teachingModuleId: null,
+                score: "60.00",
+                order: 3,
+                problem: {
+                  id: 6301,
+                  title: "搭建“售后客服 Agent”并完成会话路由设计",
+                  type: 10,
+                  creatorId: 3615,
+                  teachingModuleIds: [5301, 5303, 5308],
+                  teachingModules: [
+                    {
+                      id: 5301,
+                      name: "会话记忆管理与意图路由",
+                      creatorId: 3615,
+                      teachingRepoId: 7004,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7004,
+                        name: "智能客服 Agent 项目实战",
+                      },
+                    },
+                    {
+                      id: 5303,
+                      name: "多场景工具编排与转人工策略",
+                      creatorId: 3615,
+                      teachingRepoId: 7004,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7004,
+                        name: "智能客服 Agent 项目实战",
+                      },
+                    },
+                    {
+                      id: 5308,
+                      name: "Agent 路由编排",
+                      creatorId: 3615,
+                      teachingRepoId: 7004,
+                      type: 2,
+                      teachingRepo: {
+                        id: 7004,
+                        name: "智能客服 Agent 项目实战",
+                      },
+                    },
+                  ],
+                },
+                teachingModule: null,
+                sourceTestPaperProblem: null,
+                resourceType: "problem",
+                skills: [
+                  {
+                    id: 109,
+                    name: "Agent 工作流编排",
+                    industries: [
+                      {
+                        industryId: 304,
+                        jobPosition: "大模型应用开发工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                  {
+                    id: 110,
+                    name: "对话状态管理",
+                    industries: [
+                      {
+                        industryId: 304,
+                        jobPosition: "智能客服产品工程师",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "智能客服",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9504,
+                problemId: 6302,
+                teachingModuleId: null,
+                score: "40.00",
+                order: 4,
+                problem: {
+                  id: 6302,
+                  title: "输出评测报告并给出转人工兜底方案",
+                  type: 4,
+                  creatorId: 3615,
+                  teachingModuleIds: [5302, 5309],
+                  teachingModules: [
+                    {
+                      id: 5302,
+                      name: "质量评测、人工兜底与上线验收",
+                      creatorId: 3615,
+                      teachingRepoId: 7004,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7004,
+                        name: "智能客服 Agent 项目实战",
+                      },
+                    },
+                    {
+                      id: 5309,
+                      name: "质检反馈与兜底策略设计",
+                      creatorId: 3615,
+                      teachingRepoId: 7004,
+                      type: 10001,
+                      teachingRepo: {
+                        id: 7004,
+                        name: "智能客服 Agent 项目实战",
+                      },
+                    },
+                  ],
+                },
+                teachingModule: null,
+                sourceTestPaperProblem: null,
+                resourceType: "problem",
+                skills: [
+                  {
+                    id: 111,
+                    name: "质量评测与人工兜底",
+                    industries: [
+                      {
+                        industryId: 304,
+                        jobPosition: "AI 解决方案实施顾问",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "智能客服",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+            skills: [
+              {
+                id: 109,
+                name: "Agent 工作流编排",
+                industries: [
+                  {
+                    industryId: 304,
+                    jobPosition: "大模型应用开发工程师",
+                    industryLevel1: "互联网和信息技术服务",
+                    industryLevel2: "AIGC应用开发",
+                  },
+                ],
+              },
+              {
+                id: 110,
+                name: "对话状态管理",
+                industries: [
+                  {
+                    industryId: 304,
+                    jobPosition: "智能客服产品工程师",
+                    industryLevel1: "企业数字化服务",
+                    industryLevel2: "智能客服",
+                  },
+                ],
+              },
+              {
+                id: 111,
+                name: "质量评测与人工兜底",
+                industries: [
+                  {
+                    industryId: 304,
+                    jobPosition: "AI 解决方案实施顾问",
+                    industryLevel1: "企业数字化服务",
+                    industryLevel2: "智能客服",
+                  },
+                ],
+              },
+            ],
+          },
+          ...extraMockProjects,
+        ],
+        course: {
+          poster: null,
+          banner: null,
+          id: 8801,
+          isEnable: true,
+          syncKey: "course_llm_bootcamp",
+          code: "LLM-BOOTCAMP-01",
+          teacherId: 3615,
+          name: "大模型应用开发实训",
+          summary:
+            "课程围绕企业知识库问答、工具调用和智能客服三个真实业务场景展开，按“Prompt 设计 -> RAG -> Tool Calling -> Agent 项目”逐步推进，最终形成可落地的智能应用开发能力地图。",
+          questions: 8,
+          avatar: null,
+          prompt:
+            "你是一位企业级大模型应用开发导师，善于把需求拆解、知识点和工程实践串成完整路径，帮助学生从业务目标出发设计、实现并评估 AI 应用。",
+          tagPrompt: null,
+          config: null,
+          sourceCourseId: null,
+          type: 2,
+          warningTimes: -1,
+          remark: "真实业务 mock：覆盖课程、项目、任务、知识点和技能岗位映射。",
+          isCompleted: false,
+          standards: null,
+          enableAIGrading: true,
+          isMuted: false,
+          createdAt: "2026-03-01T08:00:00.000Z",
+          updatedAt: "2026-04-08T10:00:00.000Z",
+          teacher: {
+            name: "李沐辰",
+            id: 3615,
+            isEnable: true,
+            userName: "limuchen@demo.edu",
+            avatar: null,
+            remark: "AIGC 应用开发讲师",
+            lastLoginTime: "2026-04-09T01:30:00.000Z",
+            tenantId: null,
+            isAdmin: false,
+            openId: "teacher_llm_bootcamp",
+            concurrency: 20,
+            type: 2,
+            firstLoginTime: "2025-09-01T01:00:00.000Z",
+            createdAt: "2025-09-01T01:00:00.000Z",
+            member: {
+              typeName: "老师",
+              isExpired: false,
+              id: 12061,
+              isEnable: true,
+              syncKey: "teacher_member_llm_bootcamp",
+              userId: 3615,
+              name: "李沐辰（老师）",
+              code: "T-LLM-001",
+              organizationId: 1,
+              modelPermissions: null,
+              type: 2,
+              validityDays: 9999,
+              creatorId: 1,
+              remark: null,
+              purpose: null,
+              department: "人工智能应用教研室",
+              major: "人工智能技术应用",
+              classes: "AIGC 实训班",
+              userName: null,
+              mobile: null,
+              validityDaysMode: 1,
+              autoBind: false,
+              featureFlags: 0,
+              createdAt: "2025-09-01T01:00:00.000Z",
+              updatedAt: "2026-04-08T10:00:00.000Z",
+              organization: {
+                id: 1,
+                isEnable: true,
+                syncKey: "org_llm_bootcamp",
+                name: "晶程甲宇 AIGC 实训中心",
+                code: "JCJY-AIGC",
+                type: 2,
+                ImageQuota: 4,
+                creatorId: 0,
+                config: {
+                  theme: {
+                    logo: "/assets/mock/logo.svg",
+                    title: "晶程甲宇 AIGC 实训中心",
+                    favicon: "/assets/mock/favicon.ico",
+                    headline: "企业级大模型应用实训",
+                  },
+                  disablePublicModel: false,
+                  computeBaseAddressConfig: {
+                    ojEndpoint: "https://mock.example.com/oj",
+                    vmWinEndpoint: "https://mock.example.com/vm-win",
+                    litellmEndpoint: "https://mock.example.com/litellm",
+                    sdModelEndpoint: "https://mock.example.com/sd",
+                    vmLinuxEndpoint: "https://mock.example.com/vm-linux",
+                    vmVscodeEndpoint: "https://mock.example.com/vscode",
+                    vmComfyuiEndpoint: "https://mock.example.com/comfyui",
+                    vmJupyterEndpoint: "https://mock.example.com/jupyter",
+                  },
+                },
+                remark: null,
+                vmTemplateIds: [],
+                isWebAccessEnabled: true,
+                createdAt: "2025-09-01T01:00:00.000Z",
+                updatedAt: "2026-04-08T10:00:00.000Z",
+              },
+            },
+          },
+          sourceCourse: null,
+        },
+      };
+      const data = {
+        title: "大模型应用开发实训",
+        summary:
+          "课程围绕企业知识库问答、工具调用和智能客服三个真实业务场景展开，按“Prompt 设计 -> RAG -> Tool Calling -> Agent 项目”逐步推进，最终形成可落地的智能应用开发能力地图。",
+        jobs: [
+          {
+            name: "大模型应用开发工程师",
+            skills: ["提示词设计", "Agent 工作流编排"],
+          },
+          {
+            name: "AI 解决方案实施顾问",
+            skills: [
+              "业务需求拆解",
+              "安全拒答设计",
+              "质量评测与人工兜底",
+              "知识库构建",
+              "引用式回答设计",
+            ],
+          },
+        ],
+        project: [
+          {
+            name: "项目1 Prompt 设计与角色建模",
+            tasks: [
+              "角色定义与边界约束",
+              "输出格式约束与 Few-shot 示例",
+              "为“企业知识库助教”编写 system prompt",
+              "优化问答回复中的拒答与追问策略",
+            ],
+          },
+          {
+            name: "项目2 RAG 知识库构建与检索优化",
+            tasks: [
+              "文档切分策略与 Chunk 评估",
+              "向量召回、重排序与引用式回答",
+              "为售后知识库设计分块与 metadata 方案",
+              "分析召回日志并优化引用式回答准确率",
+            ],
+          },
+          {
+            name: "项目3 Function Calling 与工具编排",
+            tasks: [
+              "工具 schema 设计与参数校验",
+              "多工具路由与异常回退",
+              "为天气查询与工单检索设计 function schema",
+              "排查 tool call 参数错误并补齐回退逻辑",
+            ],
+          },
+          {
+            name: "项目4 智能客服 Agent 项目实战",
+            tasks: [
+              "会话记忆管理与意图路由",
+              "质量评测、人工兜底与上线验收",
+              "搭建“售后客服 Agent”并完成会话路由设计",
+              "输出评测报告并给出转人工兜底方案",
+            ],
+          },
+          {
+            name: "项目5 Prompt 评测与迭代实验室",
+            tasks: [
+              "设计 Prompt 评分标准与对照样例",
+              "拆解业务问答场景并归纳失败模式",
+              "建立拒答兜底模板与异常应答规则",
+              "根据评测结果迭代 system prompt",
+            ],
+          },
+          {
+            name: "项目6 多轮对话链路优化",
+            tasks: [
+              "定义多轮追问中的槽位状态模型",
+              "为复杂问答设计澄清与追问路径",
+              "实现转人工前的安全拦截与话术回退",
+              "编排会话状态与任务流转逻辑",
+            ],
+          },
+          {
+            name: "项目7 RAG 评测闭环设计",
+            tasks: [
+              "建立知识库样本集与问答评测集",
+              "分析召回偏差并调优检索策略",
+              "设计引用式回答置信度标注方案",
+              "输出 RAG 评测报告与优化结论",
+            ],
+          },
+          {
+            name: "项目8 企业知识语料治理",
+            tasks: [
+              "清洗售后知识文档并建立目录规范",
+              "设计切块规则与 metadata 字段标准",
+              "为引用式回答补充来源定位策略",
+              "评估知识更新后的召回稳定性",
+            ],
+          },
+          {
+            name: "项目9 工具路由编排控制台",
+            tasks: [
+              "定义天气、物流与工单工具协议",
+              "建立工具路由优先级与兜底规则",
+              "联调外部 API 并处理超时异常",
+              "补齐工具调用失败后的回退文案",
+            ],
+          },
+          {
+            name: "项目10 API 协议联调实战",
+            tasks: [
+              "设计下单查询接口的参数约束",
+              "为工单系统建立错误码映射规则",
+              "编排接口串联后的上下文归并逻辑",
+              "输出接口联调缺陷清单与修复建议",
+            ],
+          },
+          {
+            name: "项目11 记忆型 Agent 设计",
+            tasks: [
+              "设计客户会话记忆写入与读取机制",
+              "拆解任务节点与会话状态同步策略",
+              "建立冲突信息回收与记忆纠偏流程",
+              "评估多轮会话下的路由稳定性",
+            ],
+          },
+          {
+            name: "项目12 服务质量守护台",
+            tasks: [
+              "设计客服回答质检维度与评分项",
+              "定义异常问答的人工兜底触发规则",
+              "联调质检日志与告警推送接口",
+              "输出上线前质量验收清单",
+            ],
+          },
+          {
+            name: "项目13 多模态资料接入",
+            tasks: [
+              "定义图文资料入库字段与切分规则",
+              "评估多模态检索召回的准确性",
+              "设计多模态回答中的引用说明样式",
+              "输出多模态知识入库操作规范",
+            ],
+          },
+          {
+            name: "项目14 SQL 数据分析 Agent",
+            tasks: [
+              "定义 SQL 查询工具的 schema 约束",
+              "联调数据查询接口并处理异常重试",
+              "编排查询、分析与总结的工作流",
+              "设计结果摘要中的解释性提示词",
+            ],
+          },
+          {
+            name: "项目15 工作流防护与回退",
+            tasks: [
+              "识别流程执行中的风险节点",
+              "设计异常分支与拒答护栏规则",
+              "编排回退流程与人工确认节点",
+              "验证回退后结果的一致性",
+            ],
+          },
+          {
+            name: "项目16 售后分析助手",
+            tasks: [
+              "拆解售后问题类型与意图标签",
+              "为售后语料建立知识分类索引",
+              "优化高频售后问题的检索排序",
+              "设计引用式问题分析报告模板",
+            ],
+          },
+          {
+            name: "项目17 企业内部 Copilot",
+            tasks: [
+              "梳理内部协作问答的任务边界",
+              "编写内部助手的角色与回复模板",
+              "搭建知识问答与工具调用混合流程",
+              "设计高风险问题的拦截和兜底",
+            ],
+          },
+          {
+            name: "项目18 订单服务 Agent",
+            tasks: [
+              "定义订单查询与退款工具接口",
+              "联调订单系统异常与超时处理",
+              "管理订单状态与会话上下文同步",
+              "编排服务路由与人工升级节点",
+            ],
+          },
+          {
+            name: "项目19 会议纪要助手",
+            tasks: [
+              "设计会议纪要生成的提示词模板",
+              "建立会议文档入库与索引方案",
+              "优化纪要引用原文的检索准确率",
+              "输出纪要审校与人工复核流程",
+            ],
+          },
+          {
+            name: "项目20 运维调度副驾",
+            tasks: [
+              "拆解告警处理场景与派单规则",
+              "定义告警查询和派单工具 schema",
+              "联调运维系统接口与异常回退",
+              "编排派单、确认与升级工作流",
+            ],
+          },
+          {
+            name: "项目21 引用式回答优化台",
+            tasks: [
+              "定义引用式回答的模板与格式",
+              "分析误召回案例并优化排序逻辑",
+              "补充知识引用中的来源校验规则",
+              "输出回答置信度与引用完整性报告",
+            ],
+          },
+          {
+            name: "项目22 风险应答控制中心",
+            tasks: [
+              "识别高风险问题并归纳拦截策略",
+              "设计敏感问题的回复模板与提示词",
+              "定义人工复核的触发标准",
+              "输出风险应答审计记录模板",
+            ],
+          },
+          {
+            name: "项目23 数据问答控制台",
+            tasks: [
+              "梳理业务数据问答的字段语义",
+              "设计数据查询工具的参数规范",
+              "联调查询接口与异常恢复策略",
+              "编排问答、校验与追问流程",
+            ],
+          },
+          {
+            name: "项目24 知识增量更新工坊",
+            tasks: [
+              "定义知识增量写入与版本策略",
+              "评估增量更新后的召回波动",
+              "优化新增知识的引用呈现方式",
+              "输出知识更新后的验收报告",
+            ],
+          },
+        ],
+      };
+
+      const appRoot = document.getElementById("app");
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function renderBootError(message) {
+        appRoot.innerHTML = `
+          <div class="boot-error card">
+            <p>${escapeHtml(message)}</p>
+          </div>
+        `;
+      }
+
+      function buildOverviewModel(source = {}) {
+        const jobTones = [
+          { bg: "#e9f1ff", border: "#c8d8ff", accent: "#2f62b7" },
+          { bg: "#edf6ff", border: "#cfe2ff", accent: "#275f9b" },
+          { bg: "#e8f7f2", border: "#c8eadf", accent: "#23886f" },
+          { bg: "#edf8f4", border: "#d0ece2", accent: "#2f8f79" },
+          { bg: "#fff0df", border: "#f5d5a8", accent: "#c27a22" },
+          { bg: "#fff4e8", border: "#f2ddbf", accent: "#d0862c" },
+        ];
+        const skillTones = [
+          { bg: "#e7f8f3", border: "#bfe7db", accent: "#167e68" },
+          { bg: "#f0fbf4", border: "#c8ecd4", accent: "#2f9156" },
+          { bg: "#eefbf9", border: "#cce9e5", accent: "#2b8c87" },
+          { bg: "#eef3ff", border: "#d5ddff", accent: "#4b62c6" },
+          { bg: "#fff6e8", border: "#f3dfb8", accent: "#bf8430" },
+          { bg: "#fff1e4", border: "#f3d3b2", accent: "#c46a2d" },
+        ];
+
+        const decorate = (items = [], tones = []) =>
+          items.map((name, index) => {
+            const tone = tones[index % tones.length];
+            return {
+              key: `${index + 1}-${name}`,
+              badge: index + 1,
+              name,
+              style: {
+                "--tone-bg": tone.bg,
+                "--tone-border": tone.border,
+                "--tone-accent": tone.accent,
+              },
+            };
+          });
+
+        const jobs = Array.isArray(source.jobs) ? source.jobs : [];
+        const abilityList = [];
+        const seenAbilities = new Set();
+
+        jobs.forEach((job) => {
+          (Array.isArray(job?.skills) ? job.skills : []).forEach((skill) => {
+            const normalizedSkill = skill || "未命名职业能力";
+            if (seenAbilities.has(normalizedSkill)) {
+              return;
+            }
+            seenAbilities.add(normalizedSkill);
+            abilityList.push(normalizedSkill);
+          });
+        });
+
+        return {
+          jobs: decorate(
+            jobs.map((job) => job?.name || "未命名岗位"),
+            jobTones,
+          ),
+          skills: decorate(abilityList, skillTones),
+        };
+      }
+
+      function buildProjectFlowModel(projects = []) {
+        const tones = [
+          {
+            surface: "#e8f0ff",
+            border: "#bfd0ff",
+            accent: "#4a74d6",
+          },
+          {
+            surface: "#e8f8f1",
+            border: "#bfe8d7",
+            accent: "#2d9d77",
+          },
+          {
+            surface: "#fff4e3",
+            border: "#f5d7a9",
+            accent: "#d49334",
+          },
+          {
+            surface: "#fff1e8",
+            border: "#f0cfba",
+            accent: "#d97a47",
+          },
+        ];
+
+        const projectCards = projects.map((project, projectIndex) => {
+          const tone = tones[projectIndex % tones.length];
+          const rawName = project?.name || `项目${projectIndex + 1}`;
+          const shortName =
+            rawName.replace(/^项目\d+\s*/u, "").trim() || rawName;
+
+          return {
+            key: `${projectIndex + 1}-${rawName}`,
+            order: projectIndex + 1,
+            name: shortName,
+            fullName: rawName,
+            style: {
+              "--stage-surface": tone.surface,
+              "--stage-border": tone.border,
+              "--stage-accent": tone.accent,
+            },
+            tasks: (project.tasks || []).map((task, taskIndex) => ({
+              key: `${projectIndex + 1}-${taskIndex + 1}-${task || "任务"}`,
+              order: taskIndex + 1,
+              name: task || `任务${taskIndex + 1}`,
+            })),
+          };
+        });
+
+        const rows = [];
+        for (let index = 0; index < projectCards.length; index += 4) {
+          const rowIndex = rows.length;
+          const slice = projectCards.slice(index, index + 4);
+          const isReverse = rowIndex % 2 === 1;
+          rows.push({
+            key: `flow-row-${rowIndex + 1}`,
+            isReverse,
+            hasTurn: index + 4 < projectCards.length,
+            projects: isReverse ? [...slice].reverse() : slice,
+          });
+        }
+
+        return {
+          projects: projectCards,
+          rows,
+        };
+      }
+
+      async function bootstrap() {
+        try {
+          const { createApp } =
+            await import("https://unpkg.com/vue@3.5.13/dist/vue.esm-browser.prod.js");
+
+          createApp({
+            setup() {
+              const courseData = data || {};
+              const overviewModel = buildOverviewModel(courseData);
+              const projectFlowModel = buildProjectFlowModel(
+                courseData.project || [],
+              );
+
+              return {
+                courseData,
+                overviewModel,
+                projectFlowModel,
+              };
+            },
+            template: `
+              <div class="skillmap-page">
+                <header class="hero-scene">
+                  <div class="hero-copy">
+                    <h1 class="hero-title">《{{ courseData.title || '课程名称' }}》</h1>
+                    <p class="hero-summary">{{ courseData.summary }}</p>
+                  </div>
+
+                  <section class="overview-stage">
+                    <div class="overview-grid">
+                      <article class="overview-column role-column">
+                        <h2 class="overview-heading role">匹配岗位示例</h2>
+                          <div
+                            v-for="job in overviewModel.jobs"
+                            :key="job.key"
+                            class="overview-item"
+                            :style="job.style"
+                          >
+                            <span class="overview-item-badge">{{ job.badge }}</span>
+                            <span class="overview-item-text">{{ job.name }}</span>
+                          </div>
+                      </article>
+
+                      <article class="overview-column skill-column">
+                        <h2 class="overview-heading skill">核心职业能力方向</h2>
+                        <ol v-if="overviewModel.skills.length" class="overview-list">
+                          <li
+                            v-for="skill in overviewModel.skills"
+                            :key="skill.key"
+                            class="overview-item"
+                            :style="skill.style"
+                          >
+                            <span class="overview-item-badge">{{ skill.badge }}</span>
+                            <span class="overview-item-text">{{ skill.name }}</span>
+                          </li>
+                        </ol>
+                        <p v-else class="empty-state">当前课程暂无职业能力数据。</p>
+                      </article>
+                    </div>
+                  </section>
+                </header>
+
+                <section class="flow-section">
+                  <h2 class="flow-title">课程实训项目全景</h2>
+                  <div v-if="!projectFlowModel.projects.length" class="empty-state">
+                    当前课程暂无项目数据。
+                  </div>
+                  <div v-else class="flow-shell">
+                    <div
+                      v-for="row in projectFlowModel.rows"
+                      :key="row.key"
+                      class="flow-row"
+                      :class="{ 'is-reverse': row.isReverse }"
+                    >
+                      <article
+                        v-for="project in row.projects"
+                        :key="project.key"
+                        class="flow-stage"
+                        :style="project.style"
+                      >
+                        <div class="project-node">
+                          <p class="project-order">项目{{ project.order }}</p>
+                          <h3 class="project-name">{{ project.name }}</h3>
+                        </div>
+                        <ol class="task-tree">
+                          <li
+                            v-for="task in project.tasks"
+                            :key="task.key"
+                            class="task-node"
+                          >
+                            <span class="task-badge">{{ task.order }}</span>
+                            <div class="task-content">
+                              <p class="task-text">{{ task.name }}</p>
+                            </div>
+                          </li>
+                        </ol>
+                      </article>
+                      <div
+                        v-if="row.hasTurn"
+                        class="row-turn"
+                        :class="row.isReverse ? 'is-left' : 'is-right'"
+                      >
+                        <span class="row-turn-arrow" aria-hidden="true"></span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            `,
+          }).mount(appRoot);
+        } catch (error) {
+          console.error("Skillmap bootstrap failed", error);
+          renderBootError(
+            "课程图谱模块加载失败。请确认当前网络可以访问 Vue 3 CDN，然后刷新页面重试。",
+          );
+        }
+      }
+
+      bootstrap();
+    </script>
+  </body>
+</html>

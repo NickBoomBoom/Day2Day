@@ -1,0 +1,5176 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Skillmap</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Nunito+Sans:wght@400;500;600;700;800&family=Varela+Round&display=swap");
+
+      :root {
+        --bg: #fffaf8;
+        --panel: #ffffff;
+        --panel-alt: #fff7f3;
+        --ink: #1f2330;
+        --muted: #7a8094;
+        --line: #e2e7f0;
+        --line-strong: #ead8cd;
+        --problem: oklch(98.6% 0.017 68);
+        --teaching-module: oklch(99.1% 0.01 82);
+        --skill: #ffffff;
+        --industry: #ffffff;
+        --unit: #ffffff;
+        --radius-lg: 8px;
+        --radius-md: 8px;
+        --radius-sm: 8px;
+        --accent: rgb(250, 112, 46);
+        --accent-text: #b84b1a;
+        --accent-text-soft: #9d5a36;
+        --accent-border: #f8a47d;
+        --accent-border-strong: #f58b5a;
+        --accent-surface: #fff1e8;
+        --accent-surface-soft: #fff7f1;
+        --accent-surface-muted: #fffaf7;
+        --accent-ring: rgba(250, 112, 46, 0.16);
+        --glow-default: rgba(250, 112, 46, 0.34);
+        --knowledge-surface: oklch(98.7% 0.014 80);
+        --knowledge-border: oklch(92.6% 0.024 76);
+        --knowledge-text: oklch(56% 0.06 64);
+        --skill-point-surface: oklch(97.3% 0.03 48);
+        --skill-point-border: oklch(89.5% 0.052 47);
+        --skill-point-text: oklch(59% 0.145 44);
+        --body-font:
+          "Nunito Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+          sans-serif;
+        --display-font:
+          "Varela Round", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+          sans-serif;
+        --code-font: "Fira Code", "SFMono-Regular", monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      html {
+        color-scheme: light;
+        font-family: var(--body-font);
+
+        color: var(--ink);
+      }
+
+      button,
+      input,
+      textarea,
+      select {
+        font: inherit;
+      }
+
+      #app {
+        width: min(100%, 1720px);
+        margin: 0 auto;
+        padding: 10px;
+      }
+
+      .page-stack {
+        display: grid;
+        gap: 18px;
+      }
+
+      .page-header {
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      .page-title {
+        margin: 0;
+        font-family: var(--display-font);
+        font-size: clamp(32px, 4vw, 52px);
+        line-height: 1.08;
+        letter-spacing: -0.05em;
+        font-weight: 700;
+      }
+
+      .page-layout {
+        display: grid;
+        grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) minmax(
+            250px,
+            300px
+          );
+        grid-template-areas: "summary main map";
+        gap: clamp(16px, 2vw, 24px);
+        align-items: start;
+      }
+
+      .page-layout > * {
+        min-width: 0;
+      }
+
+      .course-map {
+        grid-area: map;
+        display: flex;
+        gap: 16px;
+        flex-direction: column;
+        min-height: 0;
+        padding: 10px;
+        height: calc(100vh - 20px);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-lg);
+      }
+
+      .panel-head {
+        display: grid;
+        gap: 6px;
+      }
+
+      .panel-head-inline {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .panel-head-inline .panel-title {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+
+      .panel-title {
+        margin: 0;
+        font-family: var(--display-font);
+        font-size: clamp(22px, 2vw, 30px);
+        line-height: 1.1;
+        letter-spacing: -0.04em;
+        font-weight: 700;
+      }
+
+      .course-map .panel-title,
+      .page-summary .panel-title {
+        color: var(--accent-text);
+      }
+
+      .panel-copy {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--muted);
+      }
+
+      .course-map-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 10px;
+      }
+
+      .course-map-filter-pill,
+      .course-map-reset {
+        min-height: 44px;
+        padding: 9px 14px;
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
+        background: #ffffff;
+        color: var(--ink);
+        font-size: 12px;
+        line-height: 1.2;
+      }
+
+      .course-map-filter-pill {
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .course-map-reset {
+        cursor: pointer;
+        transition:
+          border-color 180ms ease,
+          background-color 180ms ease,
+          color 180ms ease;
+      }
+
+      .course-map-reset:hover,
+      .course-map-reset:focus-visible {
+        border-color: var(--accent-border);
+        background: var(--accent-surface-soft);
+        outline: none;
+        box-shadow: 0 0 0 4px var(--accent-ring);
+      }
+
+      .summary-reset {
+        flex: 0 0 auto;
+        min-height: 32px;
+        padding: 6px 10px;
+      }
+
+      .course-map-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: auto;
+        padding-right: 2px;
+        align-content: start;
+      }
+
+      .course-map-card {
+        display: grid;
+        gap: 8px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        cursor: pointer;
+        transition:
+          border-color 180ms ease,
+          background-color 180ms ease,
+          box-shadow 180ms ease;
+      }
+
+      .course-map-card.is-active {
+        border-color: var(--accent-border);
+        background: var(--accent-surface-soft);
+        box-shadow:
+          0 0 0 1px rgba(248, 164, 125, 0.72),
+          0 10px 26px -24px rgba(39, 48, 77, 0.14),
+          0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+      }
+
+      .course-map-card.is-dimmed {
+        background: var(--accent-surface-muted);
+        border-color: #efe3db;
+        opacity: 0.86;
+      }
+
+      .course-map-card:hover,
+      .course-map-card:focus-visible {
+        border-color: var(--accent-border-strong);
+        outline: none;
+      }
+
+      .course-map-card-status {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
+        padding: 4px 8px;
+        border: 1px solid var(--accent-border);
+        border-radius: 8px;
+        background: var(--accent-surface);
+        font-family: var(--code-font);
+        font-size: 10px;
+        line-height: 1;
+        letter-spacing: 0.06em;
+        color: var(--accent-text);
+      }
+
+      .course-map-card-title {
+        margin: 0;
+        font-family: var(--display-font);
+        font-size: 18px;
+        line-height: 1.18;
+        letter-spacing: -0.03em;
+        font-weight: 700;
+      }
+
+      .course-map-role-button {
+        display: block;
+        width: 100%;
+        padding: 0;
+        color: inherit;
+        text-align: left;
+      }
+
+      .course-map-card-skills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .course-map-skill,
+      .course-map-meta {
+        display: inline-flex;
+        align-items: center;
+        min-height: 32px;
+        padding: 6px 10px;
+        border: 2px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        font-size: 12px;
+        line-height: 1.25;
+        color: var(--ink);
+      }
+
+      .course-map-skill {
+        cursor: pointer;
+        transition:
+          border-color 180ms ease,
+          background-color 180ms ease,
+          color 180ms ease,
+          box-shadow 180ms ease;
+      }
+
+      .course-map-skill:hover,
+      .course-map-skill:focus-visible {
+        border-color: var(--accent-border-strong);
+        background: var(--accent-surface-soft);
+        outline: none;
+        box-shadow: 0 0 0 4px var(--accent-ring);
+      }
+
+      .course-map-skill.is-active {
+        border-color: var(--accent-border);
+        background: var(--accent-surface);
+        color: var(--accent-text);
+      }
+
+      .course-map-card-industry {
+        margin: 0;
+        font-size: 11px;
+        line-height: 1.4;
+        color: var(--muted);
+        text-align: left;
+      }
+
+      .course-map-empty {
+        flex: 1 1 auto;
+        display: grid;
+        align-content: center;
+        padding: 18px;
+        border: 4px solid var(--accent-border);
+        border-radius: 8px;
+        background: var(--accent-surface-soft);
+        font-size: 14px;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .page-main {
+        grid-area: main;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .page-summary {
+        grid-area: summary;
+        display: grid;
+        gap: 18px;
+        align-self: start;
+      }
+
+      .summary-card {
+        display: grid;
+        gap: 16px;
+        padding: clamp(18px, 2.2vw, 24px);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+      }
+
+      .summary-card.summary-card-current {
+        border-color: var(--accent-border);
+        background: linear-gradient(
+          180deg,
+          var(--accent-surface-soft) 0%,
+          #ffffff 100%
+        );
+      }
+
+      .summary-card-current .summary-copy {
+        color: var(--accent-text-soft);
+      }
+
+      .page-main-empty {
+        display: grid;
+        justify-items: center;
+        gap: 14px;
+        padding: 28px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        text-align: center;
+        color: var(--muted);
+      }
+
+      .summary-intro {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.75;
+        color: var(--ink);
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .summary-grid.current-view-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .summary-grid.current-view-grid .summary-stat {
+        padding: 10px 8px;
+      }
+
+      .summary-grid.current-view-grid .summary-stat-value {
+        font-size: 22px;
+      }
+
+      .summary-grid.current-view-grid .summary-stat-label {
+        font-size: 11px;
+        line-height: 1.35;
+      }
+
+      .summary-stat {
+        display: grid;
+        gap: 4px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .summary-card-current .summary-stat {
+        border-color: var(--accent-border);
+        background: rgba(255, 255, 255, 0.82);
+      }
+
+      .summary-stat-value {
+        margin: 0;
+        font-family: var(--display-font);
+        font-size: 26px;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        color: var(--ink);
+      }
+
+      .summary-card-current .summary-stat-value {
+        color: var(--accent-text);
+      }
+
+      .summary-stat-label {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.4;
+        color: var(--muted);
+      }
+
+      .summary-card-current .summary-stat-label {
+        color: var(--accent-text-soft);
+      }
+
+      .summary-section {
+        display: grid;
+        gap: 10px;
+        padding-top: 12px;
+      }
+
+      .summary-section-title {
+        margin: 0;
+        font-family: var(--code-font);
+        font-size: 11px;
+        line-height: 1;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent-text-soft);
+      }
+
+      .summary-tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .summary-tag {
+        display: inline-flex;
+        align-items: center;
+        min-height: 32px;
+        padding: 6px 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        font-size: 12px;
+        line-height: 1.35;
+        color: var(--ink);
+      }
+
+      button.summary-tag {
+        cursor: pointer;
+        transition:
+          border-color 180ms ease,
+          background-color 180ms ease,
+          color 180ms ease,
+          box-shadow 180ms ease;
+      }
+
+      button.summary-tag:hover,
+      button.summary-tag:focus-visible {
+        border-color: var(--accent-border-strong);
+        background: var(--accent-surface-soft);
+        outline: none;
+        box-shadow: 0 0 0 4px var(--accent-ring);
+      }
+
+      button.summary-tag.is-active {
+        border-color: var(--accent-border);
+        background: var(--accent-surface);
+        color: var(--accent-text);
+      }
+
+      button.summary-tag.is-partial {
+        border-color: #f2c6af;
+        background: var(--accent-surface-soft);
+        color: var(--accent-text-soft);
+      }
+
+      .summary-copy {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.65;
+        color: var(--muted);
+      }
+
+      .summary-unit-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .summary-unit-item {
+        display: grid;
+        gap: 3px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .summary-unit-name {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.4;
+        font-weight: 600;
+        color: var(--ink);
+      }
+
+      .summary-unit-meta {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.4;
+        color: var(--muted);
+      }
+
+      .page-main-empty-copy {
+        margin: 0;
+        max-width: 34ch;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .page-main-note {
+        margin: 0;
+        padding: 10px 12px;
+        border: 1px dashed var(--accent-border);
+        border-radius: 8px;
+        background: var(--accent-surface-soft);
+        font-size: 12px;
+        line-height: 1.6;
+        color: var(--accent-text-soft);
+      }
+
+      .graph-stage {
+        display: grid;
+        gap: 14px;
+      }
+
+      .graph-stage-head {
+        display: grid;
+        gap: 12px;
+      }
+
+      .graph-stage-copy {
+        margin: 0;
+        max-width: 64ch;
+        font-size: 14px;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+
+      .graph-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .graph-legend-item {
+        display: inline-flex;
+        align-items: center;
+        min-height: 30px;
+        padding: 5px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #ffffff;
+        font-size: 11px;
+        line-height: 1.3;
+        color: var(--muted);
+      }
+
+      .graph-shell {
+        display: grid;
+        gap: 12px;
+        padding: clamp(16px, 2vw, 22px);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(250, 112, 46, 0.08),
+            transparent 26%
+          ),
+          #ffffff;
+      }
+
+      .graph-hint {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.6;
+        color: var(--accent-text-soft);
+      }
+
+      .graph-canvas {
+        position: relative;
+        overflow: hidden;
+        height: calc(100vh - 20px);
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.98) 0%,
+            rgba(255, 247, 241, 0.72) 100%
+          ),
+          #ffffff;
+        touch-action: none;
+        user-select: none;
+        cursor: grab;
+      }
+
+      .graph-canvas.is-dragging {
+        cursor: grabbing;
+      }
+
+      .graph-controls {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .graph-control-button {
+        min-width: 34px;
+        min-height: 34px;
+        padding: 0 10px;
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.92);
+        color: var(--ink);
+        font-family: var(--code-font);
+        font-size: 13px;
+        line-height: 1;
+        cursor: pointer;
+        transition:
+          border-color 180ms ease,
+          background-color 180ms ease,
+          color 180ms ease,
+          box-shadow 180ms ease;
+      }
+
+      .graph-control-button:hover,
+      .graph-control-button:focus-visible {
+        border-color: var(--accent-border);
+        background: var(--accent-surface-soft);
+        outline: none;
+        box-shadow: 0 0 0 4px var(--accent-ring);
+      }
+
+      .graph-control-button[data-action="reset"] {
+        padding-inline: 12px;
+      }
+
+      .graph-viewport {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      .graph-render-host {
+        position: absolute;
+        top: 0;
+        left: 0;
+        min-width: 0;
+        min-height: 0;
+        transform-origin: 0 0;
+        will-change: transform;
+      }
+
+      .graph-render-host.is-loading {
+        inset: 0;
+        display: grid;
+        align-items: center;
+        justify-items: center;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .graph-render-host svg {
+        display: block;
+        width: max-content !important;
+        max-width: none !important;
+        height: auto;
+      }
+
+      .graph-render-host .nodeLabel,
+      .graph-render-host .label,
+      .graph-render-host foreignObject div {
+        font-family: var(--body-font) !important;
+      }
+
+      .graph-render-host .flowchart-link {
+        stroke-width: 1.5px;
+      }
+
+      .graph-render-host .cluster rect {
+        rx: 8px;
+        ry: 8px;
+      }
+
+      .mermaid-source-card {
+        display: grid;
+        gap: 12px;
+        padding: clamp(16px, 2vw, 22px);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .mermaid-source-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .mermaid-source-copy {
+        margin: 0;
+        max-width: 64ch;
+        font-size: 13px;
+        line-height: 1.65;
+        color: var(--muted);
+      }
+
+      .mermaid-source-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 0 0 auto;
+      }
+
+      .mermaid-source-button {
+        min-height: 34px;
+        padding: 6px 12px;
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
+        background: #ffffff;
+        color: var(--ink);
+        font-size: 12px;
+        line-height: 1.2;
+        cursor: pointer;
+        transition:
+          border-color 180ms ease,
+          background-color 180ms ease,
+          color 180ms ease,
+          box-shadow 180ms ease;
+      }
+
+      .mermaid-source-button:hover,
+      .mermaid-source-button:focus-visible {
+        border-color: var(--accent-border);
+        background: var(--accent-surface-soft);
+        outline: none;
+        box-shadow: 0 0 0 4px var(--accent-ring);
+      }
+
+      .mermaid-source-button.is-copied {
+        border-color: var(--accent-border);
+        background: var(--accent-surface);
+        color: var(--accent-text);
+      }
+
+      .mermaid-source-text {
+        width: 100%;
+        min-height: 300px;
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fffdfc;
+        color: var(--ink);
+        font-family: var(--code-font);
+        font-size: 12px;
+        line-height: 1.6;
+        resize: vertical;
+        white-space: pre;
+      }
+
+      .lane {
+        position: relative;
+        overflow: visible;
+        display: grid;
+        gap: 12px;
+        padding: clamp(14px, 1.6vw, 18px);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow:
+          0 10px 26px -24px rgba(39, 48, 77, 0.14),
+          0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+      }
+
+      .lane-shell {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+        align-items: start;
+      }
+
+      .lane-entry {
+        display: grid;
+        align-self: start;
+        align-content: start;
+        justify-items: start;
+        gap: 8px;
+        padding: 0 0 10px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        border-bottom: 1px solid var(--line);
+        color: var(--ink);
+      }
+
+      .lane-entry-top {
+        display: grid;
+        justify-items: start;
+        gap: 6px;
+        text-align: left;
+      }
+
+      .lane-index {
+        width: fit-content;
+        padding: 5px 8px;
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
+        font-family: var(--code-font);
+        font-size: 10px;
+        line-height: 1;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+
+      .lane-type {
+        width: fit-content;
+        padding: 5px 8px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 500;
+        line-height: 1;
+        color: var(--muted);
+        background: #ffffff;
+      }
+
+      .lane-name {
+        margin: 0;
+        font-family: var(--display-font);
+        font-size: clamp(22px, 1.9vw, 30px);
+        line-height: 1.08;
+        letter-spacing: -0.04em;
+        font-weight: 700;
+      }
+
+      .lane-skills {
+        display: grid;
+        width: 100%;
+        gap: 6px;
+        padding: 0;
+        border-top: 0;
+      }
+
+      .lane-skills-title {
+        margin: 0;
+        font-family: var(--code-font);
+        font-size: 10px;
+        line-height: 1;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .lane-skill-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        justify-content: flex-start;
+      }
+
+      .lane-skill-chip {
+        display: inline-flex;
+        align-items: center;
+        min-height: 26px;
+        padding: 4px 8px;
+        border: 2px solid var(--accent-border);
+        border-radius: 8px;
+        background: var(--accent-surface-soft);
+        font-size: 11px;
+        line-height: 1.3;
+        color: var(--accent-text-soft);
+      }
+
+      .lane-skill-chip.is-empty {
+        color: var(--muted);
+        border-color: var(--line-strong);
+        background: #ffffff;
+      }
+
+      .lane-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        justify-content: flex-start;
+        font-family: var(--code-font);
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .lane-meta span {
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
+        padding: 3px 7px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .lane-scroller {
+        overflow: visible;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+      }
+
+      .lane-scroller:focus-visible {
+        outline: 2px solid var(--ink);
+        outline-offset: 3px;
+      }
+
+      .lane-track {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+        align-items: stretch;
+        min-height: 100%;
+        padding: 0;
+      }
+
+      .item-cluster {
+        display: grid;
+        gap: 10px;
+        align-content: start;
+        min-width: 0;
+        padding: 12px 16px 0;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        transition:
+          background-color 180ms ease,
+          border-color 180ms ease,
+          color 180ms ease;
+      }
+
+      .item-cluster:hover,
+      .item-cluster:focus-visible {
+        border-color: var(--accent-border);
+      }
+
+      .cluster-index {
+        width: fit-content;
+        padding: 4px 8px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: transparent;
+        font-family: var(--code-font);
+        font-size: 10px;
+        line-height: 1;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+
+      .cluster-group {
+        display: grid;
+        gap: 8px;
+        padding: 6px 0 0;
+        border: 0;
+        border-top: 1px solid var(--line);
+        border-radius: 0;
+        background: transparent;
+      }
+
+      .cluster-group-title {
+        margin: 0;
+        font-family: var(--code-font);
+        font-size: 10px;
+        line-height: 1;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent-text-soft);
+      }
+
+      .cluster-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .chip-group {
+        display: grid;
+        gap: 8px;
+        padding: 6px 0 0;
+        border: 0;
+        border-top: 1px solid var(--line);
+        border-radius: 0;
+        background: transparent;
+      }
+
+      .chip-group-title {
+        margin: 0;
+        font-family: var(--code-font);
+        font-size: 10px;
+        line-height: 1;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .point-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .point-column {
+        min-width: 0;
+        display: grid;
+        gap: 8px;
+        align-content: start;
+      }
+
+      .point-column + .point-column {
+        padding-left: 12px;
+        border-left: 1px solid var(--line);
+      }
+
+      .point-column-title {
+        margin: 0;
+        font-family: var(--display-font);
+        font-size: 12px;
+        line-height: 1.2;
+        font-weight: 600;
+        color: var(--knowledge-text);
+      }
+
+      .point-column-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .point-column-empty {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.4;
+        color: var(--muted);
+      }
+
+      .chip-group-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .knowledge-chip {
+        display: inline-flex;
+        align-items: center;
+        min-height: 30px;
+        padding: 5px 10px;
+        border: 2px solid var(--knowledge-border);
+        border-radius: 8px;
+        background: var(--knowledge-surface);
+        font-size: 11px;
+        line-height: 1.3;
+        font-weight: 400;
+        color: var(--knowledge-text);
+      }
+
+      .point-column[data-tone="skill"] .point-column-title {
+        color: var(--skill-point-text);
+      }
+
+      .knowledge-chip.is-skill-point {
+        border-color: var(--skill-point-border);
+        background: var(--skill-point-surface);
+        color: var(--skill-point-text);
+      }
+
+      .cluster-list.relation-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .task-header {
+        display: grid;
+        gap: 4px;
+      }
+
+      .task-title {
+        margin: 0;
+        font-family: var(--display-font);
+        font-size: clamp(17px, 1.6vw, 21px);
+        line-height: 1.3;
+        letter-spacing: -0.03em;
+        font-weight: 700;
+        color: var(--ink);
+      }
+
+      .task-detail-list {
+        display: grid;
+        gap: 0;
+        padding-top: 2px;
+      }
+
+      .task-detail {
+        display: grid;
+        grid-template-columns: 84px minmax(0, 1fr);
+        gap: 10px 12px;
+        align-items: start;
+        padding: 8px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .task-detail:first-child {
+        padding-top: 0;
+        border-top: 0;
+      }
+
+      .task-detail-label {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.45;
+        font-weight: 700;
+        color: var(--accent-text-soft);
+      }
+
+      .task-detail-value {
+        min-width: 0;
+        display: grid;
+        gap: 4px;
+      }
+
+      .task-detail-item {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.55;
+        color: var(--ink);
+        word-break: break-word;
+      }
+
+      .task-detail-item.is-active {
+        color: var(--accent-text);
+        font-weight: 700;
+      }
+
+      .task-detail-item.is-muted {
+        color: var(--muted);
+      }
+
+      .item-cluster .node {
+        min-width: 0;
+        max-width: none;
+      }
+
+      .item-cluster .node.resource {
+        width: 100%;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .item-cluster .node.resource::before {
+        display: none;
+      }
+
+      .cluster-list .node {
+        flex: 1 1 148px;
+      }
+
+      .cluster-list.relation-list .node {
+        flex: 0 0 auto;
+        width: auto;
+      }
+
+      .relation-card {
+        display: contents;
+      }
+
+      .node {
+        min-width: 0;
+        max-width: none;
+        display: grid;
+        gap: 8px;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        transition:
+          background-color 180ms ease,
+          border-color 180ms ease,
+          color 180ms ease;
+      }
+
+      .node:hover {
+        border-color: var(--accent-border);
+      }
+
+      .node.resource .node-meta {
+        margin-top: 2px;
+      }
+
+      .node.resource[data-kind="problem"] {
+        background: var(--problem);
+      }
+
+      .node.resource[data-kind="teachingModule"] {
+        background: var(--teaching-module);
+      }
+
+      .node.skill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 32px;
+        padding: 6px 10px;
+        border: 2px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        color: var(--ink);
+        box-shadow: none;
+        transition: none;
+      }
+
+      .node.skill:hover,
+      .node.skill:focus-visible {
+        border-color: var(--line);
+        background: #ffffff;
+      }
+
+      .node.skill.is-active {
+        border-color: var(--accent-border);
+        background: var(--accent-surface);
+        color: var(--accent-text);
+      }
+
+      .node.industry {
+        background: var(--industry);
+      }
+
+      .node.skill .node-title {
+        display: block;
+        overflow: visible;
+        margin: 0;
+        font-family: inherit;
+        font-size: 12px;
+        line-height: 1.25;
+        font-weight: 400;
+        letter-spacing: 0;
+        -webkit-line-clamp: unset;
+        -webkit-box-orient: initial;
+      }
+
+      .node.skill.is-active .node-title {
+        font-weight: 500;
+        color: var(--accent-text);
+      }
+
+      .node.empty {
+        color: var(--muted);
+        background: #fffdf8;
+        border-style: dashed;
+      }
+
+      .node-label {
+        font-family: var(--code-font);
+        font-size: 11px;
+        line-height: 1;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .node-title {
+        display: -webkit-box;
+        overflow: hidden;
+        margin: 0;
+        font-family: var(--display-font);
+        font-size: 16px;
+        line-height: 1.2;
+        letter-spacing: -0.03em;
+        font-weight: 600;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+      }
+
+      .node-meta {
+        margin: 0;
+        padding-top: 10px;
+        border-top: 1px solid var(--line);
+        font-size: 12px;
+        line-height: 1.45;
+        color: var(--muted);
+      }
+
+      .node-meta-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .meta-chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 8px;
+        border: 2px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        font-size: 10px;
+        line-height: 1.2;
+        color: var(--ink);
+      }
+
+      .page-title-box {
+        --card-glow: rgba(250, 112, 46, 0.42);
+      }
+
+      .course-map-card,
+      .summary-card,
+      .item-cluster {
+        --card-glow: rgba(250, 112, 46, 0.3);
+      }
+
+      .course-map-card,
+      .summary-card,
+      .lane-entry,
+      .page-main-empty,
+      .node {
+        position: relative;
+        overflow: visible;
+        box-shadow:
+          0 10px 26px -24px rgba(39, 48, 77, 0.14),
+          0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+      }
+
+      .course-map-card-skills,
+      .lane-skill-list,
+      .chip-group-list,
+      .node-meta-list {
+        gap: 8px;
+      }
+
+      .course-map-skill,
+      .course-map-meta,
+      .meta-chip {
+        border-width: 1px;
+        border-color: var(--line-strong);
+        background: #ffffff;
+      }
+
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      @media (min-width: 1281px) {
+        .course-map,
+        .page-summary {
+          position: sticky;
+          top: 10px;
+          overflow: auto;
+          overscroll-behavior: contain;
+        }
+      }
+
+      @media (max-width: 1280px) {
+        .page-layout {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          grid-template-areas:
+            "main main"
+            "summary map";
+        }
+      }
+
+      @media (max-width: 960px) {
+        .page-layout {
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-areas:
+            "summary"
+            "main"
+            "map";
+        }
+
+        .graph-shell {
+          padding: 18px;
+        }
+
+        .mermaid-source-head {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .graph-render-host {
+          min-height: 460px;
+        }
+
+        .lane-shell {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .lane-entry {
+          min-height: auto;
+          align-self: auto;
+          padding: 0 0 10px;
+        }
+
+        .lane-name {
+          font-size: 24px;
+        }
+
+        .lane-skill-chip {
+          min-height: 28px;
+          padding-inline: 8px;
+          font-size: 11px;
+        }
+
+        .node {
+          padding: 16px;
+        }
+
+        .task-detail {
+          grid-template-columns: 78px minmax(0, 1fr);
+          gap: 8px 10px;
+        }
+
+        .cluster-list .node {
+          min-width: 0;
+          max-width: none;
+        }
+      }
+
+      @media (max-width: 640px) {
+        #app {
+          padding: 16px 12px 36px;
+        }
+
+        .page-layout {
+          gap: 14px;
+        }
+
+        .page-title-box {
+          width: 100%;
+          padding: 16px 18px;
+          border-width: 1px;
+        }
+
+        .course-map,
+        .summary-card,
+        .graph-shell,
+        .mermaid-source-card {
+          padding: 16px;
+          border-width: 1px;
+          border-radius: 8px;
+        }
+
+        .page-main {
+          padding: 0;
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+        }
+
+        .graph-stage-head {
+          gap: 10px;
+        }
+
+        .graph-stage-copy {
+          font-size: 13px;
+        }
+
+        .graph-canvas {
+          padding: 10px;
+        }
+
+        .mermaid-source-text {
+          min-height: 240px;
+          padding: 12px;
+        }
+
+        .course-map-card {
+          padding: 14px;
+          border-width: 1px;
+          border-radius: 8px;
+        }
+
+        .lane {
+          padding: 14px;
+          border-width: 1px;
+          border-radius: 8px;
+        }
+
+        .lane-shell {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 16px;
+        }
+
+        .lane-entry {
+          gap: 8px;
+          min-height: auto;
+          padding: 0 0 10px;
+        }
+
+        .lane-name {
+          font-size: 22px;
+        }
+
+        .lane-skills {
+          gap: 6px;
+        }
+
+        .lane-skill-list {
+          gap: 5px;
+        }
+
+        .lane-scroller {
+          border-width: 1px;
+          border-radius: 8px;
+        }
+
+        .lane-track {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 12px;
+          padding: 12px;
+        }
+
+        .task-title {
+          font-size: 16px;
+        }
+
+        .task-detail {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 4px;
+        }
+
+        .task-detail-label {
+          font-size: 11px;
+        }
+
+        .task-detail-item {
+          font-size: 12px;
+        }
+
+        .item-cluster {
+          min-width: 0;
+          gap: 12px;
+          padding: 14px;
+          border-width: 1px;
+          border-radius: 8px;
+        }
+
+        .node {
+          gap: 8px;
+          padding: 14px;
+          border-width: 1px;
+          border-radius: 8px;
+        }
+
+        .node-title {
+          font-size: 15px;
+        }
+
+        .node.skill .node-title {
+          font-size: 12px;
+          line-height: 1.25;
+        }
+
+        .node-meta {
+          font-size: 12px;
+        }
+
+        .cluster-list {
+          display: grid;
+        }
+
+        .cluster-list .node {
+          flex: initial;
+          width: 100%;
+        }
+
+        .cluster-group,
+        .chip-group {
+          padding: 14px;
+          border-width: 1px;
+          border-radius: 8px;
+        }
+
+        .point-grid {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 10px;
+        }
+
+        .point-column + .point-column {
+          padding-left: 0;
+          padding-top: 10px;
+          border-left: 0;
+          border-top: 1px solid var(--line);
+        }
+
+        .summary-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"
+      onload="window.__skillmapMermaidReady = true; window.dispatchEvent(new Event('skillmap-mermaid-ready'));"
+      onerror="window.dispatchEvent(new Event('skillmap-mermaid-error'));"
+    ></script>
+    <script>
+      const data = {
+        rows: [
+          {
+            testPaper: {
+              poster: null,
+              time2Start: 0,
+              teachingModulesCount: 3,
+              problemsCount: 2,
+              submitSummary: {
+                totalSubmits: 26,
+                totalUnsubmitted: 6,
+                correctAnswers: 18,
+                incorrectAnswers: 6,
+                ungradedAnswers: 2,
+                score: 84,
+              },
+              typeName: "教学",
+              id: 9101,
+              isEnable: true,
+              syncKey: "unit_prompt_engineering",
+              name: "项目1 Prompt 设计与角色建模",
+              creatorId: 3615,
+              courseId: 8801,
+              startTime: "2026-03-03T01:30:00.000Z",
+              endTime: null,
+              duration: null,
+              remark: "围绕企业知识库助教场景完成提示词设计入门。",
+              config: null,
+              rank: "1.00",
+              sourceTestPaperId: null,
+              type: 2,
+              allowResubmit: true,
+              showAnswer: 1,
+              showAnalysis: 1,
+              showMark: 1,
+              lessonPlan: null,
+              studentId: null,
+              maxMembers: 0,
+              showScore: 1,
+              unitSubmitCount: 1,
+              submitEndTime: null,
+              shuffleEnabled: false,
+              isProject: false,
+              taskType: 1,
+              createdAt: "2026-03-01T08:00:00.000Z",
+              updatedAt: "2026-04-08T10:00:00.000Z",
+              course: {
+                id: 8801,
+                teacherId: 3615,
+                name: "大模型应用开发实训",
+              },
+            },
+            testPaperProblems: [
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9201,
+                problemId: null,
+                teachingModuleId: 5001,
+                score: "0.00",
+                order: 1,
+                problem: null,
+                teachingModule: {
+                  id: 5001,
+                  type: 1,
+                  name: "角色定义与边界约束",
+                  creatorId: 3615,
+                  teachingRepo: {
+                    id: 7001,
+                    name: "Prompt 工程基础",
+                  },
+                },
+                sourceTestPaperProblem: null,
+                resourceType: "teachingModule",
+                skills: [
+                  {
+                    id: 101,
+                    name: "提示词设计",
+                    industries: [
+                      {
+                        industryId: 301,
+                        jobPosition: "大模型应用开发工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9202,
+                problemId: null,
+                teachingModuleId: 5002,
+                score: "0.00",
+                order: 2,
+                problem: null,
+                teachingModule: {
+                  id: 5002,
+                  type: 1,
+                  name: "输出格式约束与 Few-shot 示例",
+                  creatorId: 3615,
+                  teachingRepo: {
+                    id: 7001,
+                    name: "Prompt 工程基础",
+                  },
+                },
+                sourceTestPaperProblem: null,
+                resourceType: "teachingModule",
+                skills: [
+                  {
+                    id: 101,
+                    name: "提示词设计",
+                    industries: [
+                      {
+                        industryId: 301,
+                        jobPosition: "大模型应用开发工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                  {
+                    id: 102,
+                    name: "业务需求拆解",
+                    industries: [
+                      {
+                        industryId: 301,
+                        jobPosition: "AI 解决方案实施顾问",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "智能客服",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9203,
+                problemId: 6001,
+                teachingModuleId: null,
+                score: "40.00",
+                order: 3,
+                problem: {
+                  id: 6001,
+                  title: "为“企业知识库助教”编写 system prompt",
+                  type: 4,
+                  creatorId: 3615,
+                  teachingModuleIds: [5001, 5002, 5008],
+                  teachingModules: [
+                    {
+                      id: 5001,
+                      name: "角色定义与边界约束",
+                      creatorId: 3615,
+                      teachingRepoId: 7001,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7001,
+                        name: "Prompt 工程基础",
+                      },
+                    },
+                    {
+                      id: 5002,
+                      name: "输出格式约束与 Few-shot 示例",
+                      creatorId: 3615,
+                      teachingRepoId: 7001,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7001,
+                        name: "Prompt 工程基础",
+                      },
+                    },
+                    {
+                      id: 5008,
+                      name: "System Prompt 结构化编写",
+                      creatorId: 3615,
+                      teachingRepoId: 7001,
+                      type: 2,
+                      teachingRepo: {
+                        id: 7001,
+                        name: "Prompt 工程基础",
+                      },
+                    },
+                  ],
+                },
+                teachingModule: null,
+                sourceTestPaperProblem: null,
+                resourceType: "problem",
+                skills: [
+                  {
+                    id: 101,
+                    name: "提示词设计",
+                    industries: [
+                      {
+                        industryId: 301,
+                        jobPosition: "大模型应用开发工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9204,
+                problemId: 6002,
+                teachingModuleId: null,
+                score: "60.00",
+                order: 4,
+                problem: {
+                  id: 6002,
+                  title: "优化问答回复中的拒答与追问策略",
+                  type: 4,
+                  creatorId: 3615,
+                  teachingModuleIds: [5001, 5003, 5009],
+                  teachingModules: [
+                    {
+                      id: 5001,
+                      name: "角色定义与边界约束",
+                      creatorId: 3615,
+                      teachingRepoId: 7001,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7001,
+                        name: "Prompt 工程基础",
+                      },
+                    },
+                    {
+                      id: 5003,
+                      name: "拒答策略与安全规则",
+                      creatorId: 3615,
+                      teachingRepoId: 7001,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7001,
+                        name: "Prompt 工程基础",
+                      },
+                    },
+                    {
+                      id: 5009,
+                      name: "拒答话术与追问改写",
+                      creatorId: 3615,
+                      teachingRepoId: 7001,
+                      type: 10001,
+                      teachingRepo: {
+                        id: 7001,
+                        name: "Prompt 工程基础",
+                      },
+                    },
+                  ],
+                },
+                teachingModule: null,
+                sourceTestPaperProblem: null,
+                resourceType: "problem",
+                skills: [
+                  {
+                    id: 101,
+                    name: "提示词设计",
+                    industries: [
+                      {
+                        industryId: 301,
+                        jobPosition: "大模型应用开发工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                  {
+                    id: 103,
+                    name: "安全拒答设计",
+                    industries: [
+                      {
+                        industryId: 301,
+                        jobPosition: "AI 解决方案实施顾问",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "智能客服",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+            skills: [
+              {
+                id: 101,
+                name: "提示词设计",
+                industries: [
+                  {
+                    industryId: 301,
+                    jobPosition: "大模型应用开发工程师",
+                    industryLevel1: "互联网和信息技术服务",
+                    industryLevel2: "AIGC应用开发",
+                  },
+                ],
+              },
+              {
+                id: 102,
+                name: "业务需求拆解",
+                industries: [
+                  {
+                    industryId: 301,
+                    jobPosition: "AI 解决方案实施顾问",
+                    industryLevel1: "企业数字化服务",
+                    industryLevel2: "智能客服",
+                  },
+                ],
+              },
+              {
+                id: 103,
+                name: "安全拒答设计",
+                industries: [
+                  {
+                    industryId: 301,
+                    jobPosition: "AI 解决方案实施顾问",
+                    industryLevel1: "企业数字化服务",
+                    industryLevel2: "智能客服",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            testPaper: {
+              poster: null,
+              time2Start: 0,
+              teachingModulesCount: 3,
+              problemsCount: 2,
+              submitSummary: {
+                totalSubmits: 24,
+                totalUnsubmitted: 8,
+                correctAnswers: 15,
+                incorrectAnswers: 5,
+                ungradedAnswers: 4,
+                score: 81,
+              },
+              typeName: "作业",
+              id: 9102,
+              isEnable: true,
+              syncKey: "unit_rag_building",
+              name: "项目2 RAG 知识库构建与检索优化",
+              creatorId: 3615,
+              courseId: 8801,
+              startTime: "2026-03-10T01:30:00.000Z",
+              endTime: null,
+              duration: null,
+              remark: "完成知识切分、召回和引用式回答的完整链路。",
+              config: null,
+              rank: "2.00",
+              sourceTestPaperId: null,
+              type: 4,
+              allowResubmit: true,
+              showAnswer: 1,
+              showAnalysis: 1,
+              showMark: 1,
+              lessonPlan: null,
+              studentId: null,
+              maxMembers: 0,
+              showScore: 1,
+              unitSubmitCount: 1,
+              submitEndTime: null,
+              shuffleEnabled: false,
+              isProject: false,
+              taskType: 2,
+              createdAt: "2026-03-08T08:00:00.000Z",
+              updatedAt: "2026-04-08T10:00:00.000Z",
+              course: {
+                id: 8801,
+                teacherId: 3615,
+                name: "大模型应用开发实训",
+              },
+            },
+            testPaperProblems: [
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9301,
+                problemId: null,
+                teachingModuleId: 5101,
+                score: "0.00",
+                order: 1,
+                problem: null,
+                teachingModule: {
+                  id: 5101,
+                  type: 1,
+                  name: "文档切分策略与 Chunk 评估",
+                  creatorId: 3615,
+                  teachingRepo: {
+                    id: 7002,
+                    name: "RAG 实战",
+                  },
+                },
+                sourceTestPaperProblem: null,
+                resourceType: "teachingModule",
+                skills: [
+                  {
+                    id: 104,
+                    name: "知识库构建",
+                    industries: [
+                      {
+                        industryId: 302,
+                        jobPosition: "知识库工程师",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "企业知识管理",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9302,
+                problemId: null,
+                teachingModuleId: 5102,
+                score: "0.00",
+                order: 2,
+                problem: null,
+                teachingModule: {
+                  id: 5102,
+                  type: 1,
+                  name: "向量召回、重排序与引用式回答",
+                  creatorId: 3615,
+                  teachingRepo: {
+                    id: 7002,
+                    name: "RAG 实战",
+                  },
+                },
+                sourceTestPaperProblem: null,
+                resourceType: "teachingModule",
+                skills: [
+                  {
+                    id: 105,
+                    name: "检索调优",
+                    industries: [
+                      {
+                        industryId: 302,
+                        jobPosition: "AI 应用工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                  {
+                    id: 106,
+                    name: "引用式回答设计",
+                    industries: [
+                      {
+                        industryId: 302,
+                        jobPosition: "知识库工程师",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "企业知识管理",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9303,
+                problemId: 6101,
+                teachingModuleId: null,
+                score: "50.00",
+                order: 3,
+                problem: {
+                  id: 6101,
+                  title: "为售后知识库设计分块与 metadata 方案",
+                  type: 10,
+                  creatorId: 3615,
+                  teachingModuleIds: [5101, 5108],
+                  teachingModules: [
+                    {
+                      id: 5101,
+                      name: "文档切分策略与 Chunk 评估",
+                      creatorId: 3615,
+                      teachingRepoId: 7002,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7002,
+                        name: "RAG 实战",
+                      },
+                    },
+                    {
+                      id: 5108,
+                      name: "Chunk 策略调优实践",
+                      creatorId: 3615,
+                      teachingRepoId: 7002,
+                      type: 2,
+                      teachingRepo: {
+                        id: 7002,
+                        name: "RAG 实战",
+                      },
+                    },
+                  ],
+                },
+                teachingModule: null,
+                sourceTestPaperProblem: null,
+                resourceType: "problem",
+                skills: [
+                  {
+                    id: 104,
+                    name: "知识库构建",
+                    industries: [
+                      {
+                        industryId: 302,
+                        jobPosition: "知识库工程师",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "企业知识管理",
+                      },
+                    ],
+                  },
+                  {
+                    id: 105,
+                    name: "检索调优",
+                    industries: [
+                      {
+                        industryId: 302,
+                        jobPosition: "AI 应用工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9304,
+                problemId: 6102,
+                teachingModuleId: null,
+                score: "50.00",
+                order: 4,
+                problem: {
+                  id: 6102,
+                  title: "分析召回日志并优化引用式回答准确率",
+                  type: 10,
+                  creatorId: 3615,
+                  teachingModuleIds: [5102, 5103, 5109],
+                  teachingModules: [
+                    {
+                      id: 5102,
+                      name: "向量召回、重排序与引用式回答",
+                      creatorId: 3615,
+                      teachingRepoId: 7002,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7002,
+                        name: "RAG 实战",
+                      },
+                    },
+                    {
+                      id: 5103,
+                      name: "检索结果评测与误召回分析",
+                      creatorId: 3615,
+                      teachingRepoId: 7002,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7002,
+                        name: "RAG 实战",
+                      },
+                    },
+                    {
+                      id: 5109,
+                      name: "误召回诊断与引用纠偏",
+                      creatorId: 3615,
+                      teachingRepoId: 7002,
+                      type: 10001,
+                      teachingRepo: {
+                        id: 7002,
+                        name: "RAG 实战",
+                      },
+                    },
+                  ],
+                },
+                teachingModule: null,
+                sourceTestPaperProblem: null,
+                resourceType: "problem",
+                skills: [
+                  {
+                    id: 105,
+                    name: "检索调优",
+                    industries: [
+                      {
+                        industryId: 302,
+                        jobPosition: "AI 应用工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                  {
+                    id: 106,
+                    name: "引用式回答设计",
+                    industries: [
+                      {
+                        industryId: 302,
+                        jobPosition: "知识库工程师",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "企业知识管理",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+            skills: [
+              {
+                id: 104,
+                name: "知识库构建",
+                industries: [
+                  {
+                    industryId: 302,
+                    jobPosition: "知识库工程师",
+                    industryLevel1: "企业数字化服务",
+                    industryLevel2: "企业知识管理",
+                  },
+                ],
+              },
+              {
+                id: 105,
+                name: "检索调优",
+                industries: [
+                  {
+                    industryId: 302,
+                    jobPosition: "AI 应用工程师",
+                    industryLevel1: "互联网和信息技术服务",
+                    industryLevel2: "AIGC应用开发",
+                  },
+                ],
+              },
+              {
+                id: 106,
+                name: "引用式回答设计",
+                industries: [
+                  {
+                    industryId: 302,
+                    jobPosition: "知识库工程师",
+                    industryLevel1: "企业数字化服务",
+                    industryLevel2: "企业知识管理",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            testPaper: {
+              poster: null,
+              time2Start: 0,
+              teachingModulesCount: 3,
+              problemsCount: 2,
+              submitSummary: {
+                totalSubmits: 21,
+                totalUnsubmitted: 11,
+                correctAnswers: 13,
+                incorrectAnswers: 4,
+                ungradedAnswers: 4,
+                score: 79,
+              },
+              typeName: "作业",
+              id: 9103,
+              isEnable: true,
+              syncKey: "unit_tool_calling",
+              name: "项目3 Function Calling 与工具编排",
+              creatorId: 3615,
+              courseId: 8801,
+              startTime: "2026-03-17T01:30:00.000Z",
+              endTime: null,
+              duration: null,
+              remark: "完成工具 schema 设计、接口联调和回退策略。",
+              config: {
+                chat: {
+                  name: "工具调用实验助手",
+                  model: 137,
+                  style: 1,
+                  prompt:
+                    "你需要优先判断是否调用工具，并以结构化方式解释调用结果。",
+                  tagPrompt: "",
+                  warningTimes: 0,
+                  enableAutoBan: false,
+                  sampleQuestions: [
+                    "帮我查询今天上海的天气并给出出行建议",
+                    "查询订单 20260318001 的物流状态",
+                  ],
+                },
+              },
+              rank: "3.00",
+              sourceTestPaperId: null,
+              type: 4,
+              allowResubmit: true,
+              showAnswer: 1,
+              showAnalysis: 1,
+              showMark: 1,
+              lessonPlan: null,
+              studentId: null,
+              maxMembers: 0,
+              showScore: 1,
+              unitSubmitCount: 1,
+              submitEndTime: null,
+              shuffleEnabled: false,
+              isProject: false,
+              taskType: 2,
+              createdAt: "2026-03-15T08:00:00.000Z",
+              updatedAt: "2026-04-08T10:00:00.000Z",
+              course: {
+                id: 8801,
+                teacherId: 3615,
+                name: "大模型应用开发实训",
+              },
+            },
+            testPaperProblems: [
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9401,
+                problemId: null,
+                teachingModuleId: 5201,
+                score: "0.00",
+                order: 1,
+                problem: null,
+                teachingModule: {
+                  id: 5201,
+                  type: 1,
+                  name: "工具 schema 设计与参数校验",
+                  creatorId: 3615,
+                  teachingRepo: {
+                    id: 7003,
+                    name: "工具调用与 Agent 编排",
+                  },
+                },
+                sourceTestPaperProblem: null,
+                resourceType: "teachingModule",
+                skills: [
+                  {
+                    id: 107,
+                    name: "工具调用设计",
+                    industries: [
+                      {
+                        industryId: 303,
+                        jobPosition: "AI 应用工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9402,
+                problemId: null,
+                teachingModuleId: 5202,
+                score: "0.00",
+                order: 2,
+                problem: null,
+                teachingModule: {
+                  id: 5202,
+                  type: 1,
+                  name: "多工具路由与异常回退",
+                  creatorId: 3615,
+                  teachingRepo: {
+                    id: 7003,
+                    name: "工具调用与 Agent 编排",
+                  },
+                },
+                sourceTestPaperProblem: null,
+                resourceType: "teachingModule",
+                skills: [
+                  {
+                    id: 108,
+                    name: "API 联调与异常处理",
+                    industries: [
+                      {
+                        industryId: 303,
+                        jobPosition: "后端集成工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "企业系统集成",
+                      },
+                    ],
+                  },
+                  {
+                    id: 109,
+                    name: "Agent 工作流编排",
+                    industries: [
+                      {
+                        industryId: 303,
+                        jobPosition: "大模型应用开发工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9403,
+                problemId: 6201,
+                teachingModuleId: null,
+                score: "45.00",
+                order: 3,
+                problem: {
+                  id: 6201,
+                  title: "为天气查询与工单检索设计 function schema",
+                  type: 10,
+                  creatorId: 3615,
+                  teachingModuleIds: [5201, 5208],
+                  teachingModules: [
+                    {
+                      id: 5201,
+                      name: "工具 schema 设计与参数校验",
+                      creatorId: 3615,
+                      teachingRepoId: 7003,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7003,
+                        name: "工具调用与 Agent 编排",
+                      },
+                    },
+                    {
+                      id: 5208,
+                      name: "Function Schema 建模",
+                      creatorId: 3615,
+                      teachingRepoId: 7003,
+                      type: 2,
+                      teachingRepo: {
+                        id: 7003,
+                        name: "工具调用与 Agent 编排",
+                      },
+                    },
+                  ],
+                },
+                teachingModule: null,
+                sourceTestPaperProblem: null,
+                resourceType: "problem",
+                skills: [
+                  {
+                    id: 107,
+                    name: "工具调用设计",
+                    industries: [
+                      {
+                        industryId: 303,
+                        jobPosition: "AI 应用工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9404,
+                problemId: 6202,
+                teachingModuleId: null,
+                score: "55.00",
+                order: 4,
+                problem: {
+                  id: 6202,
+                  title: "排查 tool call 参数错误并补齐回退逻辑",
+                  type: 10,
+                  creatorId: 3615,
+                  teachingModuleIds: [5202, 5203, 5209],
+                  teachingModules: [
+                    {
+                      id: 5202,
+                      name: "多工具路由与异常回退",
+                      creatorId: 3615,
+                      teachingRepoId: 7003,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7003,
+                        name: "工具调用与 Agent 编排",
+                      },
+                    },
+                    {
+                      id: 5203,
+                      name: "上下文状态管理与结果归并",
+                      creatorId: 3615,
+                      teachingRepoId: 7003,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7003,
+                        name: "工具调用与 Agent 编排",
+                      },
+                    },
+                    {
+                      id: 5209,
+                      name: "Tool Call 异常排障",
+                      creatorId: 3615,
+                      teachingRepoId: 7003,
+                      type: 10001,
+                      teachingRepo: {
+                        id: 7003,
+                        name: "工具调用与 Agent 编排",
+                      },
+                    },
+                  ],
+                },
+                teachingModule: null,
+                sourceTestPaperProblem: null,
+                resourceType: "problem",
+                skills: [
+                  {
+                    id: 108,
+                    name: "API 联调与异常处理",
+                    industries: [
+                      {
+                        industryId: 303,
+                        jobPosition: "后端集成工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "企业系统集成",
+                      },
+                    ],
+                  },
+                  {
+                    id: 109,
+                    name: "Agent 工作流编排",
+                    industries: [
+                      {
+                        industryId: 303,
+                        jobPosition: "大模型应用开发工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+            skills: [
+              {
+                id: 107,
+                name: "工具调用设计",
+                industries: [
+                  {
+                    industryId: 303,
+                    jobPosition: "AI 应用工程师",
+                    industryLevel1: "互联网和信息技术服务",
+                    industryLevel2: "AIGC应用开发",
+                  },
+                ],
+              },
+              {
+                id: 108,
+                name: "API 联调与异常处理",
+                industries: [
+                  {
+                    industryId: 303,
+                    jobPosition: "后端集成工程师",
+                    industryLevel1: "互联网和信息技术服务",
+                    industryLevel2: "企业系统集成",
+                  },
+                ],
+              },
+              {
+                id: 109,
+                name: "Agent 工作流编排",
+                industries: [
+                  {
+                    industryId: 303,
+                    jobPosition: "大模型应用开发工程师",
+                    industryLevel1: "互联网和信息技术服务",
+                    industryLevel2: "AIGC应用开发",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            testPaper: {
+              poster: null,
+              time2Start: 0,
+              teachingModulesCount: 3,
+              problemsCount: 2,
+              submitSummary: {
+                totalSubmits: 19,
+                totalUnsubmitted: 13,
+                correctAnswers: 10,
+                incorrectAnswers: 3,
+                ungradedAnswers: 6,
+                score: 88,
+              },
+              typeName: "作业",
+              id: 9104,
+              isEnable: true,
+              syncKey: "unit_agent_project",
+              name: "项目4 智能客服 Agent 项目实战",
+              creatorId: 3615,
+              courseId: 8801,
+              startTime: "2026-03-24T01:30:00.000Z",
+              endTime: null,
+              duration: null,
+              remark: "使用课程前 3 个项目能力完成一个企业客服 Agent 项目。",
+              config: {
+                chat: {
+                  name: "项目答疑助手",
+                  model: 137,
+                  style: 1,
+                  prompt:
+                    "你是项目评审老师，需要从会话质量、工具调用成功率和知识引用准确率三个维度点评学生方案。",
+                  tagPrompt: "",
+                  warningTimes: 0,
+                  enableAutoBan: false,
+                  sampleQuestions: [
+                    "如何实现售后场景下的意图识别路由？",
+                    "客服机器人回答错误时如何转人工？",
+                  ],
+                },
+              },
+              rank: "4.00",
+              sourceTestPaperId: null,
+              type: 4,
+              allowResubmit: true,
+              showAnswer: 1,
+              showAnalysis: 1,
+              showMark: 1,
+              lessonPlan: null,
+              studentId: null,
+              maxMembers: 4,
+              showScore: 1,
+              unitSubmitCount: 1,
+              submitEndTime: null,
+              shuffleEnabled: false,
+              isProject: true,
+              taskType: 1,
+              createdAt: "2026-03-22T08:00:00.000Z",
+              updatedAt: "2026-04-08T10:00:00.000Z",
+              course: {
+                id: 8801,
+                teacherId: 3615,
+                name: "大模型应用开发实训",
+              },
+            },
+            testPaperProblems: [
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9501,
+                problemId: null,
+                teachingModuleId: 5301,
+                score: "0.00",
+                order: 1,
+                problem: null,
+                teachingModule: {
+                  id: 5301,
+                  type: 1,
+                  name: "会话记忆管理与意图路由",
+                  creatorId: 3615,
+                  teachingRepo: {
+                    id: 7004,
+                    name: "智能客服 Agent 项目实战",
+                  },
+                },
+                sourceTestPaperProblem: null,
+                resourceType: "teachingModule",
+                skills: [
+                  {
+                    id: 110,
+                    name: "对话状态管理",
+                    industries: [
+                      {
+                        industryId: 304,
+                        jobPosition: "智能客服产品工程师",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "智能客服",
+                      },
+                    ],
+                  },
+                  {
+                    id: 109,
+                    name: "Agent 工作流编排",
+                    industries: [
+                      {
+                        industryId: 304,
+                        jobPosition: "大模型应用开发工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9502,
+                problemId: null,
+                teachingModuleId: 5302,
+                score: "0.00",
+                order: 2,
+                problem: null,
+                teachingModule: {
+                  id: 5302,
+                  type: 1,
+                  name: "质量评测、人工兜底与上线验收",
+                  creatorId: 3615,
+                  teachingRepo: {
+                    id: 7004,
+                    name: "智能客服 Agent 项目实战",
+                  },
+                },
+                sourceTestPaperProblem: null,
+                resourceType: "teachingModule",
+                skills: [
+                  {
+                    id: 111,
+                    name: "质量评测与人工兜底",
+                    industries: [
+                      {
+                        industryId: 304,
+                        jobPosition: "AI 解决方案实施顾问",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "智能客服",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9503,
+                problemId: 6301,
+                teachingModuleId: null,
+                score: "60.00",
+                order: 3,
+                problem: {
+                  id: 6301,
+                  title: "搭建“售后客服 Agent”并完成会话路由设计",
+                  type: 10,
+                  creatorId: 3615,
+                  teachingModuleIds: [5301, 5303, 5308],
+                  teachingModules: [
+                    {
+                      id: 5301,
+                      name: "会话记忆管理与意图路由",
+                      creatorId: 3615,
+                      teachingRepoId: 7004,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7004,
+                        name: "智能客服 Agent 项目实战",
+                      },
+                    },
+                    {
+                      id: 5303,
+                      name: "多场景工具编排与转人工策略",
+                      creatorId: 3615,
+                      teachingRepoId: 7004,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7004,
+                        name: "智能客服 Agent 项目实战",
+                      },
+                    },
+                    {
+                      id: 5308,
+                      name: "Agent 路由编排",
+                      creatorId: 3615,
+                      teachingRepoId: 7004,
+                      type: 2,
+                      teachingRepo: {
+                        id: 7004,
+                        name: "智能客服 Agent 项目实战",
+                      },
+                    },
+                  ],
+                },
+                teachingModule: null,
+                sourceTestPaperProblem: null,
+                resourceType: "problem",
+                skills: [
+                  {
+                    id: 109,
+                    name: "Agent 工作流编排",
+                    industries: [
+                      {
+                        industryId: 304,
+                        jobPosition: "大模型应用开发工程师",
+                        industryLevel1: "互联网和信息技术服务",
+                        industryLevel2: "AIGC应用开发",
+                      },
+                    ],
+                  },
+                  {
+                    id: 110,
+                    name: "对话状态管理",
+                    industries: [
+                      {
+                        industryId: 304,
+                        jobPosition: "智能客服产品工程师",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "智能客服",
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                isSourceTestPaperProblemDeleted: false,
+                id: 9504,
+                problemId: 6302,
+                teachingModuleId: null,
+                score: "40.00",
+                order: 4,
+                problem: {
+                  id: 6302,
+                  title: "输出评测报告并给出转人工兜底方案",
+                  type: 4,
+                  creatorId: 3615,
+                  teachingModuleIds: [5302, 5309],
+                  teachingModules: [
+                    {
+                      id: 5302,
+                      name: "质量评测、人工兜底与上线验收",
+                      creatorId: 3615,
+                      teachingRepoId: 7004,
+                      type: 1,
+                      teachingRepo: {
+                        id: 7004,
+                        name: "智能客服 Agent 项目实战",
+                      },
+                    },
+                    {
+                      id: 5309,
+                      name: "质检反馈与兜底策略设计",
+                      creatorId: 3615,
+                      teachingRepoId: 7004,
+                      type: 10001,
+                      teachingRepo: {
+                        id: 7004,
+                        name: "智能客服 Agent 项目实战",
+                      },
+                    },
+                  ],
+                },
+                teachingModule: null,
+                sourceTestPaperProblem: null,
+                resourceType: "problem",
+                skills: [
+                  {
+                    id: 111,
+                    name: "质量评测与人工兜底",
+                    industries: [
+                      {
+                        industryId: 304,
+                        jobPosition: "AI 解决方案实施顾问",
+                        industryLevel1: "企业数字化服务",
+                        industryLevel2: "智能客服",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+            skills: [
+              {
+                id: 109,
+                name: "Agent 工作流编排",
+                industries: [
+                  {
+                    industryId: 304,
+                    jobPosition: "大模型应用开发工程师",
+                    industryLevel1: "互联网和信息技术服务",
+                    industryLevel2: "AIGC应用开发",
+                  },
+                ],
+              },
+              {
+                id: 110,
+                name: "对话状态管理",
+                industries: [
+                  {
+                    industryId: 304,
+                    jobPosition: "智能客服产品工程师",
+                    industryLevel1: "企业数字化服务",
+                    industryLevel2: "智能客服",
+                  },
+                ],
+              },
+              {
+                id: 111,
+                name: "质量评测与人工兜底",
+                industries: [
+                  {
+                    industryId: 304,
+                    jobPosition: "AI 解决方案实施顾问",
+                    industryLevel1: "企业数字化服务",
+                    industryLevel2: "智能客服",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        course: {
+          poster: null,
+          banner: null,
+          id: 8801,
+          isEnable: true,
+          syncKey: "course_llm_bootcamp",
+          code: "LLM-BOOTCAMP-01",
+          teacherId: 3615,
+          name: "大模型应用开发实训",
+          summary:
+            "课程围绕企业知识库问答、工具调用和智能客服三个真实业务场景展开，按“Prompt 设计 -> RAG -> Tool Calling -> Agent 项目”逐步推进，最终形成可落地的智能应用开发能力地图。",
+          questions: 8,
+          avatar: null,
+          prompt:
+            "你是一位企业级大模型应用开发导师，善于把需求拆解、知识点和工程实践串成完整路径，帮助学生从业务目标出发设计、实现并评估 AI 应用。",
+          tagPrompt: null,
+          config: null,
+          sourceCourseId: null,
+          type: 2,
+          warningTimes: -1,
+          remark: "真实业务 mock：覆盖课程、项目、任务、知识点和技能岗位映射。",
+          isCompleted: false,
+          standards: null,
+          enableAIGrading: true,
+          isMuted: false,
+          createdAt: "2026-03-01T08:00:00.000Z",
+          updatedAt: "2026-04-08T10:00:00.000Z",
+          teacher: {
+            name: "李沐辰",
+            id: 3615,
+            isEnable: true,
+            userName: "limuchen@demo.edu",
+            avatar: null,
+            remark: "AIGC 应用开发讲师",
+            lastLoginTime: "2026-04-09T01:30:00.000Z",
+            tenantId: null,
+            isAdmin: false,
+            openId: "teacher_llm_bootcamp",
+            concurrency: 20,
+            type: 2,
+            firstLoginTime: "2025-09-01T01:00:00.000Z",
+            createdAt: "2025-09-01T01:00:00.000Z",
+            member: {
+              typeName: "老师",
+              isExpired: false,
+              id: 12061,
+              isEnable: true,
+              syncKey: "teacher_member_llm_bootcamp",
+              userId: 3615,
+              name: "李沐辰（老师）",
+              code: "T-LLM-001",
+              organizationId: 1,
+              modelPermissions: null,
+              type: 2,
+              validityDays: 9999,
+              creatorId: 1,
+              remark: null,
+              purpose: null,
+              department: "人工智能应用教研室",
+              major: "人工智能技术应用",
+              classes: "AIGC 实训班",
+              userName: null,
+              mobile: null,
+              validityDaysMode: 1,
+              autoBind: false,
+              featureFlags: 0,
+              createdAt: "2025-09-01T01:00:00.000Z",
+              updatedAt: "2026-04-08T10:00:00.000Z",
+              organization: {
+                id: 1,
+                isEnable: true,
+                syncKey: "org_llm_bootcamp",
+                name: "晶程甲宇 AIGC 实训中心",
+                code: "JCJY-AIGC",
+                type: 2,
+                ImageQuota: 4,
+                creatorId: 0,
+                config: {
+                  theme: {
+                    logo: "/assets/mock/logo.svg",
+                    title: "晶程甲宇 AIGC 实训中心",
+                    favicon: "/assets/mock/favicon.ico",
+                    headline: "企业级大模型应用实训",
+                  },
+                  disablePublicModel: false,
+                  computeBaseAddressConfig: {
+                    ojEndpoint: "https://mock.example.com/oj",
+                    vmWinEndpoint: "https://mock.example.com/vm-win",
+                    litellmEndpoint: "https://mock.example.com/litellm",
+                    sdModelEndpoint: "https://mock.example.com/sd",
+                    vmLinuxEndpoint: "https://mock.example.com/vm-linux",
+                    vmVscodeEndpoint: "https://mock.example.com/vscode",
+                    vmComfyuiEndpoint: "https://mock.example.com/comfyui",
+                    vmJupyterEndpoint: "https://mock.example.com/jupyter",
+                  },
+                },
+                remark: null,
+                vmTemplateIds: [],
+                isWebAccessEnabled: true,
+                createdAt: "2025-09-01T01:00:00.000Z",
+                updatedAt: "2026-04-08T10:00:00.000Z",
+              },
+            },
+          },
+          sourceCourse: null,
+        },
+      };
+
+      const uiState = {
+        filter: {
+          jobPositions: [],
+          skills: [],
+        },
+      };
+
+      const KNOWLEDGE_POINT_TYPES = new Set([1, 10000]);
+      const SKILL_POINT_TYPES = new Set([2, 10001]);
+      let mermaidConfigured = false;
+      let mermaidRenderCounter = 0;
+      let pendingMermaidRenders = [];
+      const mermaidNodeRegistry = {
+        roles: new Map(),
+        abilities: new Map(),
+      };
+
+      function getCssVar(name, fallback = "") {
+        const value = getComputedStyle(document.documentElement)
+          .getPropertyValue(name)
+          .trim();
+        return value || fallback;
+      }
+
+      function getMermaidColor(name, fallback) {
+        const value = getCssVar(name, fallback);
+        return /^(#|rgb|rgba|hsl|hsla)/i.test(value) ? value : fallback;
+      }
+
+      function configureMermaid() {
+        if (!window.mermaid) {
+          return false;
+        }
+
+        if (!mermaidConfigured) {
+          window.mermaid.initialize({
+            startOnLoad: false,
+            securityLevel: "loose",
+            theme: "base",
+            fontFamily: getCssVar("--body-font", '"Nunito Sans", sans-serif'),
+            flowchart: {
+              htmlLabels: true,
+              curve: "basis",
+              useMaxWidth: false,
+            },
+            themeVariables: {
+              primaryColor: getMermaidColor("--accent-surface-soft", "#fff7f1"),
+              primaryBorderColor: getMermaidColor("--accent-border", "#f8a47d"),
+              primaryTextColor: getMermaidColor("--ink", "#1f2330"),
+              secondaryColor: getMermaidColor("--knowledge-surface", "#fbf7ee"),
+              secondaryBorderColor: getMermaidColor(
+                "--knowledge-border",
+                "#e6d8be",
+              ),
+              tertiaryColor: getMermaidColor("--panel-alt", "#fff7f3"),
+              tertiaryBorderColor: getMermaidColor("--line-strong", "#ead8cd"),
+              lineColor: getMermaidColor("--accent-border", "#f8a47d"),
+              mainBkg: getMermaidColor("--panel", "#ffffff"),
+              clusterBkg: getMermaidColor("--accent-surface-muted", "#fffaf7"),
+              clusterBorder: getMermaidColor("--line", "#e2e7f0"),
+              fontSize: "14px",
+              edgeLabelBackground: getMermaidColor("--panel", "#ffffff"),
+            },
+          });
+          mermaidConfigured = true;
+        }
+
+        return true;
+      }
+
+      function createElement(tag, className, text) {
+        const element = document.createElement(tag);
+        if (className) {
+          element.className = className;
+        }
+        if (text !== undefined) {
+          element.textContent = text;
+        }
+        return element;
+      }
+
+      function createPanelHead(title, copy) {
+        const head = createElement("div", "panel-head");
+        head.append(createElement("h2", "panel-title", title));
+
+        return head;
+      }
+
+      function getSkillKey(skill) {
+        if (!skill) {
+          return "";
+        }
+
+        return skill.id != null ? String(skill.id) : skill.name || "";
+      }
+
+      function getIndustryJobPosition(industry) {
+        return industry?.jobPosition || "未绑定岗位";
+      }
+
+      function getSelectedSkillKey(skillId, jobPosition) {
+        if (skillId == null) {
+          return "";
+        }
+
+        return `${jobPosition || "未绑定岗位"}::${String(skillId)}`;
+      }
+
+      function normalizeFilter(filter = {}) {
+        const jobPositions = new Set();
+        const skillMap = new Map();
+
+        const appendJobPosition = (jobPosition) => {
+          if (!jobPosition) {
+            return;
+          }
+
+          jobPositions.add(jobPosition);
+        };
+
+        const appendSkill = (skillLike, fallbackJobPosition) => {
+          if (!skillLike) {
+            return;
+          }
+
+          const skillId =
+            skillLike.id != null
+              ? String(skillLike.id)
+              : skillLike.skillId != null
+                ? String(skillLike.skillId)
+                : "";
+
+          if (!skillId) {
+            return;
+          }
+
+          const jobPosition =
+            skillLike.jobPosition || fallbackJobPosition || "未绑定岗位";
+          const key = getSelectedSkillKey(skillId, jobPosition);
+          if (skillMap.has(key)) {
+            return;
+          }
+
+          skillMap.set(key, {
+            id: skillId,
+            name: skillLike.name || skillLike.skillName || "",
+            jobPosition,
+          });
+        };
+
+        if (Array.isArray(filter.jobPositions)) {
+          filter.jobPositions.forEach(appendJobPosition);
+        } else if (filter.jobPosition) {
+          appendJobPosition(filter.jobPosition);
+        }
+
+        if (Array.isArray(filter.skills)) {
+          filter.skills.forEach((skill) => appendSkill(skill));
+        } else if (filter.skillId != null) {
+          appendSkill(
+            {
+              id: filter.skillId,
+              name: filter.skillName,
+              jobPosition: filter.jobPosition,
+            },
+            filter.jobPosition,
+          );
+        }
+
+        return {
+          jobPositions: Array.from(jobPositions.values()),
+          skills: Array.from(skillMap.values()),
+        };
+      }
+
+      function hasActiveFilter(filter = uiState.filter) {
+        return Boolean(
+          (filter.jobPositions || []).length || (filter.skills || []).length,
+        );
+      }
+
+      function getDirectJobSelectionSet(filter = uiState.filter) {
+        return new Set(filter.jobPositions || []);
+      }
+
+      function getActiveJobSelectionSet(filter = uiState.filter) {
+        const jobPositions = getDirectJobSelectionSet(filter);
+
+        (filter.skills || []).forEach((skill) => {
+          if (skill?.jobPosition) {
+            jobPositions.add(skill.jobPosition);
+          }
+        });
+
+        return jobPositions;
+      }
+
+      function getSelectedSkillSet(filter = uiState.filter) {
+        return new Set(
+          (filter.skills || []).map((skill) =>
+            getSelectedSkillKey(skill.id, skill.jobPosition),
+          ),
+        );
+      }
+
+      function getSkillJobPositions(skill) {
+        const industries = dedupeIndustries([skill]);
+        return industries.length
+          ? industries.map((industry) => getIndustryJobPosition(industry))
+          : ["未绑定岗位"];
+      }
+
+      function isSkillSelected(skill, jobPosition, filter = uiState.filter) {
+        if (!skill) {
+          return false;
+        }
+
+        const key = getSelectedSkillKey(getSkillKey(skill), jobPosition);
+        return getSelectedSkillSet(filter).has(key);
+      }
+
+      function getSkillOptionJobPositions(skillOption) {
+        return skillOption?.jobPositions?.length
+          ? skillOption.jobPositions
+          : ["未绑定岗位"];
+      }
+
+      function getSelectedSkillOptionCount(
+        skillOption,
+        filter = uiState.filter,
+      ) {
+        if (!skillOption) {
+          return 0;
+        }
+
+        const selectedSkillKeys = getSelectedSkillSet(filter);
+        return getSkillOptionJobPositions(skillOption).filter((jobPosition) =>
+          selectedSkillKeys.has(
+            getSelectedSkillKey(skillOption.id, jobPosition),
+          ),
+        ).length;
+      }
+
+      function isSummarySkillFullySelected(
+        skillOption,
+        filter = uiState.filter,
+      ) {
+        const total = getSkillOptionJobPositions(skillOption).length;
+        if (!total) {
+          return false;
+        }
+
+        return getSelectedSkillOptionCount(skillOption, filter) === total;
+      }
+
+      function isSummarySkillPartiallySelected(
+        skillOption,
+        filter = uiState.filter,
+      ) {
+        const selectedCount = getSelectedSkillOptionCount(skillOption, filter);
+        const total = getSkillOptionJobPositions(skillOption).length;
+        return selectedCount > 0 && selectedCount < total;
+      }
+
+      function getFilterDescription(filter = uiState.filter) {
+        const parts = [];
+
+        if ((filter.jobPositions || []).length) {
+          parts.push(
+            filter.jobPositions.length === 1
+              ? filter.jobPositions[0]
+              : `${filter.jobPositions.length} 个岗位`,
+          );
+        }
+
+        if ((filter.skills || []).length) {
+          const skillNames = filter.skills
+            .map((skill) => skill.name)
+            .filter(Boolean);
+          parts.push(
+            filter.skills.length === 1
+              ? skillNames[0] || "1 个职业能力"
+              : `${filter.skills.length} 个职业能力`,
+          );
+        }
+
+        return parts.join(" / ");
+      }
+
+      function hashString(value) {
+        let hash = 0;
+        const input = String(value || "");
+        for (let index = 0; index < input.length; index += 1) {
+          hash = (hash * 31 + input.charCodeAt(index)) >>> 0;
+        }
+        return hash.toString(36);
+      }
+
+      function createGraphNodeId(prefix, value) {
+        return `${prefix}_${hashString(value || prefix)}`;
+      }
+
+      function sanitizeMermaidLabel(value) {
+        return String(value || "")
+          .replace(/\r?\n+/g, " ")
+          .replace(/"/g, "'");
+      }
+
+      function toggleJobPositionFilter(jobPosition, filter = uiState.filter) {
+        const normalizedFilter = normalizeFilter(filter);
+        const nextJobs = new Set(normalizedFilter.jobPositions || []);
+        const nextSkills = (normalizedFilter.skills || []).filter(
+          (skill) => skill.jobPosition !== jobPosition,
+        );
+
+        if (nextJobs.has(jobPosition)) {
+          nextJobs.delete(jobPosition);
+        } else {
+          nextJobs.add(jobPosition);
+        }
+
+        setFilter({
+          jobPositions: Array.from(nextJobs.values()),
+          skills: nextSkills,
+        });
+      }
+
+      function toggleSkillOptionFilter(skillOption, filter = uiState.filter) {
+        const normalizedFilter = normalizeFilter(filter);
+        const isActive = isSummarySkillFullySelected(skillOption, normalizedFilter);
+        const selectedSkills = new Map(
+          (normalizedFilter.skills || []).map((selectedSkill) => [
+            getSelectedSkillKey(selectedSkill.id, selectedSkill.jobPosition),
+            selectedSkill,
+          ]),
+        );
+
+        if (isActive) {
+          getSkillOptionJobPositions(skillOption).forEach((jobPosition) => {
+            selectedSkills.delete(getSelectedSkillKey(skillOption.id, jobPosition));
+          });
+        } else {
+          getSkillOptionJobPositions(skillOption).forEach((jobPosition) => {
+            selectedSkills.set(getSelectedSkillKey(skillOption.id, jobPosition), {
+              id: skillOption.id,
+              name: skillOption.name,
+              jobPosition,
+            });
+          });
+        }
+
+        setFilter({
+          jobPositions: normalizedFilter.jobPositions || [],
+          skills: Array.from(selectedSkills.values()),
+        });
+      }
+
+      function dedupeIndustries(skills = []) {
+        const industryMap = new Map();
+
+        for (const skill of skills) {
+          for (const industry of skill.industries || []) {
+            const key =
+              industry.jobPosition ||
+              `${industry.industryLevel1}-${industry.industryLevel2}`;
+            if (!industryMap.has(key)) {
+              industryMap.set(key, industry);
+            }
+          }
+        }
+
+        return Array.from(industryMap.values());
+      }
+
+      function dedupeSkills(skills = []) {
+        const skillMap = new Map();
+
+        for (const skill of skills) {
+          if (!skill) {
+            continue;
+          }
+
+          const key = getSkillKey(skill);
+          if (!skillMap.has(key)) {
+            skillMap.set(key, skill);
+          }
+        }
+
+        return Array.from(skillMap.values());
+      }
+
+      function getResourceTitle(item) {
+        return item.problem?.title || item.teachingModule?.name || "未命名资源";
+      }
+
+      function getResourceLabel() {
+        return "任务";
+      }
+
+      function getResourceMeta(item) {
+        return null;
+      }
+
+      function getPointGroups(item) {
+        const knowledgePoints = [];
+        const skillPoints = [];
+        const allPoints = [];
+        const seen = new Set();
+
+        (item.problem?.teachingModules || []).forEach((module) => {
+          if (!module?.name) {
+            return;
+          }
+
+          const key = module.id != null ? String(module.id) : module.name;
+          if (seen.has(key)) {
+            return;
+          }
+
+          seen.add(key);
+          allPoints.push(module.name);
+
+          if (SKILL_POINT_TYPES.has(module.type)) {
+            skillPoints.push(module.name);
+            return;
+          }
+
+          if (KNOWLEDGE_POINT_TYPES.has(module.type) || module.type == null) {
+            knowledgePoints.push(module.name);
+            return;
+          }
+
+          knowledgePoints.push(module.name);
+        });
+
+        return {
+          knowledgePoints,
+          skillPoints,
+          allPoints,
+        };
+      }
+
+      function getIndustryPath(industryLevel1, industryLevel2) {
+        return [industryLevel1, industryLevel2].filter(Boolean).join("/");
+      }
+
+      function collectCourseRoleMap(rows = []) {
+        const roleMap = new Map();
+
+        rows.forEach((row) => {
+          (row.testPaperProblems || []).forEach((item) => {
+            (item.skills || []).forEach((skill) => {
+              const normalizedSkillKey = getSkillKey(skill);
+              const industries = dedupeIndustries([skill]);
+
+              if (!industries.length) {
+                const key = "未绑定岗位";
+                if (!roleMap.has(key)) {
+                  roleMap.set(key, {
+                    jobPosition: key,
+                    industryPaths: new Set(),
+                    skills: new Map(),
+                  });
+                }
+
+                roleMap.get(key).skills.set(normalizedSkillKey, {
+                  id: normalizedSkillKey,
+                  name: skill.name,
+                });
+                return;
+              }
+
+              industries.forEach((industry) => {
+                const key = getIndustryJobPosition(industry);
+                if (!roleMap.has(key)) {
+                  roleMap.set(key, {
+                    jobPosition: key,
+                    industryPaths: new Set(),
+                    skills: new Map(),
+                  });
+                }
+
+                const entry = roleMap.get(key);
+                entry.skills.set(normalizedSkillKey, {
+                  id: normalizedSkillKey,
+                  name: skill.name,
+                });
+                const industryPath = getIndustryPath(
+                  industry.industryLevel1,
+                  industry.industryLevel2,
+                );
+                if (industryPath) {
+                  entry.industryPaths.add(industryPath);
+                }
+              });
+            });
+          });
+        });
+
+        return Array.from(roleMap.values())
+          .map((entry) => ({
+            jobPosition: entry.jobPosition,
+            industryPaths: Array.from(entry.industryPaths.values()),
+            skills: Array.from(entry.skills.values()),
+          }))
+          .sort((a, b) => b.skills.length - a.skills.length);
+      }
+
+      function collectCourseMetrics(rows = []) {
+        const knowledgePoints = new Set();
+        const skillMap = new Map();
+        let itemCount = 0;
+        let problemCount = 0;
+        let moduleCount = 0;
+
+        rows.forEach((row) => {
+          (row.testPaperProblems || []).forEach((item) => {
+            itemCount += 1;
+            if (item.resourceType === "problem") {
+              problemCount += 1;
+            } else {
+              moduleCount += 1;
+            }
+
+            getPointGroups(item).allPoints.forEach((point) => {
+              if (point) {
+                knowledgePoints.add(point);
+              }
+            });
+
+            (item.skills || []).forEach((skill) => {
+              const key = getSkillKey(skill);
+              if (!key) {
+                return;
+              }
+
+              if (!skillMap.has(key)) {
+                skillMap.set(key, {
+                  id: key,
+                  name: skill.name,
+                  count: 0,
+                  jobPositions: new Set(),
+                });
+              }
+
+              getSkillJobPositions(skill).forEach((jobPosition) => {
+                skillMap.get(key).jobPositions.add(jobPosition);
+              });
+              skillMap.get(key).count += 1;
+            });
+          });
+        });
+
+        return {
+          unitCount: rows.length,
+          itemCount,
+          problemCount,
+          moduleCount,
+          knowledgePoints: Array.from(knowledgePoints.values()),
+          skills: Array.from(skillMap.values())
+            .sort(
+              (a, b) =>
+                b.count - a.count ||
+                (a.name || "").localeCompare(b.name || "", "zh-Hans-CN"),
+            )
+            .map((skill) => ({
+              id: skill.id,
+              name: skill.name,
+              count: skill.count,
+              jobPositions: Array.from(skill.jobPositions.values()),
+            })),
+          roleCount: collectCourseRoleMap(rows).length,
+        };
+      }
+
+      function createMetaList(prefix, values) {
+        const meta = createElement("div", "node-meta");
+        if (!values.length) {
+          meta.textContent = prefix;
+          return meta;
+        }
+
+        const list = createElement("div", "node-meta-list");
+        const lead = createElement("span", "meta-chip", prefix);
+        list.append(lead);
+
+        for (const value of values) {
+          list.append(createElement("span", "meta-chip", value));
+        }
+
+        meta.append(list);
+        return meta;
+      }
+
+      function createNodeShell(label, title, className) {
+        const node = createElement("article", `node ${className}`.trim());
+        node.title = title;
+        node.append(createElement("span", "node-label", label));
+        node.append(createElement("h3", "node-title", title));
+        return node;
+      }
+
+      function createResourceNode(item) {
+        const kind =
+          item.resourceType === "problem" ? "problem" : "teachingModule";
+        const node = createNodeShell(
+          getResourceLabel(item),
+          getResourceTitle(item),
+          "resource",
+        );
+        node.dataset.kind = kind;
+
+        const meta = getResourceMeta(item);
+        if (meta) {
+          node.append(createMetaList(meta.prefix, meta.values));
+        }
+
+        return node;
+      }
+
+      function isSkillHighlighted(skill, filter = uiState.filter) {
+        if (!skill || !hasActiveFilter(filter)) {
+          return false;
+        }
+
+        const jobPositions = getSkillJobPositions(skill);
+        const selectedSkillKeys = getSelectedSkillSet(filter);
+
+        if (selectedSkillKeys.size) {
+          const matchedSkill = jobPositions.some((jobPosition) =>
+            selectedSkillKeys.has(
+              getSelectedSkillKey(getSkillKey(skill), jobPosition),
+            ),
+          );
+          if (matchedSkill) {
+            return true;
+          }
+        }
+
+        const selectedJobs = getDirectJobSelectionSet(filter);
+        return jobPositions.some((jobPosition) =>
+          selectedJobs.has(jobPosition),
+        );
+      }
+
+      function createSkillNode(skill, filter = uiState.filter) {
+        if (!skill) {
+          const emptyNode = createElement(
+            "article",
+            "node skill relation-card empty",
+          );
+          emptyNode.append(createElement("h3", "node-title", "暂无职业能力"));
+          return emptyNode;
+        }
+
+        const node = createElement("article", "node skill relation-card");
+        if (isSkillHighlighted(skill, filter)) {
+          node.classList.add("is-active");
+        }
+        node.append(createElement("h3", "node-title", skill.name));
+        return node;
+      }
+
+      function createGroup(title, className, nodes) {
+        const group = createElement(
+          "section",
+          `cluster-group ${className}`.trim(),
+        );
+        group.append(createElement("h4", "cluster-group-title", title));
+
+        const list = createElement("div", "cluster-list");
+        if (className.includes("skills-group")) {
+          list.classList.add("relation-list");
+        }
+        nodes.forEach((node) => list.append(node));
+        group.append(list);
+
+        return group;
+      }
+
+      function createPointColumn(title, values, emptyText, tone = "knowledge") {
+        const column = createElement("section", "point-column");
+        column.dataset.tone = tone;
+        column.append(createElement("h4", "point-column-title", title));
+
+        if (!values.length) {
+          column.append(createElement("p", "point-column-empty", emptyText));
+          return column;
+        }
+
+        const list = createElement("div", "point-column-list");
+        values.forEach((value) => {
+          const chipClass =
+            tone === "skill"
+              ? "knowledge-chip is-skill-point"
+              : "knowledge-chip is-knowledge-point";
+          list.append(createElement("span", chipClass, value));
+        });
+        column.append(list);
+        return column;
+      }
+
+      function createPointGroup(item) {
+        const { knowledgePoints, skillPoints } = getPointGroups(item);
+        if (!knowledgePoints.length && !skillPoints.length) {
+          return "";
+        }
+
+        const group = createElement("section", "chip-group knowledge-group");
+
+        const grid = createElement("div", "point-grid");
+        grid.append(
+          createPointColumn(
+            "知识点",
+            knowledgePoints,
+            "暂无知识点",
+            "knowledge",
+          ),
+          createPointColumn("技能点", skillPoints, "暂无技能点", "skill"),
+        );
+
+        group.append(grid);
+        return group;
+      }
+
+      function createTaskDetail(label, items, options = {}) {
+        const { numbered = false } = options;
+        if (!items.length) {
+          return null;
+        }
+
+        const detail = createElement("section", "task-detail");
+        detail.append(createElement("p", "task-detail-label", `${label}:`));
+
+        const value = createElement("div", "task-detail-value");
+        const normalizedItems = items;
+
+        normalizedItems.forEach((item, index) => {
+          const text =
+            typeof item === "string"
+              ? item
+              : item?.text || item?.name || item?.label || "";
+          const shouldNumber = numbered && !item?.muted;
+          const line = createElement(
+            "p",
+            "task-detail-item",
+            shouldNumber ? `${index + 1}. ${text}` : text,
+          );
+
+          if (item?.active) {
+            line.classList.add("is-active");
+          }
+
+          if (item?.muted) {
+            line.classList.add("is-muted");
+          }
+
+          value.append(line);
+        });
+
+        detail.append(value);
+        return detail;
+      }
+
+      function getItemJobEntries(item, filter = uiState.filter) {
+        const activeJobs = getActiveJobSelectionSet(filter);
+        return dedupeIndustries(item.skills || []).map((industry) => {
+          const jobPosition = getIndustryJobPosition(industry);
+          return {
+            text: jobPosition,
+            active: activeJobs.has(jobPosition),
+          };
+        });
+      }
+
+      function itemMatchesFilter(item, filter = uiState.filter) {
+        if (!hasActiveFilter(filter)) {
+          return true;
+        }
+
+        const selectedJobs = getDirectJobSelectionSet(filter);
+        const selectedSkillKeys = getSelectedSkillSet(filter);
+
+        return (item.skills || []).some((skill) => {
+          const jobPositions = getSkillJobPositions(skill);
+          const matchedJob = jobPositions.some((jobPosition) =>
+            selectedJobs.has(jobPosition),
+          );
+          const matchedSkill = jobPositions.some((jobPosition) =>
+            selectedSkillKeys.has(
+              getSelectedSkillKey(getSkillKey(skill), jobPosition),
+            ),
+          );
+
+          return matchedJob || matchedSkill;
+        });
+      }
+
+      function filterRows(rows, filter = uiState.filter) {
+        if (!hasActiveFilter(filter)) {
+          return rows.map((row, index) => ({
+            ...row,
+            sourceIndex: index,
+          }));
+        }
+
+        return rows
+          .map((row, index) => {
+            const matchedProblems = (row.testPaperProblems || []).filter(
+              (item) => itemMatchesFilter(item, filter),
+            );
+
+            if (!matchedProblems.length) {
+              return null;
+            }
+
+            return {
+              ...row,
+              testPaperProblems: matchedProblems,
+              sourceIndex: index,
+            };
+          })
+          .filter(Boolean);
+      }
+
+      function setFilter(nextFilter) {
+        uiState.filter = normalizeFilter(nextFilter);
+        renderSkillmap(data);
+      }
+
+      function clearFilter() {
+        setFilter({});
+      }
+
+      function createCourseMapCard(entry, filter = uiState.filter) {
+        const card = createElement("article", "course-map-card");
+        const directJobSelections = getDirectJobSelectionSet(filter);
+        const activeJobs = getActiveJobSelectionSet(filter);
+        const isJobActive = activeJobs.has(entry.jobPosition);
+        card.tabIndex = 0;
+        card.setAttribute("role", "button");
+        card.setAttribute("aria-pressed", isJobActive ? "true" : "false");
+
+        const activateJobFilter = () =>
+          toggleJobPositionFilter(entry.jobPosition, filter);
+
+        card.addEventListener("click", activateJobFilter);
+        card.addEventListener("keydown", (event) => {
+          if (event.target !== card) {
+            return;
+          }
+
+          if (event.key !== "Enter" && event.key !== " ") {
+            return;
+          }
+
+          event.preventDefault();
+          activateJobFilter();
+        });
+
+        if (isJobActive) {
+          card.classList.add("is-active");
+          card.append(
+            createElement("span", "course-map-card-status", "已选中"),
+          );
+        }
+
+        if (entry.industryPaths.length) {
+          card.append(
+            createElement(
+              "p",
+              "course-map-card-industry",
+              entry.industryPaths.join(" · "),
+            ),
+          );
+        }
+        const heading = createElement("h3", "course-map-card-title");
+        heading.append(
+          createElement("span", "course-map-role-button", entry.jobPosition),
+        );
+        card.append(heading);
+
+        const skills = createElement("div", "course-map-card-skills");
+        entry.skills.forEach((skill) => {
+          const button = createElement(
+            "button",
+            "course-map-skill",
+            skill.name,
+          );
+          button.type = "button";
+          const active = isSkillSelected(skill, entry.jobPosition, filter);
+          if (active) {
+            button.classList.add("is-active");
+          }
+          button.setAttribute("aria-pressed", active ? "true" : "false");
+          button.addEventListener("click", (event) => {
+            event.stopPropagation();
+            const nextJobs = Array.from(directJobSelections.values());
+            const skillSelections = new Map(
+              (filter.skills || []).map((selectedSkill) => [
+                getSelectedSkillKey(
+                  selectedSkill.id,
+                  selectedSkill.jobPosition,
+                ),
+                selectedSkill,
+              ]),
+            );
+            const key = getSelectedSkillKey(skill.id, entry.jobPosition);
+            if (active) {
+              skillSelections.delete(key);
+            } else {
+              skillSelections.set(key, {
+                id: String(skill.id),
+                name: skill.name,
+                jobPosition: entry.jobPosition,
+              });
+            }
+
+            setFilter({
+              jobPositions: nextJobs,
+              skills: Array.from(skillSelections.values()),
+            });
+          });
+          skills.append(button);
+        });
+        card.append(skills);
+
+        return card;
+      }
+
+      function createSummaryStat(label, value) {
+        const stat = createElement("article", "summary-stat");
+        stat.append(createElement("p", "summary-stat-value", String(value)));
+        stat.append(createElement("p", "summary-stat-label", label));
+        return stat;
+      }
+
+      function createSummarySkillTags(skills, filter = uiState.filter) {
+        const list = createElement("div", "summary-tag-list");
+
+        if (!skills.length) {
+          list.append(createElement("span", "summary-tag", "暂无职业能力"));
+          return list;
+        }
+
+        skills.forEach((skill) => {
+          const button = createElement("button", "summary-tag", skill.name);
+          button.type = "button";
+
+          const isActive = isSummarySkillFullySelected(skill, filter);
+          const isPartial = isSummarySkillPartiallySelected(skill, filter);
+          if (isActive) {
+            button.classList.add("is-active");
+          } else if (isPartial) {
+            button.classList.add("is-partial");
+          }
+
+          button.setAttribute(
+            "aria-pressed",
+            isActive || isPartial ? "true" : "false",
+          );
+
+          button.addEventListener("click", () => {
+            toggleSkillOptionFilter(skill, filter);
+          });
+
+          list.append(button);
+        });
+
+        return list;
+      }
+
+      function getRowSkills(row) {
+        const skills = (row.testPaperProblems || []).flatMap(
+          (item) => item.skills || [],
+        );
+        return dedupeSkills(skills);
+      }
+
+      function createLaneSkillSummary(skills) {
+        const summary = createElement("section", "lane-skills");
+
+        const list = createElement("div", "lane-skill-list");
+        if (!skills.length) {
+          return "";
+        }
+
+        skills.forEach((skill) => {
+          list.append(createElement("span", "lane-skill-chip", skill.name));
+        });
+
+        summary.append(list);
+        return summary;
+      }
+
+      function createLaneEntry(row, index) {
+        const entry = createElement("aside", "lane-entry");
+        const rowSkills = getRowSkills(row);
+        const displayIndex = (row.sourceIndex ?? index) + 1;
+
+        const top = createElement("div", "lane-entry-top");
+
+        top.append(createElement("h2", "lane-name", row.testPaper.name));
+        top.append(createLaneSkillSummary(rowSkills));
+
+        entry.append(top);
+        return entry;
+      }
+
+      function createCluster(item, itemIndex, filter = uiState.filter) {
+        const cluster = createElement("article", "item-cluster");
+        cluster.setAttribute("tabindex", "0");
+        cluster.setAttribute("role", "group");
+
+        const header = createElement("header", "task-header");
+        header.append(
+          createElement(
+            "h3",
+            "task-title",
+            `任务${itemIndex + 1}: ${getResourceTitle(item)}`,
+          ),
+        );
+        cluster.append(header);
+
+        const details = createElement("div", "task-detail-list");
+        const { knowledgePoints, skillPoints } = getPointGroups(item);
+        const skillEntries = dedupeSkills(item.skills || []).map((skill) => ({
+          text: skill.name,
+          active: isSkillHighlighted(skill, filter),
+        }));
+        const jobEntries = getItemJobEntries(item, filter);
+
+        const detailNodes = [
+          createTaskDetail(
+            "知识点",
+            knowledgePoints.map((point) => ({ text: point })),
+            { numbered: true },
+          ),
+          createTaskDetail(
+            "技能点",
+            skillPoints.map((point) => ({ text: point })),
+            { numbered: true },
+          ),
+          createTaskDetail("职业能力", skillEntries, {
+            numbered: true,
+          }),
+          createTaskDetail("岗位", jobEntries, {
+            numbered: true,
+          }),
+        ].filter(Boolean);
+
+        if (detailNodes.length) {
+          details.append(...detailNodes);
+          cluster.append(details);
+        }
+
+        return cluster;
+      }
+
+      function renderLane(row, index, filter = uiState.filter) {
+        const section = createElement("section", "lane");
+        const shell = createElement("div", "lane-shell");
+        const scroller = createElement("div", "lane-scroller");
+        const laneTitle = `${row.testPaper.name} 任务区`;
+        scroller.setAttribute("role", "region");
+        scroller.setAttribute("aria-label", laneTitle);
+
+        const track = createElement("div", "lane-track");
+        const fragment = document.createDocumentFragment();
+
+        row.testPaperProblems.forEach((item, itemIndex) => {
+          fragment.append(createCluster(item, itemIndex, filter));
+        });
+
+        track.append(fragment);
+        scroller.append(track);
+        shell.append(createLaneEntry(row, index), scroller);
+        section.append(shell);
+        return section;
+      }
+
+      function renderRows(rows, filter = uiState.filter, options = {}) {
+        const main = createElement("main", "page-main");
+        if (options.note) {
+          main.append(createElement("p", "page-main-note", options.note));
+        }
+        const visibleItemCount = rows.reduce(
+          (sum, row) => sum + (row.testPaperProblems || []).length,
+          0,
+        );
+        const copy = hasActiveFilter(filter)
+          ? `当前匹配 ${rows.length} 个项目，展开 ${visibleItemCount} 个任务。`
+          : "按项目查看任务、知识点和 skill 的对应关系。";
+        const fragment = document.createDocumentFragment();
+
+        if (!rows.length) {
+          const empty = createElement("section", "page-main-empty");
+          const message = hasActiveFilter(filter)
+            ? "当前筛选下没有匹配的项目或任务。"
+            : "当前课程暂无项目内容。";
+          empty.append(createElement("p", "page-main-empty-copy", message));
+          main.append(empty);
+          return main;
+        }
+
+        rows.forEach((row, index) => {
+          fragment.append(renderLane(row, index, filter));
+        });
+
+        main.append(fragment);
+        return main;
+      }
+
+      function createGraphLegend(labels) {
+        const legend = createElement("div", "graph-legend");
+        labels.forEach((label) => {
+          legend.append(createElement("span", "graph-legend-item", label));
+        });
+        return legend;
+      }
+
+      function appendMermaidNode(lines, nodeId, label) {
+        lines.push(`${nodeId}["${sanitizeMermaidLabel(label)}"]`);
+      }
+
+      function appendMermaidClass(lines, nodeIds, className) {
+        if (!nodeIds.length) {
+          return;
+        }
+        lines.push(`class ${nodeIds.join(",")} ${className};`);
+      }
+
+      function collectGraphEntities(rows = []) {
+        const courseId = "course_root";
+        const projects = [];
+        const knowledgePointMap = new Map();
+        const skillPointMap = new Map();
+        const abilityMap = new Map();
+        const roleMap = new Map();
+        const edges = new Set();
+
+        rows.forEach((row, rowIndex) => {
+          const projectKey =
+            row.testPaper?.syncKey || row.testPaper?.id || `project_${rowIndex}`;
+          const projectNodeId = createGraphNodeId("project", projectKey);
+          const projectGroupId = createGraphNodeId("project_group", projectKey);
+          const projectOrder = (row.sourceIndex ?? rowIndex) + 1;
+          const project = {
+            nodeId: projectNodeId,
+            groupId: projectGroupId,
+            label: row.testPaper?.name || `项目 ${projectOrder}`,
+            order: projectOrder,
+            tasks: [],
+          };
+
+          edges.add(`${courseId} --> ${projectNodeId}`);
+
+          (row.testPaperProblems || []).forEach((item, itemIndex) => {
+            const taskKey =
+              item.id != null
+                ? String(item.id)
+                : `${projectKey}_${itemIndex}_${getResourceTitle(item)}`;
+            const taskNodeId = createGraphNodeId("task", taskKey);
+            const taskLabel = `任务${itemIndex + 1}: ${getResourceTitle(item)}`;
+
+            project.tasks.push({
+              nodeId: taskNodeId,
+              label: taskLabel,
+            });
+            edges.add(`${projectNodeId} --> ${taskNodeId}`);
+
+            const { knowledgePoints, skillPoints } = getPointGroups(item);
+            knowledgePoints.forEach((point) => {
+              const pointKey = createGraphNodeId("knowledge", point);
+              if (!knowledgePointMap.has(pointKey)) {
+                knowledgePointMap.set(pointKey, {
+                  nodeId: pointKey,
+                  label: point,
+                });
+              }
+              edges.add(`${taskNodeId} --> ${pointKey}`);
+            });
+
+            skillPoints.forEach((point) => {
+              const pointKey = createGraphNodeId("skill_point", point);
+              if (!skillPointMap.has(pointKey)) {
+                skillPointMap.set(pointKey, {
+                  nodeId: pointKey,
+                  label: point,
+                });
+              }
+              edges.add(`${taskNodeId} --> ${pointKey}`);
+            });
+
+            dedupeSkills(item.skills || []).forEach((skill) => {
+              const skillId = getSkillKey(skill);
+              const abilityNodeId = createGraphNodeId(
+                "ability",
+                skillId || skill.name,
+              );
+
+              if (!abilityMap.has(abilityNodeId)) {
+                abilityMap.set(abilityNodeId, {
+                  nodeId: abilityNodeId,
+                  id: skillId,
+                  name: skill.name,
+                  jobPositions: new Set(),
+                });
+              }
+
+              const abilityEntry = abilityMap.get(abilityNodeId);
+              getSkillJobPositions(skill).forEach((jobPosition) => {
+                abilityEntry.jobPositions.add(jobPosition);
+                const roleNodeId = createGraphNodeId("role", jobPosition);
+                if (!roleMap.has(roleNodeId)) {
+                  roleMap.set(roleNodeId, {
+                    nodeId: roleNodeId,
+                    jobPosition,
+                  });
+                }
+                edges.add(`${abilityNodeId} --> ${roleNodeId}`);
+              });
+
+              edges.add(`${taskNodeId} --> ${abilityNodeId}`);
+            });
+          });
+
+          projects.push(project);
+        });
+
+        return {
+          course: {
+            nodeId: courseId,
+            label: data.course?.name || "课程图谱",
+          },
+          projects,
+          knowledgePoints: Array.from(knowledgePointMap.values()),
+          skillPoints: Array.from(skillPointMap.values()),
+          abilities: Array.from(abilityMap.values()).map((entry) => ({
+            nodeId: entry.nodeId,
+            id: entry.id,
+            name: entry.name,
+            jobPositions: Array.from(entry.jobPositions.values()),
+          })),
+          roles: Array.from(roleMap.values()),
+          edges: Array.from(edges.values()),
+        };
+      }
+
+      function registerMermaidHandlers(allRows, filter, graph) {
+        mermaidNodeRegistry.roles = new Map(
+          graph.roles.map((role) => [role.nodeId, role.jobPosition]),
+        );
+        mermaidNodeRegistry.abilities = new Map(
+          graph.abilities.map((ability) => [
+            ability.nodeId,
+            {
+              id: ability.id,
+              name: ability.name,
+              jobPositions: ability.jobPositions,
+            },
+          ]),
+        );
+
+        window.skillmapMermaidHandlers = {
+          toggleRole(nodeId) {
+            const jobPosition = mermaidNodeRegistry.roles.get(nodeId);
+            if (!jobPosition) {
+              return;
+            }
+            toggleJobPositionFilter(jobPosition, uiState.filter);
+          },
+          toggleAbility(nodeId) {
+            const ability = mermaidNodeRegistry.abilities.get(nodeId);
+            if (!ability) {
+              return;
+            }
+            toggleSkillOptionFilter(ability, uiState.filter);
+          },
+        };
+
+        window.skillmapMermaidToggleRole = (nodeId) =>
+          window.skillmapMermaidHandlers.toggleRole(nodeId);
+        window.skillmapMermaidToggleAbility = (nodeId) =>
+          window.skillmapMermaidHandlers.toggleAbility(nodeId);
+      }
+
+      function buildMermaidGraph(
+        rows,
+        allRows = data.rows,
+        filter = uiState.filter,
+        options = {},
+      ) {
+        const graph = collectGraphEntities(rows);
+        if (options.registerHandlers !== false) {
+          registerMermaidHandlers(allRows, filter, graph);
+        }
+        const includeInteractions = options.interactive !== false;
+
+        const activeJobs = getActiveJobSelectionSet(filter);
+        const lines = [
+          "flowchart LR",
+          "classDef courseNode fill:#fff1e8,stroke:#f58b5a,color:#b84b1a,stroke-width:2px;",
+          "classDef projectNode fill:#ffffff,stroke:#ead8cd,color:#1f2330,stroke-width:1.6px;",
+          "classDef taskNode fill:#fff7f3,stroke:#f8a47d,color:#1f2330,stroke-width:1.6px;",
+          "classDef knowledgeNode fill:#fbf7ee,stroke:#e6d8be,color:#8a6038;",
+          "classDef skillPointNode fill:#fff0e6,stroke:#f1c29d,color:#b84b1a;",
+          "classDef abilityNode fill:#ffffff,stroke:#e2e7f0,color:#1f2330;",
+          "classDef abilityNodeActive fill:#fff1e8,stroke:#f58b5a,color:#b84b1a,stroke-width:2.2px;",
+          "classDef abilityNodePartial fill:#fff7f1,stroke:#f8a47d,color:#9d5a36,stroke-width:2px;",
+          "classDef roleNode fill:#ffffff,stroke:#e2e7f0,color:#1f2330;",
+          "classDef roleNodeActive fill:#fff1e8,stroke:#f58b5a,color:#b84b1a,stroke-width:2.2px;",
+        ];
+
+        appendMermaidNode(lines, graph.course.nodeId, graph.course.label);
+
+        graph.projects.forEach((project) => {
+          lines.push(`subgraph ${project.groupId}["项目 ${project.order}"]`);
+          lines.push("direction TB");
+          appendMermaidNode(lines, project.nodeId, project.label);
+          project.tasks.forEach((task) => {
+            appendMermaidNode(lines, task.nodeId, task.label);
+          });
+          lines.push("end");
+        });
+
+        if (graph.knowledgePoints.length) {
+          lines.push('subgraph knowledge_group["知识点"]');
+          lines.push("direction TB");
+          graph.knowledgePoints.forEach((point) => {
+            appendMermaidNode(lines, point.nodeId, point.label);
+          });
+          lines.push("end");
+        }
+
+        if (graph.skillPoints.length) {
+          lines.push('subgraph skill_point_group["技能点"]');
+          lines.push("direction TB");
+          graph.skillPoints.forEach((point) => {
+            appendMermaidNode(lines, point.nodeId, point.label);
+          });
+          lines.push("end");
+        }
+
+        if (graph.abilities.length) {
+          lines.push('subgraph ability_group["职业能力"]');
+          lines.push("direction TB");
+          graph.abilities.forEach((ability) => {
+            appendMermaidNode(lines, ability.nodeId, ability.name);
+          });
+          lines.push("end");
+        }
+
+        if (graph.roles.length) {
+          lines.push('subgraph role_group["岗位"]');
+          lines.push("direction TB");
+          graph.roles.forEach((role) => {
+            appendMermaidNode(lines, role.nodeId, role.jobPosition);
+          });
+          lines.push("end");
+        }
+
+        lines.push(...graph.edges);
+
+        appendMermaidClass(lines, [graph.course.nodeId], "courseNode");
+        appendMermaidClass(
+          lines,
+          graph.projects.map((project) => project.nodeId),
+          "projectNode",
+        );
+        appendMermaidClass(
+          lines,
+          graph.projects.flatMap((project) =>
+            project.tasks.map((task) => task.nodeId),
+          ),
+          "taskNode",
+        );
+        appendMermaidClass(
+          lines,
+          graph.knowledgePoints.map((point) => point.nodeId),
+          "knowledgeNode",
+        );
+        appendMermaidClass(
+          lines,
+          graph.skillPoints.map((point) => point.nodeId),
+          "skillPointNode",
+        );
+
+        appendMermaidClass(
+          lines,
+          graph.abilities
+            .filter((ability) => isSummarySkillFullySelected(ability, filter))
+            .map((ability) => ability.nodeId),
+          "abilityNodeActive",
+        );
+        appendMermaidClass(
+          lines,
+          graph.abilities
+            .filter(
+              (ability) =>
+                !isSummarySkillFullySelected(ability, filter) &&
+                isSummarySkillPartiallySelected(ability, filter),
+            )
+            .map((ability) => ability.nodeId),
+          "abilityNodePartial",
+        );
+        appendMermaidClass(
+          lines,
+          graph.abilities
+            .filter(
+              (ability) =>
+                !isSummarySkillFullySelected(ability, filter) &&
+                !isSummarySkillPartiallySelected(ability, filter),
+            )
+            .map((ability) => ability.nodeId),
+          "abilityNode",
+        );
+
+        appendMermaidClass(
+          lines,
+          graph.roles
+            .filter((role) => activeJobs.has(role.jobPosition))
+            .map((role) => role.nodeId),
+          "roleNodeActive",
+        );
+        appendMermaidClass(
+          lines,
+          graph.roles
+            .filter((role) => !activeJobs.has(role.jobPosition))
+            .map((role) => role.nodeId),
+          "roleNode",
+        );
+
+        if (includeInteractions) {
+          graph.abilities.forEach((ability) => {
+            lines.push(
+              `click ${ability.nodeId} skillmapMermaidToggleAbility "切换职业能力筛选"`,
+            );
+          });
+          graph.roles.forEach((role) => {
+            lines.push(
+              `click ${role.nodeId} skillmapMermaidToggleRole "切换岗位筛选"`,
+            );
+          });
+        }
+
+        return {
+          definition: lines.join("\n"),
+          graph,
+        };
+      }
+
+      async function copyTextFromElement(element, button) {
+        const value = element?.value || "";
+        if (!value) {
+          return;
+        }
+
+        let copied = false;
+        if (navigator.clipboard?.writeText) {
+          try {
+            await navigator.clipboard.writeText(value);
+            copied = true;
+          } catch (error) {
+            copied = false;
+          }
+        }
+
+        if (!copied) {
+          element.focus();
+          element.select();
+          element.setSelectionRange(0, value.length);
+          copied = document.execCommand("copy");
+        }
+
+        if (!button) {
+          return;
+        }
+
+        const previousText = button.textContent;
+        if (copied) {
+          button.textContent = "已复制";
+          button.classList.add("is-copied");
+          window.setTimeout(() => {
+            button.textContent = previousText;
+            button.classList.remove("is-copied");
+          }, 1600);
+        }
+      }
+
+      function renderMermaidSource(definition) {
+        const section = createElement("section", "mermaid-source-card");
+        const head = createElement("div", "mermaid-source-head");
+        const content = createElement("div", "panel-head");
+        content.append(createElement("h2", "panel-title", "完整 Mermaid 结构"));
+        content.append(
+          createElement(
+            "p",
+            "mermaid-source-copy",
+            "这里展示整门课程的完整 Mermaid DSL，不受当前筛选影响，便于直接复制到文档或 Mermaid 编辑器中。",
+          ),
+        );
+        head.append(content);
+
+        const actions = createElement("div", "mermaid-source-actions");
+        const button = createElement(
+          "button",
+          "mermaid-source-button",
+          "复制 Mermaid",
+        );
+        button.type = "button";
+        actions.append(button);
+        head.append(actions);
+        section.append(head);
+
+        const textarea = createElement("textarea", "mermaid-source-text");
+        textarea.readOnly = true;
+        textarea.spellcheck = false;
+        textarea.value = definition;
+        textarea.setAttribute("aria-label", "完整 Mermaid 结构源码");
+        button.addEventListener("click", () => {
+          copyTextFromElement(textarea, button);
+        });
+
+        section.append(textarea);
+        return section;
+      }
+
+      function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+      }
+
+      function getGraphContentSize(host) {
+        const svg = host?.querySelector("svg");
+        if (!svg) {
+          return null;
+        }
+
+        const viewBox = svg.viewBox?.baseVal;
+        if (viewBox?.width && viewBox?.height) {
+          return {
+            width: viewBox.width,
+            height: viewBox.height,
+          };
+        }
+
+        try {
+          const bbox = svg.getBBox();
+          if (bbox.width && bbox.height) {
+            return {
+              width: bbox.width,
+              height: bbox.height,
+            };
+          }
+        } catch (error) {
+          // Ignore getBBox failures and fall through to layout-based sizing.
+        }
+
+        const rect = svg.getBoundingClientRect();
+        if (!rect.width || !rect.height) {
+          return null;
+        }
+
+        return {
+          width: rect.width,
+          height: rect.height,
+        };
+      }
+
+      function applyGraphTransform(host, state) {
+        host.style.transform = `translate(${state.x}px, ${state.y}px) scale(${state.scale})`;
+      }
+
+      function fitGraphToViewport(viewport, host, state) {
+        const rect = viewport.getBoundingClientRect();
+        const content = getGraphContentSize(host);
+        if (!rect.width || !rect.height || !content) {
+          return;
+        }
+
+        const padding = 28;
+        const availableWidth = Math.max(rect.width - padding * 2, 120);
+        const availableHeight = Math.max(rect.height - padding * 2, 120);
+        const fitScale = Math.min(
+          availableWidth / content.width,
+          availableHeight / content.height,
+          1,
+        );
+
+        state.scale = clamp(fitScale || 1, state.minScale, state.maxScale);
+        state.x = Math.round((rect.width - content.width * state.scale) / 2);
+        state.y = Math.round((rect.height - content.height * state.scale) / 2);
+        applyGraphTransform(host, state);
+      }
+
+      function zoomGraphAtPoint(viewport, host, state, nextScale, anchorX, anchorY) {
+        const scale = clamp(nextScale, state.minScale, state.maxScale);
+        const factor = scale / state.scale;
+        state.x = anchorX - (anchorX - state.x) * factor;
+        state.y = anchorY - (anchorY - state.y) * factor;
+        state.scale = scale;
+        applyGraphTransform(host, state);
+      }
+
+      function attachGraphViewportInteractions(viewport, host, controls) {
+        if (!viewport || !host) {
+          return;
+        }
+
+        const state = {
+          scale: 1,
+          x: 0,
+          y: 0,
+          minScale: 0.35,
+          maxScale: 2.8,
+          pointerId: null,
+          dragOriginX: 0,
+          dragOriginY: 0,
+          startX: 0,
+          startY: 0,
+          moved: false,
+          suppressClick: false,
+        };
+
+        const resetView = () => {
+          fitGraphToViewport(viewport, host, state);
+        };
+
+        const zoomByFactor = (factor) => {
+          const rect = viewport.getBoundingClientRect();
+          zoomGraphAtPoint(
+            viewport,
+            host,
+            state,
+            state.scale * factor,
+            rect.width / 2,
+            rect.height / 2,
+          );
+        };
+
+        controls?.querySelector('[data-action="zoom-in"]')?.addEventListener(
+          "click",
+          () => zoomByFactor(1.18),
+        );
+        controls?.querySelector('[data-action="zoom-out"]')?.addEventListener(
+          "click",
+          () => zoomByFactor(1 / 1.18),
+        );
+        controls?.querySelector('[data-action="reset"]')?.addEventListener(
+          "click",
+          resetView,
+        );
+
+        viewport.addEventListener(
+          "wheel",
+          (event) => {
+            if (!event.ctrlKey && !event.metaKey) {
+              return;
+            }
+
+            event.preventDefault();
+            const rect = viewport.getBoundingClientRect();
+            const anchorX = event.clientX - rect.left;
+            const anchorY = event.clientY - rect.top;
+            const factor = event.deltaY < 0 ? 1.12 : 1 / 1.12;
+            zoomGraphAtPoint(
+              viewport,
+              host,
+              state,
+              state.scale * factor,
+              anchorX,
+              anchorY,
+            );
+          },
+          { passive: false },
+        );
+
+        viewport.addEventListener("pointerdown", (event) => {
+          if (event.button !== 0) {
+            return;
+          }
+
+          if (event.target.closest(".graph-controls")) {
+            return;
+          }
+
+          state.pointerId = event.pointerId;
+          state.dragOriginX = state.x;
+          state.dragOriginY = state.y;
+          state.startX = event.clientX;
+          state.startY = event.clientY;
+          state.moved = false;
+          viewport.classList.add("is-dragging");
+          viewport.setPointerCapture(event.pointerId);
+        });
+
+        viewport.addEventListener("pointermove", (event) => {
+          if (state.pointerId !== event.pointerId) {
+            return;
+          }
+
+          const dx = event.clientX - state.startX;
+          const dy = event.clientY - state.startY;
+          if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+            state.moved = true;
+          }
+          state.x = state.dragOriginX + dx;
+          state.y = state.dragOriginY + dy;
+          applyGraphTransform(host, state);
+        });
+
+        const finishDrag = (event) => {
+          if (state.pointerId !== event.pointerId) {
+            return;
+          }
+
+          viewport.classList.remove("is-dragging");
+          try {
+            viewport.releasePointerCapture(event.pointerId);
+          } catch (error) {
+            // Ignore when capture was already released.
+          }
+          state.pointerId = null;
+          if (state.moved) {
+            state.suppressClick = true;
+            window.setTimeout(() => {
+              state.suppressClick = false;
+            }, 0);
+          }
+        };
+
+        viewport.addEventListener("pointerup", finishDrag);
+        viewport.addEventListener("pointercancel", finishDrag);
+
+        viewport.addEventListener(
+          "click",
+          (event) => {
+            if (!state.suppressClick) {
+              return;
+            }
+            event.preventDefault();
+            event.stopPropagation();
+          },
+          true,
+        );
+
+        resetView();
+      }
+
+      async function mountMermaidGraph(job) {
+        if (!job?.host || !window.mermaid || !document.body.contains(job.host)) {
+          return;
+        }
+
+        try {
+          const renderId = `skillmap_mermaid_${mermaidRenderCounter += 1}`;
+          const result = await window.mermaid.render(renderId, job.definition);
+
+          if (!document.body.contains(job.host)) {
+            return;
+          }
+
+          job.host.innerHTML = result.svg;
+          job.host.classList.remove("is-loading");
+          if (typeof result.bindFunctions === "function") {
+            result.bindFunctions(job.host);
+          }
+          attachGraphViewportInteractions(job.viewport, job.host, job.controls);
+        } catch (error) {
+          console.error("Mermaid render failed", error);
+          if (!document.body.contains(job.main)) {
+            return;
+          }
+          job.main.replaceWith(
+            renderRows(job.rows, job.filter, {
+              note: "Mermaid 图谱渲染失败，已自动切换为任务列表视图。",
+            }),
+          );
+        }
+      }
+
+      function flushPendingMermaidRenders() {
+        const jobs = pendingMermaidRenders.slice();
+        pendingMermaidRenders = [];
+        jobs.forEach((job) => {
+          mountMermaidGraph(job);
+        });
+      }
+
+      function renderMermaidGraph(
+        rows,
+        allRows = data.rows,
+        filter = uiState.filter,
+      ) {
+        if (!configureMermaid()) {
+          return renderRows(rows, filter, {
+            note: "Mermaid 图谱当前未加载成功，已先展示任务列表视图。",
+          });
+        }
+
+        const main = createElement("main", "page-main");
+        const stage = createElement("section", "graph-stage");
+        const head = createElement("header", "graph-stage-head");
+        head.append(createElement("h2", "panel-title", "课程图谱"));
+        head.append(
+          createElement(
+            "p",
+            "graph-stage-copy",
+            hasActiveFilter(filter)
+              ? `当前按 ${getFilterDescription(filter)} 裁剪图谱，只展示匹配路径。可点击图中的岗位和职业能力节点继续筛选。`
+              : "以课程为根节点，将项目、任务、知识点、技能点、职业能力和岗位收束为一张分层关系图，直接看到课程结构和能力映射。",
+          ),
+        );
+        head.append(
+          createGraphLegend([
+            "课程",
+            "项目",
+            "任务",
+            "知识点",
+            "技能点",
+            "职业能力",
+            "岗位",
+          ]),
+        );
+
+        if (!rows.length) {
+          const empty = createElement("section", "page-main-empty");
+          empty.append(
+            createElement(
+              "p",
+              "page-main-empty-copy",
+              "当前筛选下没有可渲染的图谱节点。",
+            ),
+          );
+          main.append(head, empty);
+          return main;
+        }
+
+        const { definition } = buildMermaidGraph(rows, allRows, filter);
+        const shell = createElement("section", "graph-shell");
+        shell.append(
+          createElement(
+            "p",
+            "graph-hint",
+            "点击岗位或职业能力节点可联动筛选；支持 Ctrl/⌘ + 滚轮缩放、拖拽平移，以及右上角缩放控件。",
+          ),
+        );
+
+        const canvas = createElement("div", "graph-canvas");
+        const controls = createElement("div", "graph-controls");
+        const zoomInButton = createElement(
+          "button",
+          "graph-control-button",
+          "+",
+        );
+        zoomInButton.type = "button";
+        zoomInButton.dataset.action = "zoom-in";
+        zoomInButton.setAttribute("aria-label", "放大图谱");
+        const zoomOutButton = createElement(
+          "button",
+          "graph-control-button",
+          "-",
+        );
+        zoomOutButton.type = "button";
+        zoomOutButton.dataset.action = "zoom-out";
+        zoomOutButton.setAttribute("aria-label", "缩小图谱");
+        const resetButton = createElement(
+          "button",
+          "graph-control-button",
+          "重置",
+        );
+        resetButton.type = "button";
+        resetButton.dataset.action = "reset";
+        resetButton.setAttribute("aria-label", "重置图谱视图");
+        controls.append(zoomInButton, zoomOutButton, resetButton);
+
+        const viewport = createElement("div", "graph-viewport");
+        const host = createElement(
+          "div",
+          "graph-render-host is-loading",
+          "图谱加载中…",
+        );
+        viewport.append(host);
+        canvas.append(controls, viewport);
+        shell.append(canvas);
+
+        stage.append(head, shell);
+        main.append(stage);
+        pendingMermaidRenders.push({
+          main,
+          host,
+          viewport,
+          controls,
+          definition,
+          rows,
+          filter,
+        });
+
+        return main;
+      }
+
+      function renderCurrentViewCard(visibleRows, filter = uiState.filter) {
+        if (!hasActiveFilter(filter)) {
+          return null;
+        }
+
+        const visibleMetrics = collectCourseMetrics(visibleRows);
+        const filterDescription = getFilterDescription(filter);
+        const currentCard = createElement(
+          "section",
+          "summary-card summary-card-current",
+        );
+        const currentHead = createPanelHead(
+          "当前视图",
+          "基于当前筛选查看课程匹配范围和项目分布。",
+        );
+        currentHead.classList.add("panel-head-inline");
+
+        const resetButton = createElement(
+          "button",
+          "course-map-reset summary-reset",
+          "清除筛选",
+        );
+        resetButton.type = "button";
+        resetButton.addEventListener("click", clearFilter);
+        currentHead.append(resetButton);
+        currentCard.append(currentHead);
+        currentCard.append(
+          createElement(
+            "p",
+            "summary-copy",
+            `当前筛选：${filterDescription}`,
+          ),
+        );
+
+        const currentGrid = createElement(
+          "div",
+          "summary-grid current-view-grid",
+        );
+        currentGrid.append(
+          createSummaryStat("匹配项目", visibleMetrics.unitCount),
+        );
+        currentGrid.append(
+          createSummaryStat("匹配任务", visibleMetrics.itemCount),
+        );
+        currentGrid.append(
+          createSummaryStat(
+            "匹配知识点/技能点",
+            visibleMetrics.knowledgePoints.length,
+          ),
+        );
+        currentCard.append(currentGrid);
+
+        return currentCard;
+      }
+
+      function renderCourseMap(
+        rows,
+        visibleRows = rows,
+        filter = uiState.filter,
+      ) {
+        const section = createElement("section", "course-map");
+        const currentCard = renderCurrentViewCard(visibleRows, filter);
+        if (currentCard) {
+          section.append(currentCard);
+        }
+
+        section.append(
+          createPanelHead(
+            "岗位列表",
+            "点击岗位或能力，只过滤中间项目列表，帮助快速定位课程覆盖范围。",
+          ),
+        );
+
+        const groups = collectCourseRoleMap(rows);
+        if (!groups.length) {
+          section.append(
+            createElement(
+              "p",
+              "course-map-empty",
+              "当前课程暂无岗位和技能映射",
+            ),
+          );
+          return section;
+        }
+
+        const grid = createElement("div", "course-map-grid");
+        groups.forEach((group) => {
+          grid.append(createCourseMapCard(group, filter));
+        });
+
+        section.append(grid);
+        return section;
+      }
+
+      function renderCourseSummary(
+        course,
+        allRows,
+        filter = uiState.filter,
+      ) {
+        const section = createElement("aside", "page-summary");
+        const totalMetrics = collectCourseMetrics(allRows);
+
+        const detailCard = createElement("section", "summary-card");
+        detailCard.append(
+          createPanelHead(
+            course.name,
+            "聚合课程目标、规模和职业能力，便于快速理解课程结构。",
+          ),
+        );
+        detailCard.append(
+          createElement(
+            "p",
+            "summary-intro",
+            course.summary || course.remark || "当前课程暂无总结。",
+          ),
+        );
+
+        const overview = createElement("section", "summary-section");
+
+        const overviewGrid = createElement("div", "summary-grid");
+        overviewGrid.append(createSummaryStat("项目", totalMetrics.unitCount));
+        overviewGrid.append(createSummaryStat("任务", totalMetrics.itemCount));
+        overviewGrid.append(
+          createSummaryStat(
+            "知识点/技能点",
+            totalMetrics.knowledgePoints.length,
+          ),
+        );
+        overviewGrid.append(createSummaryStat("岗位", totalMetrics.roleCount));
+        overview.append(overviewGrid);
+        detailCard.append(overview);
+
+        const skillsSection = createElement("section", "summary-section");
+        skillsSection.append(
+          createElement("h3", "summary-section-title", "职业能力"),
+        );
+        skillsSection.append(
+          createSummarySkillTags(totalMetrics.skills.slice(0, 6), filter),
+        );
+
+        detailCard.append(skillsSection);
+
+        section.append(detailCard);
+        return section;
+      }
+
+      function renderSkillmap(source) {
+        const app = document.getElementById("app");
+        const fragment = document.createDocumentFragment();
+        const filter = normalizeFilter(uiState.filter);
+        const filteredRows = filterRows(source.rows, filter);
+        const fullDefinition = buildMermaidGraph(
+          source.rows,
+          source.rows,
+          normalizeFilter({}),
+          {
+            registerHandlers: false,
+            interactive: false,
+          },
+        ).definition;
+        const stack = createElement("div", "page-stack");
+        const layout = createElement("div", "page-layout");
+        layout.append(renderCourseMap(source.rows, filteredRows, filter));
+        layout.append(renderMermaidGraph(filteredRows, source.rows, filter));
+        layout.append(renderCourseSummary(source.course, source.rows, filter));
+        stack.append(layout, renderMermaidSource(fullDefinition));
+        fragment.append(stack);
+        app.replaceChildren(fragment);
+        flushPendingMermaidRenders();
+      }
+
+      window.addEventListener("skillmap-mermaid-ready", () => {
+        mermaidConfigured = false;
+        renderSkillmap(data);
+      });
+
+      renderSkillmap(data);
+    </script>
+  </body>
+</html>
